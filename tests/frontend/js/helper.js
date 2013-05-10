@@ -86,6 +86,7 @@ var helper = {};
           return !$iframe.contents().find("#loading").is(":visible");
         }, 50000).done(function(){
           helper.padChrome$ = getFrameJQuery(                $('#iframe-container iframe'));
+          // These were used in Etherpad, not sure if we'll need them for EtherDraw
           //helper.padOuter$  = getFrameJQuery(helper.padChrome$('iframe[name="ace_outer"]'));
           //helper.padInner$  = getFrameJQuery( helper.padOuter$('iframe[name="ace_inner"]'));
 
