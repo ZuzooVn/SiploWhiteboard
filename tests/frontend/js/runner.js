@@ -140,7 +140,7 @@ $(function(){
       }
 
       var killTimeout;
-      runner.on('test end', function(test){
+      runner.on('test end', function(test) {
         if ('passed' == test.state) {
           append("->","[green]PASSED[clear] :", test.title);
         } else if (test.pending) {
