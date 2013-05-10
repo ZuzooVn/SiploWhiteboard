@@ -73,7 +73,7 @@ var helper = {};
     if (!padName) {
       padName = "FRONTEND_TEST_" + helper.randomString(20);
     }
-    $iframe = $("<iframe src='/d/" + padName + "' id='iframe1'></iframe>");
+    $iframe = $("<iframe src='/d/" + padName + "'></iframe>");
 
     //clean up inner iframe references
     helper.padChrome$ = helper.padOuter$ = helper.padInner$ = null;
