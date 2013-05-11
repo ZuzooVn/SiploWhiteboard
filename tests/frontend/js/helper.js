@@ -6,14 +6,18 @@ var helper = {};
   helper.init = function(cb){
     $iframeContainer = $("#iframe-container");
 
-    $.get('/static/js/lib/jquery.js').done(function(code){ 
+    $.get('/static/js/lib/jquery.js').done(function(code) { 
       // make sure we don't override existing jquery
       jsLibraries["jquery"] = "if(typeof $ === 'undefined') {\n" + code + "\n}";
+	  
+      $.get('/tests/frontend/js/lib/jquery.simulate.js').done(function(code) {
+        jsLibraries["jquery-simulate"] = code;
 
-      $.get('/tests/frontend/js/lib/sendkeys.js').done(function(code){ 
-        jsLibraries["sendkeys"] = code;
+        $.get('/tests/frontend/js/lib/sendkeys.js').done(function(code) { 
+          jsLibraries["sendkeys"] = code;
 
-        cb();
+          cb();
+        });
       });
     });
   }
