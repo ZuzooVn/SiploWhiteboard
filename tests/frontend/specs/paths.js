@@ -1,13 +1,27 @@
 describe("draw path", function(){
   //create a new pad before each test run
-  beforeEach(function(cb){
+  /*beforeEach(function(cb){
     helper.newPad(cb);
+    this.timeout(60000);
+  });*/
+
+
+  var padName;
+
+  it("creates a pad", function(done) {
+    padName = helper.newPad(done);
     this.timeout(60000);
   });
   
   it("Drawing path is added to paperjs project", function(done) {
+    this.timeout(10000);
+
     //var inner$ = helper.padInner$;
     var chrome$ = helper.padChrome$;
+
+    // Mouse clicks and drags to create path
+    var canvas = chrome$("#myCanvas");
+    canvas.simulate('drag', {dx: 100, dy: 50});
 
     //click on the settings button to make settings visible
     //var $userButton = chrome$(".buttonicon-showusers");

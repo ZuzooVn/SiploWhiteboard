@@ -11,7 +11,7 @@ var helper = {};
       jsLibraries["jquery"] = "if(typeof $ === 'undefined') {\n" + code + "\n}";
 	  
       $.get('/tests/frontend/js/lib/jquery.simulate.js').done(function(code) {
-        jsLibraries["jquery-simulate"] = code;
+        jsLibraries["simulate"] = code;
 
         $.get('/tests/frontend/js/lib/sendkeys.js').done(function(code) { 
           jsLibraries["sendkeys"] = code;
@@ -49,6 +49,7 @@ var helper = {};
 
     win.eval(jsLibraries["jquery"]);
     win.eval(jsLibraries["sendkeys"]);
+	win.eval(jsLibraries["simulate"]);
     
     win.$.window = win;
     win.$.document = doc;
