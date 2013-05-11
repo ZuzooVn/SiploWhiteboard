@@ -49,8 +49,8 @@ var helper = {};
 
     win.eval(jsLibraries["jquery"]);
     win.eval(jsLibraries["sendkeys"]);
-	win.eval(jsLibraries["simulate"]);
-    
+    win.eval(jsLibraries["simulate"]);
+
     win.$.window = win;
     win.$.document = doc;
 
