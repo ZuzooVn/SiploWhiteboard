@@ -1,86 +1,81 @@
-describe("draw path", function(){
-  //create a new pad before each test run
-  /*beforeEach(function(cb){
-    helper.newPad(cb);
-    this.timeout(60000);
-  });*/
+describe("Draw a path", function(){
 
-
-  var padName;
+  var oldPadName,
+      padName,
+      path,
+      reloaded = false;
 
   it("creates a pad", function(done) {
     padName = helper.newPad(done);
     this.timeout(60000);
   });
   
-  it("Drawing path is added to paperjs project", function(done) {
-    this.timeout(10000);
+  it("drawn path is added to paperjs project", function(done) {
+    this.timeout(1000);
 
-    //var inner$ = helper.padInner$;
     var chrome$ = helper.padChrome$;
+    var paper = window.ifr1.paper;
 
     // Mouse clicks and drags to create path
     var canvas = chrome$("#myCanvas");
     canvas.simulate('drag', {dx: 100, dy: 50});
+    var layer = paper.project.activeLayer;
 
-    //click on the settings button to make settings visible
-    //var $userButton = chrome$(".buttonicon-showusers");
-    //$userButton.click();
-    
-    //var $usernameInput = chrome$("#myusernameedit");
-    //$usernameInput.click();
+    var numChildren = layer.children.length;
+    expect(numChildren).to.be(1); // Expect only one child node to be on canvas
 
-    //$usernameInput.val('John McLear');
-    //$usernameInput.blur();
-
-    //click on the chat button to make chat visible
-    /*var $chatButton = chrome$("#chaticon");
-    $chatButton.click();
-    var $chatInput = chrome$("#chatinput");
-    $chatInput.sendkeys('O hi'); // simulate a keypress of typing JohnMcLear
-    $chatInput.sendkeys('{enter}'); // simulate a keypress of enter actually does evt.which = 10 not 13*/
-
-    //check if chat shows up
-    /*helper.waitFor(function(){
-      return chrome$("#chattext").children("p").length !== 0; // wait until the chat message shows up
-    }).done(function(){
-      var $firstChatMessage = chrome$("#chattext").children("p");
-      var containsJohnMcLear = $firstChatMessage.text().indexOf("John McLear") !== -1; // does the string contain John McLear
-      expect(containsJohnMcLear).to.be(true); // expect the first chat message to contain JohnMcLear
+    var numSegments = layer.children[0]._segments.length;
+    expect(numSegments).to.be(8); // Expect 8 segments to this path
+    oldPadName = padName;
+	path = window.ifr1.paper.project.activeLayer.children[0]; // Save path for later test
+    done();
+  });
+  
+  it("reloads same pad", function(done) {
+    this.timeout(60000);
+    padName = helper.newPad(function() {
+      var padsEqual = padName == oldPadName;
+      if (padsEqual) {
+        reloaded = true;
+      }
+      expect(padsEqual).to.be(true); // Expect old pad name to be new pad name (reloaded same pad)
       done();
-    });*/
+    }, oldPadName);
   });
 
-  /*it("Path stored to database/present on reload", function(done) {
+  it("path is present on reload", function(done) {
     this.timeout(60000);
     var chrome$ = helper.padChrome$;
+    var paper = window.ifr1.paper;
 
-    //click on the settings button to make settings visible
-    var $userButton = chrome$(".buttonicon-showusers");
-    $userButton.click();
-    
-    var $usernameInput = chrome$("#myusernameedit");
-    $usernameInput.click();
+    if (!reloaded) {
+      throw new Error("Reloads same pad test failed.");
+    }
 
-    $usernameInput.val('John McLear');
-    $usernameInput.blur();
+    if (!path) {
+      throw new Error("Path missing.");
+    }
 
-    setTimeout(function(){ //give it a second to save the username on the server side
-      helper.newPad({ // get a new pad, but don't clear the cookies
-        clearCookies: false
-        , cb: function(){
-          var chrome$ = helper.padChrome$;
+    var path2 = window.ifr1.paper.project.activeLayer.children[0];
+    if (path._name != path2._name) {
+      throw new Error("Path names do not match.");
+    }
+    if (path._segments.length != path2._segments.length) {
+      throw new Error("Paths have differing number of segments.");
+    }
 
-          //click on the settings button to make settings visible
-          var $userButton = chrome$(".buttonicon-showusers");
-          $userButton.click();
-
-          var $usernameInput = chrome$("#myusernameedit");
-          expect($usernameInput.val()).to.be('John McLear')
-          done();
-        }
-      });
-    }, 1000);
-  });*/
+    var pathsEqual = true;
+    for (var i=0; i<path._segments.length; i++) {
+      var p1 = path._segments[i]._point;
+      var p2 = path2._segments[i]._point;
+      if (p1._x != p2._x || p1._y != p2._y) {
+        pathsEqual = false;
+        throw new Error("Path segments differ.");
+        break;
+      }
+    }
+    expect(pathsEqual).to.be(true); // Expect paths' names and segments to be equal
+    done();
+  });
 
 });

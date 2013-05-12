@@ -57,11 +57,11 @@ var helper = {};
     return win.$;
   }
 
-  helper.clearCookies = function(){
+  helper.clearCookies = function() {
     window.document.cookie = "";
   }
 
-  helper.newPad = function(cb, padName){
+  helper.newPad = function(cb, padName) {
     //build opts object
     var opts = {clearCookies: true}
     if (typeof cb === 'function'){
@@ -78,13 +78,14 @@ var helper = {};
     if (!padName) {
       padName = "FRONTEND_TEST_" + helper.randomString(20);
     }
-    $iframe = $("<iframe src='/d/" + padName + "'></iframe>");
+    // name attribute allows us to access javascript namespace from window.ifr1
+    $iframe = $("<iframe src='/d/" + padName + "' name='ifr1' id='ifr1'></iframe>");
 
     //clean up inner iframe references
     helper.padChrome$ = helper.padOuter$ = helper.padInner$ = null;
 
     //clean up iframes properly to prevent IE from memoryleaking
-    $iframeContainer.find("iframe").purgeFrame().done(function(){
+    $iframeContainer.find("iframe").purgeFrame().done(function() {
       $iframeContainer.append($iframe);
       $iframe.one('load', function(){  
         helper.waitFor(function(){
@@ -99,7 +100,6 @@ var helper = {};
           helper.padChrome$.fx.off = true;
           //helper.padOuter$.fx.off = true;
           //helper.padInner$.fx.off = true;
-
           opts.cb();
         }).fail(function(){
           throw new Error("Pad never loaded");
