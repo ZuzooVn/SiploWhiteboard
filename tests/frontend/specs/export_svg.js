@@ -45,7 +45,7 @@ describe("Exports SVG", function(){
     var b64 = Base64.encode(dummy.innerHTML);
 
     if (!window.frames[0].winsvg) {
-      throw new Error("New window was not created.");
+      throw new Error("New window was not created. Are popups blocked?");
     }
     if (!window.frames[0].winsvg.document) {
       throw new Error("New window's html document was not created.");
