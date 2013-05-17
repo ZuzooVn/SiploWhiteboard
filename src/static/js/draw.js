@@ -112,7 +112,12 @@ var activeTool = "draw";
 
 function onMouseDown(event) {
 
-  if (activeTool == "draw" && event.event.button == 0) {
+  // Ignore middle or right mouse button clicks for now
+  if (event.event.button == 1 || event.event.button == 2) {
+    return;
+  }
+  
+  if (activeTool == "draw") {
     var point = event.point;
 
     path = new Path();
@@ -128,7 +133,7 @@ function onMouseDown(event) {
       start: event.point,
       path: []
     };
-  } else if (activeTool == "select" && event.event.button == 0) {
+  } else if (activeTool == "select") {
     // Select item
     if (event.item) {
       // If holding shift key down, don't clear selection - allows multiple selections
@@ -149,7 +154,12 @@ var item_move_timer_is_active = false;
 
 function onMouseDrag(event) {
 
-  if (activeTool == "draw" && event.event.button == 0) {
+  // Ignore middle or right mouse button clicks for now
+  if (event.event.button == 1 || event.event.button == 2) {
+    return;
+  }
+
+  if (activeTool == "draw") {
     var step = event.delta / 2;
     step.angle += 90;
 
@@ -180,7 +190,7 @@ function onMouseDrag(event) {
     }
 
     timer_is_active = true;
-  } else if (activeTool == "select" && event.event.button == 0) {
+  } else if (activeTool == "select") {
     // Move item locally
     for (x in paper.project.selectedItems) {
       var item = paper.project.selectedItems[x];
@@ -218,7 +228,12 @@ function onMouseDrag(event) {
 
 function onMouseUp(event) {
 
-  if (activeTool == "draw" && event.event.button == 0) {
+  // Ignore middle or right mouse button clicks for now
+  if (event.event.button == 1 || event.event.button == 2) {
+    return;
+  }
+
+  if (activeTool == "draw") {
     // Close the users path
     path.add(event.point);
     path.closed = true;
@@ -236,7 +251,7 @@ function onMouseUp(event) {
     clearInterval(send_paths_timer);
     path_to_send.path = new Array();
     timer_is_active = false;
-  } else if (activeTool == "select" && event.event.button == 0) {
+  } else if (activeTool == "select") {
     // End movement timer
     clearInterval(send_item_move_timer);
     if (item_move_delta) {
