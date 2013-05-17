@@ -14,7 +14,7 @@ describe("Clear canvas", function(){
     this.timeout(1000);
 
     var chrome$ = helper.padChrome$;
-    var paper = window.ifr1.paper;
+    var paper = window.frames[0].paper;
 
     // Mouse clicks and drags to create path
     var canvas = chrome$("#myCanvas");
@@ -27,7 +27,7 @@ describe("Clear canvas", function(){
     var numSegments = layer.children[0]._segments.length;
     expect(numSegments).to.be(8); // Expect 8 segments to this path
     oldPadName = padName;
-	path = window.ifr1.paper.project.activeLayer.children[0]; // Save path for later test
+	path = window.frames[0].paper.project.activeLayer.children[0]; // Save path for later test
     done();
   });
   
@@ -46,7 +46,7 @@ describe("Clear canvas", function(){
   it("path is present on reload", function(done) {
     this.timeout(60000);
     var chrome$ = helper.padChrome$;
-    var paper = window.ifr1.paper;
+    var paper = window.frames[0].paper;
 
     if (!reloaded) {
       throw new Error("Reloads same pad test failed.");
@@ -56,7 +56,7 @@ describe("Clear canvas", function(){
       throw new Error("Path missing.");
     }
 
-    var path2 = window.ifr1.paper.project.activeLayer.children[0];
+    var path2 = window.frames[0].paper.project.activeLayer.children[0];
     if (path._name != path2._name) {
       throw new Error("Path names do not match.");
     }
@@ -82,8 +82,9 @@ describe("Clear canvas", function(){
     this.timeout(10000);
     var chrome$ = helper.padChrome$;
     chrome$("#clearCanvas").click();
-    if (window.ifr1.paper.project.activeLayer.children.length != 0) {
-      throw new Error("Project is not empty. Number of children = " + window.ifr1.paper.project.activeLayer.children.length + " instead of 0.");
+
+    if (window.frames[0].paper.project.activeLayer.children.length != 0) {
+      throw new Error("Project is not empty. Number of children = " + window.frames[0].paper.project.activeLayer.children.length + " instead of 0.");
     }
     done();
   });
@@ -109,7 +110,7 @@ describe("Clear canvas", function(){
       throw new Error("Reloads same pad test failed.");
     }
 
-    var projectChildren = window.ifr1.paper.project.activeLayer.children.length;
+    var projectChildren = window.frames[0].paper.project.activeLayer.children.length;
     // Expect the number of children to be zero (project is empty)
     if (projectChildren != 0) {
       throw new Error("Project is not empty. Number of children = " + projectChildren + " instead of 0.");
