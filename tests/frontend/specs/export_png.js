@@ -1,4 +1,4 @@
-describe("Exports PNG", function(){
+describe("Export PNG", function(){
 
   var oldPadName,
       padName,

@@ -1,4 +1,4 @@
-describe("Exports SVG", function(){
+describe("Export SVG", function(){
 
   var oldPadName,
       padName,
