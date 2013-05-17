@@ -382,6 +382,7 @@ function encodeAsImgAndLink(svg){
   var html = "<img style='height:100%;width:100%;' src='data:image/svg+xml;base64,"+b64+"' />"
   window.winsvg = window.open();
   window.winsvg.document.write(html);
+  window.winsvg.document.body.style.margin = 0;
 }
 
 // Encodes png as a base64 text and opens a new browser window
