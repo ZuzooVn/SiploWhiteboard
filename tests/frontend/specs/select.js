@@ -260,6 +260,7 @@ describe("Selection tool", function() {
   it("selects multiple paths", function(done) {
     this.timeout(60000);
 
+    var numChildren = window.frames[0].paper.project.activeLayer.children.length;
     if (numChildren < 2) {
       throw new Error("Incorrect number of children in project. Found " + numChildren + " but expected at least 2.");
     }
