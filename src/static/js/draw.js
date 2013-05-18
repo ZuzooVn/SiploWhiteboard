@@ -392,7 +392,9 @@ function encodeAsImgAndLink(svg){
 function exportPNG() {
   var canvas = document.getElementById('myCanvas');
   var html = "<img src='" + canvas.toDataURL('image/png') + "' />"
-  window.winpng = window.open();
+  var body = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head><body></body></html>';
+  window.winpng = window.open('/static/html/export.html');
+  //window.winpng.head.innerHTML = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />';
   window.winpng.document.write(html);
   window.winpng.document.body.style.margin = 0;
 }
