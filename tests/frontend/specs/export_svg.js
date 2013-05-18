@@ -51,6 +51,7 @@ describe("Export SVG", function(){
       throw new Error("New window's html document was not created.");
     }
     if (window.frames[0].winsvg.document.getElementsByTagName('img').length < 1) {
+      window.frames[0].winsvg.close();
       throw new Error("New window doesn't have an img element.");
     }
     var src = window.frames[0].winsvg.document.getElementsByTagName('img')[0].src;
