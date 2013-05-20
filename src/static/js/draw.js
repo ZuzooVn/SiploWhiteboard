@@ -286,7 +286,33 @@ function onKeyUp(event) {
   }
 }
 
+// Drop image onto canvas to upload it
+$('#myCanvas').bind('dragover dragenter', function(e) {
+  e.preventDefault();
+});
 
+$('#myCanvas').bind('drop', function(e) {
+  e = e || window.event; // get window.event if e argument missing (in IE)
+  if (e.preventDefault) {  // stops the browser from redirecting off to the image.
+    e.preventDefault();
+  }
+  e = e.originalEvent;
+  var dt = e.dataTransfer;
+  var files = dt.files;
+  for (var i=0; i<files.length; i++) {
+    var file = files[i];
+    var reader = new FileReader();
+
+    //attach event handlers here...
+    reader.readAsDataURL(file);
+    $(reader).bind('loadend', function(e) {
+      var bin = this.result; 
+
+      //Add to paper project here
+      var raster = new Raster(bin);
+    });
+  }
+});
 
 
 
