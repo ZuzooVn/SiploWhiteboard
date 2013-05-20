@@ -310,6 +310,7 @@ $('#myCanvas').bind('drop', function(e) {
 
       //Add to paper project here
       var raster = new Raster(bin);
+      socket.emit('image:add', room, uid, JSON.stringify(bin));
     });
   }
 });
@@ -512,6 +513,14 @@ socket.on('item:move', function(artist, itemNames, delta) {
         paper.project.activeLayer._namedChildren[itemName][0].position += new Point(delta[1], delta[2]);
       }
     }
+    view.draw();
+  }
+});
+
+socket.on('image:add', function(artist, data) {
+  if (artist != uid) {
+    var image = JSON.parse(data);
+    var raster = new Raster(image);
     view.draw();
   }
 });

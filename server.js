@@ -206,6 +206,11 @@ io.sockets.on('connection', function (socket) {
     moveItemsEnd(room, uid, itemNames, delta);
   });
   
+  // User adds a raster image
+  socket.on('image:add', function(room, uid, data) {
+    addImage(room, uid, data);
+  });
+  
 });
 
 var projects = {};
@@ -433,6 +438,17 @@ function moveItemsEnd(room, artist, itemNames, delta) {
     if (itemNames) {
       io.sockets.in(room).emit('item:move', artist, itemNames, delta);
     }
+    writeProjectToDB(room);
+  }
+}
+
+// Add image to canvas
+function addImage(room, artist, data) {
+  var project = projects[room].project;
+  if (project && project.activeLayer) {
+    var image = JSON.parse(data);
+    var raster = new paper.Raster(image);
+    io.sockets.in(room).emit('image:add', artist, data);
     writeProjectToDB(room);
   }
 }
