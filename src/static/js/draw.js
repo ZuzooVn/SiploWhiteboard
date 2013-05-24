@@ -522,7 +522,7 @@ socket.on('image:add', function(artist, data, position) {
   if (artist != uid) {
     var image = JSON.parse(data);
     var raster = new Raster(image);
-    raster.positon = position;
+    raster.position = new Point(position[1], position[2]);
     view.draw();
   }
 });
