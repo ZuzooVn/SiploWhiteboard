@@ -448,7 +448,7 @@ function addImage(room, artist, data, position) {
   if (project && project.activeLayer) {
     var image = JSON.parse(data);
     var raster = new paper.Raster(image);
-    raster.position = position;
+    raster.position = new Point(position[1], position[2]);
     io.sockets.in(room).emit('image:add', artist, data, position);
     writeProjectToDB(room);
   }
