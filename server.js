@@ -232,6 +232,11 @@ function subscribe(socket, data) {
   var project = projects[room];
   if (!project) {
     projects[room] = {};
+    // Use the view from the default project. This project is the default
+    // one created when paper is instantiated. Nothing is ever written to
+    // this project as each room has its own project. We share the View
+    // object but that just helps it "draw" stuff to the invisible server
+    // canvas.
     projects[room].project = new paper.Project(paper.projects[0].view);
     projects[room].external_paths = {};
     loadFromDB(room, socket);
@@ -390,7 +395,6 @@ progress_external_path = function (room, points, artist) {
   }
 
   path.smooth();
-  
   project.view.draw();
 
 };
