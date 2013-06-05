@@ -214,18 +214,25 @@ io.sockets.on('connection', function (socket) {
 });
 
 var projects = {};
+var closeTimer = {}; // setTimeout function for closing a project when
+// there are no active connections
 // Subscribe a client to a room
 function subscribe(socket, data) {
   var room = data.room;
 
   // Subscribe the client to the room
   socket.join(room);
+  
+  // If the close timer is set, cancel it
+  if (closeTimer[room]) {
+    clearTimeout(closeTimer[room]);
+  }
 
   // Create Paperjs instance for this room if it doesn't exist
   var project = projects[room];
   if (!project) {
     projects[room] = {};
-    projects[room].project = new paper.Project(paper.view);
+    projects[room].project = new paper.Project(paper.projects[0].view);
     projects[room].external_paths = {};
   }
   loadFromDB(room, socket);
@@ -292,15 +299,17 @@ function unsubscribe(socket, data) {
     io.sockets.in(room).emit('user:disconnect', active_connections);
   } else {
   
-    //TODO PUT on timeout, put cancel timeout in subscribe incase someone joins before timeout
-  
-  
-    // Iff no one left in room, remove Paperjs instance
-    // from the array to free up memory
-    var project = projects[room].project;
-    project.remove();
-    projects[room] = false;
-console.log("Num projects = " + paper.projects.length);
+    // Wait a few seconds before closing the project to finish pending writes to pad
+    closeTimer[room] = setTimeout(function() {
+      // Iff no one left in room, remove Paperjs instance
+      // from the array to free up memory
+      var project = projects[room].project;
+      // All projects share one View, calling remove() on one project destroys the View
+      // for all projects. Set to false first.
+      project.view = false;
+      project.remove();
+      projects[room] = undefined;
+    }, 5000);
   }
   
 }
@@ -322,7 +331,7 @@ var end_external_path = function (room, points, artist) {
     path.add(new paper.Point(points.end[1], points.end[2]));
     path.closed = true;
     path.smooth();
-    paper.view.draw();
+    project.view.draw();
 
     // Remove the old data
     projects[room].external_paths[artist] = false;
@@ -366,9 +375,8 @@ progress_external_path = function (room, points, artist) {
   }
 
   path.smooth();
-  if (paper && paper.view) {
-    paper.view.draw();
-  }
+  
+  project.view.draw();
 
 };
 
