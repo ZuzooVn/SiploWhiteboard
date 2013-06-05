@@ -234,8 +234,10 @@ function subscribe(socket, data) {
     projects[room] = {};
     projects[room].project = new paper.Project(paper.projects[0].view);
     projects[room].external_paths = {};
+    loadFromDB(room, socket);
+  } else { // Project exists in memory, no need to load from database
+    loadFromMemory(room, socket);
   }
-  loadFromDB(room, socket);
 
   // Broadcast to room the new user count
   var active_connections = io.sockets.manager.rooms['/' + room].length;  
@@ -267,6 +269,19 @@ function loadFromDB(room, socket) {
   } else {
     loadError(socket);
   }
+}
+
+// Send current project to new client
+function loadFromMemory(room, socket) {
+  var project = projects[room].project;
+  if (!project) { // Additional backup check, just in case
+    loadFromDB(room, socket);
+    return;
+  }
+  socket.emit('loading:start');
+  var value = project.exportJSON();
+  socket.emit('project:load', {project: value});
+  socket.emit('loading:end');
 }
 
 // When a client disconnects, unsubscribe him from
