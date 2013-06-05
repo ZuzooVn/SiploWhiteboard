@@ -293,7 +293,10 @@ function unsubscribe(socket, data) {
   } else {
     // Iff no one left in room, remove Paperjs instance
     // from the array to free up memory
+    var project = projects[room].project;
+    project.remove();
     projects[room] = false;
+console.log("Num projects = " + paper.projects.length);
   }
   
 }
