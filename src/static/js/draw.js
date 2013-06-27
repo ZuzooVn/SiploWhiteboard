@@ -21,7 +21,7 @@ function hexToRgb(hex) {
 
 $(document).ready(function() {
   $('#colorpicker').farbtastic(pickColor); // make a color picker
-  $('#mycolorpicker').pep();
+  $('#mycolorpicker').pep({disableSelect:false, constrainToParent:"body"});
   var drawurl = window.location.href.split("?")[0]; // get the drawing url
   $('#embedinput').val("<iframe name='embed_readwrite' src='" + drawurl + "?showControls=true&showChat=true&showLineNumbers=true&useMonospaceFont=false' width=600 height=400></iframe>"); // write it to the embed input
   $('#linkinput').val(drawurl); // and the share/link input
@@ -66,7 +66,7 @@ var path_to_send = {};
 // Calculates colors
 var active_color_rgb;
 var active_color_json = {};
-var $opacity = $('#opacityRange');
+var $opacity = $('#opacityRangeVal');
 var update_active_color = function () {
   var rgb_array = $('#activeColorSwatch').css('background-color');
   while(rgb_array.indexOf(" ") > -1) {
@@ -347,10 +347,9 @@ $('#pickerSwatch').on('click', function() {
   $('#myColorPicker').fadeToggle();
 });
 
-$opacity.on('change', function () {
-
+$("#opacityRange").on('click', function(e){
+  $("#opacityRangeVal").val($("#opacityRange").width() - e.offsetX); // get the opacity range value by removing the offset from the width
   update_active_color();
-
 });
 
 $('#settingslink').on('click', function() {
