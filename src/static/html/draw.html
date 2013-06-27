@@ -37,6 +37,7 @@
         <script src='/static/js/lib/paper.js'></script>
         <script src='/static/js/lib/webtoolkit.base64.js'></script>
         <script src='/static/js/lib/farbtastic.js'></script>
+	<script src='/static/js/lib/jquery.pep.min.js'></script>
         <script src='/static/js/draw.js' type="text/paperscript" canvas="myCanvas"></script>
         <script>document.domain = document.domain;</script>
     </head>
@@ -134,7 +135,7 @@
             
         </div>
         <div id="settings" class="popup">
-            <h1 data-l10n-id="pad.settings.padSettings"></h1>
+            <h1 data-l10n-id="pad.settings.padSettings">Settings</h1>
             <div class="column">
 
                 <h2 data-l10n-id="pad.settings.myView"></h2>
@@ -142,34 +143,10 @@
         </div>
 	<div id="importexport" class="popup">
             <h1 data-l10n-id="pad.importExport.import_export">Export</h1>
- <!--
-            <div class="column acl-write">
-                
-                <h2 data-l10n-id="pad.importExport.import"></h2>
-                <div class="importmessage" id="importmessageabiword" data-l10n-id="pad.importExport.abiword.innerHTML"></div><br>
-                <form id="importform" method="post" action="" target="importiframe" enctype="multipart/form-data">
-                    <div class="importformdiv" id="importformfilediv">
-                        <input type="file" name="file" size="10" id="importfileinput">
-                        <div class="importmessage" id="importmessagefail"></div>
-                    </div>
-                    <div id="import"></div>
-                    <div class="importmessage" id="importmessagesuccess" data-l10n-id="pad.importExport.importSuccessful"></div>
-                    <div class="importformdiv" id="importformsubmitdiv">
-                        <input type="hidden" name="padId" value="blpmaXT35R">
-                        <span class="nowrap">
-                            <input type="submit" name="submit" value="Import Now" disabled="disabled" id="importsubmitinput">
-                            <img alt="" id="importstatusball" src="../static/img/loading.gif" align="top">
-                            <img alt="" id="importarrow" src="../static/img/leftarrow.png" align="top">
-                        </span>
-                    </div>
-                </form>
-            </div>
--->
             <div class="column">
                 <h2 data-l10n-id="pad.importExport.export"></h2>
-                
-                <a id="exportSVG" target="_blank" class="exportlink">Export SVG</a>
-                <a id="exportPNG" target="_blank" class="exportlink">Export PNG</div></a>
+                <div><a id="exportSVG" target="_blank" class="exportlink">Export SVG</a></div>
+                <div><a id="exportPNG" target="_blank" class="exportlink">Export PNG</a></div>
             </div>
         </div>
 
@@ -189,11 +166,14 @@
         <div id="pickerSwatch" class="colorSwatch"></div>
         <input type="file" id="imageInput" accept="image/*" style="display:none;" />
 
-        <div id="mycolorpicker">
-            <div id="colorpicker"></div>
-            <label>Opacity</label><input type="range" min="0" max="255" value="200" id="opacity">
-        </div>
     </div>
+
+    <div id="mycolorpicker">
+      <div id="colorpicker"></div>
+      <label>Opacity</label><input type="range" min="0" max="255" value="200" id="opacity">
+    </div>
+
+
     <canvas id="myCanvas" resize="true"></canvas>
     </body>
 </html>

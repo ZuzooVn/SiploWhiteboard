@@ -20,7 +20,8 @@ function hexToRgb(hex) {
 
 
 $(document).ready(function() {
-  $('#colorpicker').farbtastic(pickColor);
+  $('#colorpicker').farbtastic(pickColor); // make a color picker
+  $('#mycolorpicker').pep();
 });
 
 $('#activeColorSwatch').css('background-color', $('.colorSwatch.active').css('background-color'));
