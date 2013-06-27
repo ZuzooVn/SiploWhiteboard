@@ -25,6 +25,7 @@ $(document).ready(function() {
   var drawurl = window.location.href.split("?")[0]; // get the drawing url
   $('#embedinput').val("<iframe name='embed_readwrite' src='" + drawurl + "?showControls=true&showChat=true&showLineNumbers=true&useMonospaceFont=false' width=600 height=400></iframe>"); // write it to the embed input
   $('#linkinput').val(drawurl); // and the share/link input
+  $('#drawTool > a').css({background:"#eee"}); // set the drawtool css to show it as active
 });
 
 $('#activeColorSwatch').css('background-color', $('.colorSwatch.active').css('background-color'));
@@ -151,6 +152,7 @@ function onMouseDown(event) {
     };
   } else if (activeTool == "select") {
     // Select item
+    $("#myCanvas").css("cursor","pointer");
     if (event.item) {
       // If holding shift key down, don't clear selection - allows multiple selections
       if (!event.event.shiftKey) {
@@ -364,32 +366,37 @@ $('#embedlink').on('click', function() {
 $('#importExport').on('click', function() {
   $('#importexport').fadeToggle();
 });
-
 $('#usericon').on('click', function() {
   $('#mycolorpicker').fadeToggle();
 });
-
-
 $('#clearCanvas').on('click', function() {
   clearCanvas();
   socket.emit('canvas:clear', room);
 });
-
 $('#exportSVG').on('click', function() {
   exportSVG();
 });
-
 $('#exportPNG').on('click', function() {
   exportPNG();
 });
 
+$('#pencilTool').on('click', function() {
+  $('#editbar > ul > li > a').css({background:""}); // remove the backgrounds from other buttons
+  $('#pencilTool > a').css({background:"#eee"}); // set the selecttool css to show it as active
+  activeTool = "pencil";
+  $('#myCanvas').css('cursor', 'pointer');
+  paper.project.activeLayer.selected = false;
+});
 $('#drawTool').on('click', function() {
+  $('#editbar > ul > li > a').css({background:""}); // remove the backgrounds from other buttons
+  $('#drawTool > a').css({background:"#eee"}); // set the selecttool css to show it as active
   activeTool = "draw";
   $('#myCanvas').css('cursor', 'pointer');
   paper.project.activeLayer.selected = false;
 });
-
 $('#selectTool').on('click', function() {
+  $('#editbar > ul > li > a').css({background:""}); // remove the backgrounds from other buttons
+  $('#selectTool > a').css({background:"#eee"}); // set the selecttool css to show it as active
   activeTool = "select";
   $('#myCanvas').css('cursor', 'default');
 });

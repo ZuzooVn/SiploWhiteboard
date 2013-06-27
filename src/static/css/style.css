@@ -1112,11 +1112,12 @@ body{
   position:absolute;
   background-color:#000;
   top:22px;
-
+  left:50px;
 }
 
 #myCanvas{
   position:absolute;
+  cursor:hand;
   top:37px;
   left:0px;
   right:0px;
