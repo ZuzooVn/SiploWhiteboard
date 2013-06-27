@@ -22,6 +22,9 @@ function hexToRgb(hex) {
 $(document).ready(function() {
   $('#colorpicker').farbtastic(pickColor); // make a color picker
   $('#mycolorpicker').pep();
+  var drawurl = window.location.href.split("?")[0]; // get the drawing url
+  $('#embedinput').val("<iframe name='embed_readwrite' src='" + drawurl + "?showControls=true&showChat=true&showLineNumbers=true&useMonospaceFont=false' width=600 height=400></iframe>"); // write it to the embed input
+  $('#linkinput').val(drawurl); // and the share/link input
 });
 
 $('#activeColorSwatch').css('background-color', $('.colorSwatch.active').css('background-color'));
@@ -127,7 +130,7 @@ function onMouseDown(event) {
     if(mouseTimer > 5){
       mouseTimer = 0;
       $('#mycolorpicker').toggle(); // show the color picker
-      $('#mycolorpicker').css({"left":event.event.pageX - 100, "top":event.event.pageY - 100}); // make it in the smae position
+      $('#mycolorpicker').css({"left":event.event.pageX - 250, "top":event.event.pageY - 100}); // make it in the smae position
     }
   }, 100);
   
