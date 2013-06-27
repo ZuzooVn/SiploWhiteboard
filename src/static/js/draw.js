@@ -360,9 +360,9 @@ $('#pickerSwatch').on('click', function() {
 });
 
 $("#opacityRange").on('click', function(e){
-  $("#opacityIdentifier").css({left:e.offsetX});
+  var offsetX = e.offsetX || e.originalEvent.layerX;
+  $("#opacityIdentifier").css({left:offsetX});
   var opacity = $("#opacityRange").width() - e.offsetX + 55; // get the opacity range value by removing the offset from the width
-  console.log(opacity);
   $("#opacityRangeVal").val(opacity);
   update_active_color();
 });
