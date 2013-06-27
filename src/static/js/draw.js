@@ -109,9 +109,20 @@ var send_paths_timer;
 var timer_is_active = false;
 var paper_object_count = 0;
 var activeTool = "draw";
+var mouseTimer = 0; // used for getting if the mouse is being held down but not dragged IE when bringin up color picker
+var mouseHeld; // global timer for if mouse is held.
 
 function onMouseDown(event) {
-
+  mouseTimer = 0;
+  mouseHeld = setInterval(function(){ // is the mouse being held and not dragged?
+    mouseTimer++;
+    console.log(mouseTimer);
+    if(mouseTimer > 5){
+      mouseTimer = 0;
+      $('#mycolorpicker').toggle(); // show the color picker
+      $('#mycolorpicker').css({"left":event.event.pageX - 100, "top":event.event.pageY - 100}); // make it in the smae position
+    }
+  }, 100);
   // Ignore middle or right mouse button clicks for now
   if (event.event.button == 1 || event.event.button == 2) {
     return;
@@ -153,6 +164,9 @@ var send_item_move_timer;
 var item_move_timer_is_active = false;
 
 function onMouseDrag(event) {
+
+  mouseTimer = 0;
+  clearInterval(mouseHeld);
 
   // Ignore middle or right mouse button clicks for now
   if (event.event.button == 1 || event.event.button == 2) {
@@ -232,6 +246,7 @@ function onMouseUp(event) {
   if (event.event.button == 1 || event.event.button == 2) {
     return;
   }
+  clearInterval(mouseHeld);
 
   if (activeTool == "draw") {
     // Close the users path

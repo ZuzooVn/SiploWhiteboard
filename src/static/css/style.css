@@ -250,19 +250,20 @@ a img {
   background: transparent; /*...initially*/
 }
 #mycolorpicker {
+/*
   width: 232px;
   height: 265px;
+*/
   position: absolute;
   left: -250px;
   top: 0px;
   z-index: 101;
   display: none;
-  border-radius: 0 0 6px 6px;
+  border-radius: 6px;
   background: #f7f7f7;
   border: 1px solid #ccc;
   border-top: 0;
-  padding-left: 10px;
-  padding-top: 10px;
+  padding: 10px;
 }
 #mycolorpickersave {
   left: 10px;
@@ -1067,4 +1068,14 @@ input[type=checkbox] {
 
 #lostConnection{
   display:none;
+}
+
+#opacity{
+  height:12px;
+}
+
+#mycolorpicker > label{
+  margin-bottom:10px;
+  font-size:14px;
+  margin-right:20px;
 }
