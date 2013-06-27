@@ -63,7 +63,7 @@ var path_to_send = {};
 // Calculates colors
 var active_color_rgb;
 var active_color_json = {};
-var $opacity = $('#opacity');
+var $opacity = $('#opacityRange');
 var update_active_color = function () {
   var rgb_array = $('#activeColorSwatch').css('background-color');
   while(rgb_array.indexOf(" ") > -1) {
@@ -114,21 +114,22 @@ var mouseTimer = 0; // used for getting if the mouse is being held down but not 
 var mouseHeld; // global timer for if mouse is held.
 
 function onMouseDown(event) {
+  $('.popup').fadeOut();
+
+  // Ignore middle or right mouse button clicks for now
+  if (event.event.button == 1 || event.event.button == 2) {
+    return;
+  }
+
   mouseTimer = 0;
   mouseHeld = setInterval(function(){ // is the mouse being held and not dragged?
     mouseTimer++;
-    console.log(mouseTimer);
     if(mouseTimer > 5){
       mouseTimer = 0;
       $('#mycolorpicker').toggle(); // show the color picker
       $('#mycolorpicker').css({"left":event.event.pageX - 100, "top":event.event.pageY - 100}); // make it in the smae position
     }
   }, 100);
-  // Ignore middle or right mouse button clicks for now
-  if (event.event.button == 1 || event.event.button == 2) {
-    return;
-  }
-  console.log(event);
   
   if (activeTool == "draw") {
     var point = event.point;
@@ -359,6 +360,9 @@ $('#importExport').on('click', function() {
   $('#importexport').fadeToggle();
 });
 
+$('#usericon').on('click', function() {
+  $('#mycolorpicker').fadeToggle();
+});
 
 
 $('#clearCanvas').on('click', function() {

@@ -50,27 +50,27 @@
             <ul class="menu_left">
                 <!-- paint brush -->
                 <li class="acl-write" id="drawTool" data-key="bold">
-                    <a class="grouped-left" data-l10n-id="pad.toolbar.bold.title">Paint
+                    <a class="grouped-left" data-l10n-id="draw.toolbar.bold.title">Paint
                       <span class="buttonicon buttonicon-bold"></span>
                     </a>
                 </li>
 		<!-- pencil brush -->
 <!--
                 <li class="acl-write" id="paintTool" data-key="italic">
-                    <a class="grouped-middle" data-l10n-id="pad.toolbar.italic.title">Pencil
+                    <a class="grouped-middle" data-l10n-id="draw.toolbar.italic.title">Pencil
                       <span class="buttonicon buttonicon-italic"></span>
                     </a>
                 </li>
 -->
 		<!-- Select Tool -->
                 <li class="acl-write" id="selectTool" data-key="underline">
-                    <a class="grouped-middle" data-l10n-id="pad.toolbar.underline.title">Select
+                    <a class="grouped-middle" data-l10n-id="draw.toolbar.underline.title">Select
                       <span class="buttonicon buttonicon-underline"></span>
                     </a>
                 </li>
 		<!-- Upload -->
                 <li class="acl-write" id="uploadImage" data-key="strikethrough">
-                    <a class="grouped-right" data-l10n-id="pad.toolbar.strikethrough.title">Upload
+                    <a class="grouped-right" data-l10n-id="draw.toolbar.strikethrough.title">Upload
                       <span class="buttonicon buttonicon-strikethrough"></span>
                     </a>
                 </li>
@@ -79,19 +79,19 @@
 
                 <!-- settings -->
                 <li data-key="settings">
-                    <a id="settingslink" class="grouped-left" data-l10n-id="pad.toolbar.settings.title">
+                    <a id="settingslink" class="grouped-left" data-l10n-id="draw.toolbar.settings.title">
                         <span class="grouped-left buttonicon buttonicon-settings"></span>
                     </a>
                 </li>
                 <!-- import export -->
                 <li data-key="import_export">
-                    <a id="importExport" class="grouped-middle" data-l10n-id="pad.toolbar.import_export.title">
+                    <a id="importExport" class="grouped-middle" data-l10n-id="draw.toolbar.import_export.title">
                         <span class="buttonicon buttonicon-import_export"></span>
                     </a>
                 </li>
 		<!-- share & embed -->
                 <li data-key="embed">
-                    <a id="embedlink" class="grouped-right" data-l10n-id="pad.toolbar.embed.title">
+                    <a id="embedlink" class="grouped-right" data-l10n-id="draw.toolbar.embed.title">
                         <span class="buttonicon buttonicon-embed"></span>
                     </a>
                 </li>
@@ -99,7 +99,7 @@
 		<!-- user stuff -->
                 <li class="separator"></li>
                 <li id="usericon" data-key="showusers">
-                    <a data-l10n-id="pad.toolbar.showusers.title">
+                    <a data-l10n-id="draw.toolbar.showusers.title">
                         <span class="buttonicon buttonicon-showusers"></span>
                         <span id="online_count">1</span>
                     </a>
@@ -110,41 +110,36 @@
    
 
         <div id="settings" class="popup">
-            <h1 data-l10n-id="pad.settings.padSettings"></h1>
+            <h1 data-l10n-id="draw.settings.padSettings"></h1>
             <div class="column">
-                
-                <h2 data-l10n-id="pad.settings.myView"></h2>
+                <h2 data-l10n-id="draw.settings.ClearCanvas">Clear Canvas</h2>
+		<a>Warning - This will clear the canvas</a><button id="clearCanvas">Okay, Clear it!</button>
 	    </div>
         </div>
 	<div id="embed" class="popup">
-            
-            <div id="embedreadonly" class="right acl-write">
-                <input type="checkbox" id="readonlyinput">
-                <label for="readonlyinput" data-l10n-id="pad.share.readonly"></label>
-            </div>
-            <h1 data-l10n-id="pad.share"></h1>
+            <h1 data-l10n-id="draw.share">Share & Embed</h1>
             <div id="linkcode">
-                <h2 data-l10n-id="pad.share.link"></h2>
+                <h2 data-l10n-id="draw.share.link">Share</h2>
                 <input id="linkinput" type="text" value="">
             </div>
             <br>
             <div id="embedcode">
-                <h2 data-l10n-id="pad.share.emebdcode"></h2>
+                <h2 data-l10n-id="draw.share.emebdcode">Embed</h2>
                 <input id="embedinput" type="text" value="">
             </div>
             
         </div>
         <div id="settings" class="popup">
-            <h1 data-l10n-id="pad.settings.padSettings">Settings</h1>
+            <h1 data-l10n-id="draw.settings.padSettings">Settings</h1>
             <div class="column">
 
-                <h2 data-l10n-id="pad.settings.myView"></h2>
+                <h2 data-l10n-id="draw.settings.myView"></h2>
             </div>
         </div>
 	<div id="importexport" class="popup">
-            <h1 data-l10n-id="pad.importExport.import_export">Export</h1>
+            <h1 data-l10n-id="draw.importExport.import_export">Export</h1>
             <div class="column">
-                <h2 data-l10n-id="pad.importExport.export"></h2>
+                <h2 data-l10n-id="draw.importExport.export"></h2>
                 <div><a id="exportSVG" target="_blank" class="exportlink">Export SVG</a></div>
                 <div><a id="exportPNG" target="_blank" class="exportlink">Export PNG</a></div>
             </div>
@@ -158,19 +153,15 @@
     <div id="loading" class="hidden" style="display:block;">
         <p>Loading existing sketch...</p>
     </div>
-    <div id="controls">
-        <div id="userCountWrapper" style="opacity:0"> artists:
-            <span id="userCount"></span>
-        </div>
-        <div id="activeColorSwatch"></div>
-        <div id="pickerSwatch" class="colorSwatch"></div>
-        <input type="file" id="imageInput" accept="image/*" style="display:none;" />
 
-    </div>
+    <input type="file" id="imageInput" accept="image/*" />
+    <div id="activeColorSwatch"></div>
 
     <div id="mycolorpicker">
       <div id="colorpicker"></div>
-      <label>Opacity</label><input type="range" min="0" max="255" value="200" id="opacity">
+      <div id="opacity">
+        <label id="opacityLabel">Opacity</label><input type="range" min="0" max="255" value="200" id="opacityRange">
+      </div>
     </div>
 
 
