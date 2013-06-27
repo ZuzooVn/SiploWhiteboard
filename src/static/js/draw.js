@@ -116,10 +116,10 @@ function onMouseDown(event) {
   if (event.event.button == 1 || event.event.button == 2) {
     return;
   }
+  console.log(event);
   
   if (activeTool == "draw") {
     var point = event.point;
-
     path = new Path();
     path.fillColor = active_color_rgb;
     path.add(event.point);
@@ -332,6 +332,18 @@ $opacity.on('change', function () {
   update_active_color();
 
 });
+
+$('#settingslink').on('click', function() {
+  $('#settings').fadeToggle();
+});
+$('#embedlink').on('click', function() {
+  $('#embed').fadeToggle();
+});
+$('#importExport').on('click', function() {
+  $('#importexport').fadeToggle();
+});
+
+
 
 $('#clearCanvas').on('click', function() {
   clearCanvas();
@@ -553,16 +565,11 @@ socket.on('image:add', function(artist, data, position, name) {
 
 
 // Updates the active connections
-var $user_count = $('#userCount');
-var $user_count_wrapper = $('#userCountWrapper');
+var $user_count = $('#online_count');
 
 function update_user_count(count) {
-
-  $user_count_wrapper.css('opacity', 1);
-  $user_count.text((count === 1) ? " just you, why not invite some friends?" : " " + count);
-
+  $user_count.text((count === 1) ? "1" : " " + count);
 }
-
 
 var external_paths = {};
 

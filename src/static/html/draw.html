@@ -41,8 +41,142 @@
         <script>document.domain = document.domain;</script>
     </head>
     <body>
+
+        <div id="editbar" class="toolbar">
+            <div id="overlay">
+                <div id="overlay-inner"></div>
+            </div>
+            <ul class="menu_left">
+                <!-- paint brush -->
+                <li class="acl-write" id="drawTool" data-key="bold">
+                    <a class="grouped-left" data-l10n-id="pad.toolbar.bold.title">Paint
+                      <span class="buttonicon buttonicon-bold"></span>
+                    </a>
+                </li>
+		<!-- pencil brush -->
+<!--
+                <li class="acl-write" id="paintTool" data-key="italic">
+                    <a class="grouped-middle" data-l10n-id="pad.toolbar.italic.title">Pencil
+                      <span class="buttonicon buttonicon-italic"></span>
+                    </a>
+                </li>
+-->
+		<!-- Select Tool -->
+                <li class="acl-write" id="selectTool" data-key="underline">
+                    <a class="grouped-middle" data-l10n-id="pad.toolbar.underline.title">Select
+                      <span class="buttonicon buttonicon-underline"></span>
+                    </a>
+                </li>
+		<!-- Upload -->
+                <li class="acl-write" id="uploadImage" data-key="strikethrough">
+                    <a class="grouped-right" data-l10n-id="pad.toolbar.strikethrough.title">Upload
+                      <span class="buttonicon buttonicon-strikethrough"></span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="menu_right">
+
+                <!-- settings -->
+                <li data-key="settings">
+                    <a id="settingslink" class="grouped-left" data-l10n-id="pad.toolbar.settings.title">
+                        <span class="grouped-left buttonicon buttonicon-settings"></span>
+                    </a>
+                </li>
+                <!-- import export -->
+                <li data-key="import_export">
+                    <a id="importExport" class="grouped-middle" data-l10n-id="pad.toolbar.import_export.title">
+                        <span class="buttonicon buttonicon-import_export"></span>
+                    </a>
+                </li>
+		<!-- share & embed -->
+                <li data-key="embed">
+                    <a id="embedlink" class="grouped-right" data-l10n-id="pad.toolbar.embed.title">
+                        <span class="buttonicon buttonicon-embed"></span>
+                    </a>
+                </li>
+
+		<!-- user stuff -->
+                <li class="separator"></li>
+                <li id="usericon" data-key="showusers">
+                    <a data-l10n-id="pad.toolbar.showusers.title">
+                        <span class="buttonicon buttonicon-showusers"></span>
+                        <span id="online_count">1</span>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+   
+
+        <div id="settings" class="popup">
+            <h1 data-l10n-id="pad.settings.padSettings"></h1>
+            <div class="column">
+                
+                <h2 data-l10n-id="pad.settings.myView"></h2>
+	    </div>
+        </div>
+	<div id="embed" class="popup">
+            
+            <div id="embedreadonly" class="right acl-write">
+                <input type="checkbox" id="readonlyinput">
+                <label for="readonlyinput" data-l10n-id="pad.share.readonly"></label>
+            </div>
+            <h1 data-l10n-id="pad.share"></h1>
+            <div id="linkcode">
+                <h2 data-l10n-id="pad.share.link"></h2>
+                <input id="linkinput" type="text" value="">
+            </div>
+            <br>
+            <div id="embedcode">
+                <h2 data-l10n-id="pad.share.emebdcode"></h2>
+                <input id="embedinput" type="text" value="">
+            </div>
+            
+        </div>
+        <div id="settings" class="popup">
+            <h1 data-l10n-id="pad.settings.padSettings"></h1>
+            <div class="column">
+
+                <h2 data-l10n-id="pad.settings.myView"></h2>
+            </div>
+        </div>
+	<div id="importexport" class="popup">
+            <h1 data-l10n-id="pad.importExport.import_export">Export</h1>
+ <!--
+            <div class="column acl-write">
+                
+                <h2 data-l10n-id="pad.importExport.import"></h2>
+                <div class="importmessage" id="importmessageabiword" data-l10n-id="pad.importExport.abiword.innerHTML"></div><br>
+                <form id="importform" method="post" action="" target="importiframe" enctype="multipart/form-data">
+                    <div class="importformdiv" id="importformfilediv">
+                        <input type="file" name="file" size="10" id="importfileinput">
+                        <div class="importmessage" id="importmessagefail"></div>
+                    </div>
+                    <div id="import"></div>
+                    <div class="importmessage" id="importmessagesuccess" data-l10n-id="pad.importExport.importSuccessful"></div>
+                    <div class="importformdiv" id="importformsubmitdiv">
+                        <input type="hidden" name="padId" value="blpmaXT35R">
+                        <span class="nowrap">
+                            <input type="submit" name="submit" value="Import Now" disabled="disabled" id="importsubmitinput">
+                            <img alt="" id="importstatusball" src="../static/img/loading.gif" align="top">
+                            <img alt="" id="importarrow" src="../static/img/leftarrow.png" align="top">
+                        </span>
+                    </div>
+                </form>
+            </div>
+-->
+            <div class="column">
+                <h2 data-l10n-id="pad.importExport.export"></h2>
+                
+                <a id="exportSVG" target="_blank" class="exportlink">Export SVG</a>
+                <a id="exportPNG" target="_blank" class="exportlink">Export PNG</div></a>
+            </div>
+        </div>
+
+
+
     <div id="lostConnection" class="hidden">
-	    <p>Lost connection to the server! Please refresh this page.</p>
+        <p>Lost connection to the server! Please refresh this page.</p>
     </div>
     <div id="loading" class="hidden" style="display:block;">
         <p>Loading existing sketch...</p>
@@ -52,6 +186,7 @@
             <span id="userCount"></span>
         </div>
         <div id="activeColorSwatch"></div>
+<!--
         <div data-color="47,47,47" class="colorSwatch" style="background:rgb(37,37,37);"></div>
         <div data-color="109,73,37" class="colorSwatch active" style="background:rgb(109,73,37);"></div>
         <div data-color="233,34,41" class="colorSwatch" style="background:rgb(233,34,41);"></div>
@@ -66,13 +201,13 @@
             <input type="range" min="0" max="255" value="200" id="opacity">
         </label>
         <button id="clearCanvas">Clear</button>
+-->
+<!--
         <button id="exportSVG">Export SVG</button>
         <button id="exportPNG">Export PNG</button>
-        <button id="drawTool">Draw Tool</button>
-        <button id="selectTool">Select Tool</button>
-        <button id="uploadImage">Upload Image</button>
+-->
         <input type="file" id="imageInput" accept="image/*" style="display:none;" />
-        <div id="myColorPicker">
+        <div id="mycolorpicker">
             <form><input type="text" id="color" name="color" value="#123456" /></form>
             <div id="colorpicker"></div>
         </div>
