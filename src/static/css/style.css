@@ -57,6 +57,9 @@ a img {
   width: 100%;
   white-space: nowrap;
   height: 32px;
+  position:absolute;
+  left:0px;
+  right:0px;
 }
 .toolbar ul {
   position: relative;
@@ -652,16 +655,16 @@ table#otheruserstable {
   vertical-align: middle;
 }
 .buttonicon-bold {
-  background-position: 0px -116px
+  background-image: url('../../static/img/brush.png');
 }
 .buttonicon-italic {
-  background-position: 0px 0px
+  background-image: url('../../static/img/pencil.png');
 }
 .buttonicon-underline {
-  background-position: 0px -236px
+  background-image: url('../../static/img/select.png');
 }
 .buttonicon-strikethrough {
-  background-position: 0px -200px
+  background-image: url('../../static/img/upload.png');
 }
 .buttonicon-insertorderedlist {
   background-position: 0px -477px
@@ -1059,6 +1062,7 @@ input[type=checkbox] {
 }
 
 #opacity{
+  position:relative;
 }
 
 #opacityRange {
@@ -1100,4 +1104,21 @@ input[type=checkbox] {
 
 body{
   position:relative;
+}
+
+#opacityIdentifier{
+  width:2px;
+  height:20px;
+  position:absolute;
+  background-color:#000;
+  top:22px;
+
+}
+
+#myCanvas{
+  position:absolute;
+  top:37px;
+  left:0px;
+  right:0px;
+  bottom:0px;
 }

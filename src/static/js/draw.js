@@ -348,7 +348,10 @@ $('#pickerSwatch').on('click', function() {
 });
 
 $("#opacityRange").on('click', function(e){
-  $("#opacityRangeVal").val($("#opacityRange").width() - e.offsetX); // get the opacity range value by removing the offset from the width
+  $("#opacityIdentifier").css({left:e.offsetX});
+  var opacity = $("#opacityRange").width() - e.offsetX + 55; // get the opacity range value by removing the offset from the width
+  console.log(opacity);
+  $("#opacityRangeVal").val(opacity);
   update_active_color();
 });
 
