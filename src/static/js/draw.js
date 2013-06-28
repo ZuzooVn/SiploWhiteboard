@@ -70,7 +70,6 @@ var active_color_json = {};
 var $opacity = $('#opacityRangeVal');
 var update_active_color = function () {
   var rgb_array = $('#activeColorSwatch').css('background-color');
-  console.log(rgb_array);
   $('#editbar').css("border-bottom", "solid 2px " + rgb_array);
 
   while(rgb_array.indexOf(" ") > -1) {
