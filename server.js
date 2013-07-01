@@ -147,6 +147,19 @@ app.use("/static", express.static(__dirname + '/src/static'));
 var server = app.listen(port);
 var io = socket.listen(server);
 
+// SocketIO into production mode
+io.enable('browser client minification');  // send minified client
+io.enable('browser client etag');          // apply etag caching logic based on version number
+io.enable('browser client gzip');          // gzip the file
+io.set('log level', 1);                    // reduce logging
+
+// Transports -- Note we dont include websocket here because Varnish sucks at handling it.
+io.set('transports', [
+    'xhr-polling'
+  , 'jsonp-polling'
+  , 'htmlfile'
+]);
+
 // SOCKET IO
 io.sockets.on('connection', function (socket) {
 
