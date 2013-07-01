@@ -153,15 +153,11 @@ io.enable('browser client etag');          // apply etag caching logic based on 
 io.enable('browser client gzip');          // gzip the file
 io.set('log level', 1);                    // reduce logging
 
-// enable all transports (optional if you want flashsocket support, please note that some hosting
-// providers do not allow you to create servers that listen on a port different than 80 or their
-// default port)
+// Transports -- Note we dont include websocket here because Varnish sucks at handling it.
 io.set('transports', [
-    'websocket'
-  , 'flashsocket'
-  , 'htmlfile'
-  , 'xhr-polling'
+    'xhr-polling'
   , 'jsonp-polling'
+  , 'htmlfile'
 ]);
 
 // SOCKET IO
