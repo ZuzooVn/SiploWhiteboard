@@ -553,7 +553,6 @@ socket.on('project:load', function (json) {
   console.log(json.project);
   paper.project.activeLayer.remove();
   paper.project.importJSON(json.project);
-  $('#colorpicker').farbtastic(pickColor); // make a color picker
   $('#mycolorpicker').pep({disableSelect:false, constrainToParent:"body"});
   view.draw();
 });
@@ -572,6 +571,7 @@ socket.on('loading:start', function() {
 
 socket.on('loading:end', function() {
   $('#loading').hide();
+  $('#colorpicker').farbtastic(pickColor); // make a color picker
 });
 
 socket.on('item:remove', function(artist, name) {
