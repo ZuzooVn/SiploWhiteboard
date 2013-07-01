@@ -7,7 +7,7 @@ Fast, light weight, easy to maintain.  Try the [demo] (http://draw.etherpad.org)
 
 Demo
 ----
-[Etherdraw Demo site](http://draw.etherpad.org)
+[Etherdraw Demo site](http://draw.etherpad.org) hosted by [Joyent](http://joyent.com)
 
 Installation
 ------------
