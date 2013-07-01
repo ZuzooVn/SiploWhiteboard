@@ -20,8 +20,6 @@ function hexToRgb(hex) {
 
 
 $(document).ready(function() {
-  $('#colorpicker').farbtastic(pickColor); // make a color picker
-  $('#mycolorpicker').pep({disableSelect:false, constrainToParent:"body"});
   var drawurl = window.location.href.split("?")[0]; // get the drawing url
   $('#embedinput').val("<iframe name='embed_readwrite' src='" + drawurl + "?showControls=true&showChat=true&showLineNumbers=true&useMonospaceFont=false' width=600 height=400></iframe>"); // write it to the embed input
   $('#linkinput').val(drawurl); // and the share/link input
@@ -555,6 +553,8 @@ socket.on('project:load', function (json) {
   console.log(json.project);
   paper.project.activeLayer.remove();
   paper.project.importJSON(json.project);
+  $('#colorpicker').farbtastic(pickColor); // make a color picker
+  $('#mycolorpicker').pep({disableSelect:false, constrainToParent:"body"});
   view.draw();
 });
 
