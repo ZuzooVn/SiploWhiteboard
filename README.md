@@ -1,7 +1,8 @@
 ![alt text](http://blog.etherpad.org/files/2013/06/etherdraw.png "Screen shot")
 ![alt text](https://f.cloud.github.com/assets/220864/730169/feb98294-e24b-11e2-903d-b3cbc68f3a48.gif "Action Video")
 
-An intuitive collaborative drawing / sketching / painting web based tool.
+## An intuitive collaborative drawing web based tool.
+Collaborative drawing, sketchin and painting, image uploads, image exports using Native Canvas.  Works on all major browsers.
 
 Fast, light weight, easy to maintain.  Try the [demo] (http://draw.etherpad.org).
 
