@@ -9,7 +9,7 @@ describe("Delete items", function() {
       center2,
       center3,
       reloaded = false,
-      MENUBAR_HEIGHT = 36;
+      MENUBAR_HEIGHT = 36; // menubar is 36 pixels
 
   it("creates a pad", function(done) {
     padName = helper.newPad(done);
@@ -131,7 +131,7 @@ describe("Delete items", function() {
     var canvas = chrome$("#myCanvas");
     // Simulate clicking path3
     var xclick = center3.x;
-    var yclick = center3.y + MENUBAR_HEIGHT; // menu bar is 36 pixels
+    var yclick = center3.y + MENUBAR_HEIGHT;
     canvas.simulate('mousedown', {clientX: xclick, clientY: yclick});
     canvas.simulate('mouseup', {clientX: xclick, clientY: yclick});
 
@@ -203,12 +203,12 @@ describe("Delete items", function() {
     var canvas = chrome$("#myCanvas");
     // Simulate clicking path1
     var xclick = center1.x;
-    var yclick = center1.y + MENUBAR_HEIGHT; // menu bar is 36 pixels
+    var yclick = center1.y + MENUBAR_HEIGHT;
     canvas.simulate('mousedown', {clientX: xclick, clientY: yclick});
     canvas.simulate('mouseup', {clientX: xclick, clientY: yclick});
     // Simulate clicking path2 while holding shift
     xclick = center2.x;
-    yclick = center2.y + MENUBAR_HEIGHT; // menu bar is 36 pixels
+    yclick = center2.y + MENUBAR_HEIGHT;
     canvas.simulate('mousedown', {clientX: xclick, clientY: yclick, shiftKey: true});
     canvas.simulate('mouseup', {clientX: xclick, clientY: yclick, shiftKey: true});
 
