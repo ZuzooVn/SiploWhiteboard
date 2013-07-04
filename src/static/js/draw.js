@@ -82,13 +82,14 @@ var update_active_color = function () {
 
   active_color_rgb = new RgbColor(red, green, blue, opacity);
   active_color_rgb._alpha = opacity;
-
+  console.log("huh", active_color_rgb._alpha);
   active_color_json = {
-    "red": red,
+    "red": red || 0,
     "green": green,
     "blue": blue,
     "opacity": opacity
   };
+console.log(active_color_json);
 };
 
 // Get the active color from the UI eleements
