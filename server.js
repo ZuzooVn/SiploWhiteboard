@@ -162,7 +162,6 @@ io.set('transports', [
 
 // SOCKET IO
 io.sockets.on('connection', function (socket) {
-
   socket.on('disconnect', function () {
     disconnect(socket);
   });
@@ -265,7 +264,9 @@ function subscribe(socket, data) {
 
 // Try to load room from database
 function loadFromDB(room, socket) {
+  // console.log("load from db");
   if (projects[room] && projects[room].project) {
+    // console.log("projects room and protjects room project");
     var project = projects[room].project;
     db.init(function (err) {
       if(err) {
@@ -283,6 +284,7 @@ function loadFromDB(room, socket) {
         socket.emit('loading:end');
         db.close(function(){});
       });
+      socket.emit('loading:end'); // used for sending back a blank database in case we try to load from DB but no project exists
     });
   } else {
     loadError(socket);
@@ -376,7 +378,6 @@ var end_external_path = function (room, points, artist) {
 
 // Continues to draw a path in real time
 progress_external_path = function (room, points, artist) {
-
   var project = projects[room].project;
   project.activate();
   var path = projects[room].external_paths[artist];
@@ -384,7 +385,6 @@ progress_external_path = function (room, points, artist) {
   // The path hasn't already been started
   // So start it
   if (!path) {
-
     projects[room].external_paths[artist] = new paper.Path();
     path = projects[room].external_paths[artist];
 
