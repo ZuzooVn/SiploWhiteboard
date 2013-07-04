@@ -649,6 +649,7 @@ socket.on('project:load', function (json) {
   paper.project.importJSON(json.project);
   $('#mycolorpicker').pep({disableSelect:false, constrainToParent:"body"});
   view.draw();
+  $.get("../static/img/wheel.png");
 });
 
 socket.on('project:load:error', function() {
