@@ -1107,8 +1107,12 @@ input[type=checkbox] {
   cursor:move;
 }
 
-body{
-  position:relative;
+#canvasContainer{
+  position:absolute;
+  top:0px;
+  left:0px;
+  right:0px;
+  bottom:0px;
 }
 
 #opacityIdentifier{
