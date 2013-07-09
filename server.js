@@ -76,8 +76,9 @@ app.get('/tests/frontend/specs_list.js', function(req, res){
 
 });
 
+// We don't use these right now - just cause extra error messages
 // Used for front-end tests
-var url2FilePath = function(url){
+/*var url2FilePath = function(url){
   var subPath = url.substr("/tests/frontend".length);
   if (subPath == ""){
     subPath = "index.html"
@@ -107,7 +108,7 @@ app.get('/tests/frontend/specs/*', function (req, res) {
 app.get('/tests/frontend/*', function (req, res) {
   var filePath = url2FilePath(req.url);
   res.sendfile(filePath);
-});
+});*/
 
 // Used for front-end tests
 app.get('/tests/frontend', function (req, res) {
