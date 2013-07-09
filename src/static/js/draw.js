@@ -82,9 +82,8 @@ var update_active_color = function () {
 
   active_color_rgb = new RgbColor(red, green, blue, opacity);
   active_color_rgb._alpha = opacity;
-
   active_color_json = {
-    "red": red,
+    "red": red || 0,
     "green": green,
     "blue": blue,
     "opacity": opacity
@@ -636,6 +635,7 @@ socket.on('draw:end', function (artist, data) {
 });
 
 socket.on('user:connect', function (user_count) {
+  console.log("user:connect");
   update_user_count(user_count);
 });
 
@@ -644,10 +644,12 @@ socket.on('user:disconnect', function (user_count) {
 });
 
 socket.on('project:load', function (json) {
+  console.log("project:load");
   paper.project.activeLayer.remove();
   paper.project.importJSON(json.project);
   $('#mycolorpicker').pep({disableSelect:false, constrainToParent:"body"});
   view.draw();
+  $.get("../static/img/wheel.png");
 });
 
 socket.on('project:load:error', function() {
@@ -659,6 +661,7 @@ socket.on('canvas:clear', function() {
 });
 
 socket.on('loading:start', function() {
+  // console.log("loading:start");
   $('#loading').show();
 });
 
