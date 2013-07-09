@@ -156,7 +156,8 @@ io.set('log level', 1);                    // reduce logging
 
 // Transports -- Note we dont include websocket here because Varnish sucks at handling it.
 io.set('transports', [
-    'xhr-polling'
+    'websocket'
+  , 'xhr-polling'
   , 'jsonp-polling'
   , 'htmlfile'
 ]);
