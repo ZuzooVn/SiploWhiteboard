@@ -5,7 +5,7 @@
 
 var fs = require("fs");
 var os = require("os");
-require('minify.json.js');
+require('./minify.json.js');
 
 //defaults
 exports.defaults = {
@@ -27,11 +27,9 @@ exports.loadSettings = function() {
 	var settings_file = "../settings.json";
 	var user_settings = {};
 	try {
-		if(settingsStr) {
 		  user_settings = fs.readFileSync(settings_file).toString();
 		  //minify to remove comments and whitepsace before parsing
-		  user_settings = JSON.parse(JSON.minify(settings)); 
-		}
+		  user_settings = JSON.parse(JSON.minify(settings));
 	}
 	catch(e){
 		console.error('There was an error processing your settings.json file: '+e.message);
@@ -55,3 +53,4 @@ exports.loadSettings = function() {
 
 };
 
+exports.loadSettings();
