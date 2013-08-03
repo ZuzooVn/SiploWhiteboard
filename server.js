@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-var settings = require('settings.json')
+var settings = require('src/util/Settings.js')
 var express = require("express");
 var app = express();
 var paper = require('paper');
