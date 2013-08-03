@@ -5,7 +5,7 @@
 
 var fs = require("fs");
 var os = require("os");
-require('./minify.json.js');
+var jsonminify = require('jsonminify');
 
 //defaults
 exports.defaults = {
@@ -24,24 +24,24 @@ exports.defaults = {
 
 
 exports.loadSettings = function() {
-	var settings_file = "../settings.json";
+	var settings_file = "settings.json";
 	var user_settings = {};
 	try {
 		  user_settings = fs.readFileSync(settings_file).toString();
 		  //minify to remove comments and whitepsace before parsing
-		  user_settings = JSON.parse(JSON.minify(settings));
+		  user_settings = JSON.parse(JSON.minify(user_settings));
 	}
 	catch(e){
 		console.error('There was an error processing your settings.json file: '+e.message);
 		process.exit(1);
 	}
 	
-	exports = JSON.parse(JSON.stringify(exports.defaults)); //clone defaults
-	
+    //copy over defaults
+	for(var k in exports.defaults){exports[k] = exports.defaults[k]}
 	//go through each key in the user supplied settings and replace the defaults
 	//if a key is not in the defaults, warn the user and ignore it
 	for(var k in user_settings) {
-		if(k in exports){
+		if(k in exports.defaults){
             //overwrite it
             exports[k] = user_settings[k];
         }
