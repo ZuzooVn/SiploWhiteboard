@@ -47,9 +47,13 @@ exports.loadSettings = function() {
         }
         else
         {
-            console.warn('Unknown settings parameter:'+k)
+            console.warn("'Unknown Setting: '" + k + "'. This setting doesn't exist or it was removed");
         }
 	}
+    //settings specific warnings
+    if(exports.dbType === "dirty"){
+        console.warn("DirtyDB is used. This is fine for testing but not recommended for production.");
+    }
 
 };
 
