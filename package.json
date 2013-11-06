@@ -14,7 +14,7 @@
     "socket.io": "*",
     "async": "*",
     "ueberDB": "*",
-    "canvas": "*",
+    "canvas": "1.0.4",
     "paper": "*",
     "jsonminify":"*"
   }
