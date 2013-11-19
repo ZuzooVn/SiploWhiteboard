@@ -17,10 +17,6 @@ Installation
   4. Run EtherDraw `` bin/run.sh `` 
   5. Make a drawing!  Open your browser and visit `` http://127.0.0.1:3000 ``
 
-Screenshot
-----------
-![alt text](http://blog.etherpad.org/files/2013/06/etherdraw.png "Screen shot")
-
 Requirements
 ------------
  * [NodeJS v8+] (http://nodejs.org/)
