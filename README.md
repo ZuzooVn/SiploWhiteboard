@@ -1,7 +1,7 @@
 ![alt text](https://f.cloud.github.com/assets/220864/730169/feb98294-e24b-11e2-903d-b3cbc68f3a48.gif "Action Video")
 
 ## An intuitive collaborative drawing web based tool.
-Collaborative drawing, sketchin and painting, image uploads, image exports using Native Canvas.  Works on all major browsers.
+Collaborative real-time drawing, sketching & painting
 
 Fast, light weight, easy to maintain.  Try the [demo] (http://draw.etherpad.org).
 
