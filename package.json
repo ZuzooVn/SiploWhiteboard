@@ -15,7 +15,7 @@
     "async": "*",
     "ueberDB": "*",
     "canvas": "1.0.4",
-    "paper": "*",
+    "paper": "0.9.11",
     "jsonminify":"*"
   }
 }
