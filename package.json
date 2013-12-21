@@ -14,8 +14,8 @@
     "socket.io": "*",
     "async": "*",
     "ueberDB": "*",
-    "canvas": "1.0.4",
-    "paper": "0.9.11",
+    "canvas": "*",
+    "paper": "*",
     "jsonminify":"*"
   }
 }
