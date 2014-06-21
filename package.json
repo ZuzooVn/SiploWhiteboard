@@ -10,12 +10,12 @@
     "node": "0.6.x"
   },
   "dependencies": {
-    "express": "*",
-    "socket.io": "*",
-    "async": "*",
-    "ueberDB": "*",
-    "canvas": "*",
-    "paper": "*",
-    "jsonminify":"*"
+    "express": "~3.5.1",
+    "socket.io": "~0.9.16",
+    "async": "~0.6.2",
+    "ueberDB": "~0.2.1",
+    "canvas": "1.0.4",
+    "paper": "0.9.11",
+    "jsonminify":"~0.2.3"
   }
 }
