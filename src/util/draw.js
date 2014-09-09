@@ -89,7 +89,6 @@ exports.removeItem = function(room, artist, itemName) {
   var project = projects[room].project;
   if (project && project.activeLayer && project.activeLayer._namedChildren[itemName] && project.activeLayer._namedChildren[itemName][0]) {
     project.activeLayer._namedChildren[itemName][0].remove();
-    io.sockets.in(room).emit('item:remove', artist, itemName);
     db.storeProject(room);
   }
 }
@@ -105,9 +104,6 @@ exports.moveItemsProgress = function(room, artist, itemNames, delta) {
         project.activeLayer._namedChildren[itemName][0].position.x += delta[1];
         project.activeLayer._namedChildren[itemName][0].position.y += delta[2];
       }
-    }
-    if (itemNames) {
-      io.sockets.in(room).emit('item:move', artist, itemNames, delta);
     }
   }
 }
@@ -125,9 +121,6 @@ exports.moveItemsEnd = function(room, artist, itemNames, delta) {
         project.activeLayer._namedChildren[itemName][0].position.y += delta[2];
       }
     }
-    if (itemNames) {
-      io.sockets.in(room).emit('item:move', artist, itemNames, delta);
-    }
     db.storeProject(room);
   }
 }
@@ -140,7 +133,6 @@ exports.addImage = function(room, artist, data, position, name) {
     var raster = new drawing.Raster(image);
     raster.position = new drawing.Point(position[1], position[2]);
     raster.name = name;
-    io.sockets.in(room).emit('image:add', artist, data, position, name);
     db.storeProject(room);
   }
 }

@@ -121,21 +121,29 @@ io.sockets.on('connection', function (socket) {
   // User removes an item
   socket.on('item:remove', function(room, uid, itemName) {
     draw.removeItem(room, uid, itemName);
+    io.sockets.in(room).emit('item:remove', uid, itemName);
   });
 
   // User moves one or more items on their canvas - progress
   socket.on('item:move:progress', function(room, uid, itemNames, delta) {
     draw.moveItemsProgress(room, uid, itemNames, delta);
+    if (itemNames) {
+      io.sockets.in(room).emit('item:move', uid, itemNames, delta);
+    }
   });
 
   // User moves one or more items on their canvas - end
   socket.on('item:move:end', function(room, uid, itemNames, delta) {
     draw.moveItemsEnd(room, uid, itemNames, delta);
+    if (itemNames) {
+      io.sockets.in(room).emit('item:move', uid, itemNames, delta);
+    }
   });
 
   // User adds a raster image
   socket.on('image:add', function(room, uid, data, position, name) {
     draw.addImage(room, uid, data, position, name);
+    io.sockets.in(room).emit('image:add', uid, data, position, name);
   });
 
 });
