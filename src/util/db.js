@@ -22,7 +22,6 @@ exports.storeProject = function(room) {
 exports.load = function(room, socket) {
   console.log("load from db");
   if (projects.projects[room] && projects.projects[room].project) {
-    console.log("projects room and protjects room project");
     var project = projects.projects[room].project;
     db.init(function (err) {
       if(err) {

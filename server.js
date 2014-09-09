@@ -19,10 +19,6 @@ var settings = require('./src/util/Settings.js'),
  */
 var port = settings.port;
 
-/** Below be dragons
- *
- */
-
 // Config Express to server static files from /
 app.configure(function(){
   app.use(express.static(__dirname + '/'));
@@ -41,6 +37,9 @@ app.configure('development', function(){
 app.configure('production', function(){
   app.use(express.errorHandler());
 });
+
+
+
 
 // ROUTES
 // Index page
@@ -67,6 +66,9 @@ app.get('/tests/frontend', function (req, res) {
 
 // Static files IE Javascript and CSS
 app.use("/static", express.static(__dirname + '/src/static'));
+
+
+
 
 // LISTEN FOR REQUESTS
 var server = app.listen(port);
@@ -177,7 +179,7 @@ function subscribe(socket, data) {
     loadFromMemory(room, socket);
   }
 
-  // Broadcast to room the new user count
+  // Broadcast to room the new user count -- currently broken
   var rooms = socket.adapter.rooms[room]; 
   var roomUserCount = Object.keys(rooms).length;
   io.to(room).emit('user:connect', roomUserCount);
@@ -187,7 +189,7 @@ function subscribe(socket, data) {
 function loadFromMemory(room, socket) {
   var project = projects.projects[room].project;
   if (!project) { // Additional backup check, just in case
-    loadFromDB(room, socket);
+    db.load(room, socket);
     return;
   }
   socket.emit('loading:start');
