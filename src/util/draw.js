@@ -9,7 +9,6 @@ var drawing = paper.setup(new paper.Canvas(1920, 1080));
 
 // Continues to draw a path in real time
 exports.progressExternalPath = function (room, points, artist) {
-  console.log("projects", projects);
   var project = projects[room].project;
   project.activate();
   var path = projects[room].external_paths[artist];

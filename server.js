@@ -78,7 +78,7 @@ io.sockets.setMaxListeners(0);
 io.sockets.on('connection', function (socket) {
   socket.on('disconnect', function () {
     console.log("Socket disconnected");
-    disconnect(socket);
+    // TODO: We should have logic here to remove a drawing from memory as we did previously
   });
 
   // EVENT: User stops drawing something
@@ -140,9 +140,6 @@ io.sockets.on('connection', function (socket) {
 
 });
 
-
-var closeTimer = {}; // setTimeout function for closing a project when
-// there are no active connections
 // Subscribe a client to a room
 function subscribe(socket, data) {
   var room = data.room;
@@ -151,9 +148,9 @@ function subscribe(socket, data) {
   socket.join(room);
 
   // If the close timer is set, cancel it
-  if (closeTimer[room]) {
-    clearTimeout(closeTimer[room]);
-  }
+  // if (closeTimer[room]) {
+  //  clearTimeout(closeTimer[room]);
+  // }
 
   // Create Paperjs instance for this room if it doesn't exist
   var project = projects.projects[room];
@@ -189,53 +186,6 @@ function loadFromMemory(room, socket) {
   var value = project.exportJSON();
   socket.emit('project:load', {project: value});
   socket.emit('loading:end');
-}
-
-// When a client disconnects, unsubscribe him from
-// the rooms he subscribed to
-function disconnect(socket) {
-  // Get a list of rooms for the client
-  var rooms = io.sockets.adapter.rooms;
-  // Unsubscribe from the rooms
-  for(var room in rooms) {
-    if(room && rooms[room]) {
-      unsubscribe(socket, { room: room.replace('/','') });
-    }
-  }
-
-}
-
-
-// Unsubscribe a client from a room
-function unsubscribe(socket, data) {
-  var room = data.room;
-
-  // Remove the client from socket.io room
-  // This is optional for the disconnect event, we do it anyway
-  // because we want to broadcast the new room population
-  socket.leave(room);
-
-  // Broadcast to room the new user count
-  /*
-  if (io.sockets.manager.rooms['/' + room]) {
-    var active_connections = io.sockets.manager.rooms['/' + room].length;
-    io.sockets.in(room).emit('user:disconnect', active_connections);
-  } else {
-
-    // Wait a few seconds before closing the project to finish pending writes to drawing
-    closeTimer[room] = setTimeout(function() {
-      // Iff no one left in room, remove Paperjs instance
-      // from the array to free up memory
-      var project = projects[room].project;
-      // All projects share one View, calling remove() on one project destroys the View
-      // for all projects. Set to false first.
-      project.view = false;
-      project.remove();
-      projects[room] = undefined;
-    }, 5000);
-  }
-  */
-
 }
 
 function loadError(socket) {
