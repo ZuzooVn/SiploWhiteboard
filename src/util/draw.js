@@ -1,5 +1,7 @@
 var paper = require('paper');
 var projects = require('./projects.js');
+var db = require('./db.js');
+
 projects = projects.projects;
 
 // Create an in memory paper canvas
@@ -59,12 +61,11 @@ exports.endExternalPath = function (room, points, artist) {
     // Remove the old data
     projects[room].external_paths[artist] = false;
   }
-  writeProjectToDB(room);
+  db.storeProject(room);
 };
 
 exports.clearCanvas = function(room) {
   var project = projects[room].project;
-
   if (project && project.activeLayer && project.activeLayer.hasChildren()) {
     // Remove all but the active layer
     if (project.layers.length > 1) {
@@ -80,7 +81,7 @@ exports.clearCanvas = function(room) {
     if (project && project.activeLayer && project.activeLayer.hasChildren()) {
       project.activeLayer.removeChildren();
     }
-    writeProjectToDB(room);
+    db.storeProject(room);
   }
 }
 
@@ -90,7 +91,7 @@ exports.removeItem = function(room, artist, itemName) {
   if (project && project.activeLayer && project.activeLayer._namedChildren[itemName] && project.activeLayer._namedChildren[itemName][0]) {
     project.activeLayer._namedChildren[itemName][0].remove();
     io.sockets.in(room).emit('item:remove', artist, itemName);
-    writeProjectToDB(room);
+    db.storeProject(room);
   }
 }
 
@@ -128,7 +129,7 @@ exports.moveItemsEnd = function(room, artist, itemNames, delta) {
     if (itemNames) {
       io.sockets.in(room).emit('item:move', artist, itemNames, delta);
     }
-    writeProjectToDB(room);
+    db.storeProject(room);
   }
 }
 
@@ -141,17 +142,6 @@ exports.addImage = function(room, artist, data, position, name) {
     raster.position = new drawing.Point(position[1], position[2]);
     raster.name = name;
     io.sockets.in(room).emit('image:add', artist, data, position, name);
-    writeProjectToDB(room);
+    db.storeProject(room);
   }
 }
-exports.writeProjectToDB = function(room) {
-  var project = projects[room].project;
-  var json = project.exportJSON();
-  db.init(function (err) {
-    if(err) {
-      console.error(err);
-    }
-    db.set(room, {project: json});
-  });
-}
-

@@ -6,11 +6,11 @@ var settings = require('./src/util/Settings.js'),
     tests = require('./src/util/tests.js'),
     draw = require('./src/util/draw.js'),
     projects = require('./src/util/projects.js'),
+    db = require('./src/util/db.js'),
     express = require("express"),
     app = express(),
     paper = require('paper'),
     socket = require('socket.io'),
-    ueberDB = require("ueberDB"),
     async = require('async'),
     fs = require('fs');
 
@@ -22,9 +22,6 @@ var port = settings.port;
 /** Below be dragons
  *
  */
-
-// Database connection
-var db = new ueberDB.database(settings.dbType, settings.dbSettings);
 
 // Config Express to server static files from /
 app.configure(function(){
@@ -80,13 +77,13 @@ io.sockets.setMaxListeners(0);
 // SOCKET IO
 io.sockets.on('connection', function (socket) {
   socket.on('disconnect', function () {
+    console.log("Socket disconnected");
     disconnect(socket);
   });
 
   // EVENT: User stops drawing something
   // Having room as a parameter is not good for secure rooms
   socket.on('draw:progress', function (room, uid, co_ordinates) {
-    console.log("wtf", projects);
     if (!projects.projects[room] || !projects.projects[room].project) {
       loadError(socket);
       return;
@@ -170,7 +167,7 @@ function subscribe(socket, data) {
     // canvas.
     projects.projects[room].project = new paper.Project();
     projects.projects[room].external_paths = {};
-    loadFromDB(room, socket);
+    db.load(room, socket);
   } else { // Project exists in memory, no need to load from database
     loadFromMemory(room, socket);
   }
@@ -181,39 +178,9 @@ function subscribe(socket, data) {
   io.to(room).emit('user:connect', roomUserCount);
 }
 
-// Try to load room from database
-function loadFromDB(room, socket) {
-  console.log("load from db");
-  if (projects.projects[room] && projects.projects[room].project) {
-    console.log("projects room and protjects room project");
-    var project = projects.projects[room].project;
-    db.init(function (err) {
-      if(err) {
-        console.error(err);
-      }
-      console.log("Initting db");
-      db.get(room, function(err, value) {
-        if (value && project && project instanceof drawing.Project && project.activeLayer) {
-          socket.emit('loading:start');
-          // Clear default layer as importing JSON adds a new layer.
-          // We want the project to always only have one layer.
-          project.activeLayer.remove();
-          project.importJSON(value.project);
-          socket.emit('project:load', value);
-        }
-        socket.emit('loading:end');
-        db.close(function(){});
-      });
-      socket.emit('loading:end'); // used for sending back a blank database in case we try to load from DB but no project exists
-    });
-  } else {
-    loadError(socket);
-  }
-}
-
 // Send current project to new client
 function loadFromMemory(room, socket) {
-  var project = projects[room].project;
+  var project = projects.projects[room].project;
   if (!project) { // Additional backup check, just in case
     loadFromDB(room, socket);
     return;
@@ -229,7 +196,6 @@ function loadFromMemory(room, socket) {
 function disconnect(socket) {
   // Get a list of rooms for the client
   var rooms = io.sockets.adapter.rooms;
-
   // Unsubscribe from the rooms
   for(var room in rooms) {
     if(room && rooms[room]) {
