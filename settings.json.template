@@ -5,14 +5,6 @@
 */
 
 {
-
-  // Name your instance!
-  "title": "EtherDraw",
-
-  // favicon default name
-  // alternatively, set up a fully specified Url to your own favicon
-  "favicon": "favicon.ico",
-  
   //IP and port which etherpad should bind at
   "ip": "0.0.0.0",
   "port" : 9002,
