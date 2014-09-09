@@ -114,7 +114,7 @@ io.sockets.on('connection', function (socket) {
       loadError(socket);
       return;
     }
-    clearCanvas(room);
+    draw.clearCanvas(room);
     io.in(room).emit('canvas:clear');
   });
 
