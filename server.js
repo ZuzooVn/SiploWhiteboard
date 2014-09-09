@@ -23,10 +23,6 @@ app.configure(function(){
 
 var port = settings.port;
 
-
-
-
-
 /** Below be dragons
  *
  */
@@ -149,20 +145,6 @@ app.use("/static", express.static(__dirname + '/src/static'));
 var server = app.listen(port);
 var io = socket.listen(server);
 
-// SocketIO into production mode
-io.enable('browser client minification');  // send minified client
-io.enable('browser client etag');          // apply etag caching logic based on version number
-io.enable('browser client gzip');          // gzip the file
-io.set('log level', 1);                    // reduce logging
-
-// Transports -- Note we dont include websocket here because Varnish sucks at handling it.
-io.set('transports', [
-    'websocket'
-  , 'xhr-polling'
-  , 'jsonp-polling'
-  , 'htmlfile'
-]);
-
 // SOCKET IO
 io.sockets.on('connection', function (socket) {
   socket.on('disconnect', function () {
@@ -176,7 +158,7 @@ io.sockets.on('connection', function (socket) {
       loadError(socket);
       return;
     }
-    io.sockets.in(room).emit('draw:progress', uid, co_ordinates);
+    io.in(room).emit('draw:progress', uid, co_ordinates);
     progress_external_path(room, JSON.parse(co_ordinates), uid);
   });
 
@@ -187,7 +169,7 @@ io.sockets.on('connection', function (socket) {
       loadError(socket);
       return;
     }
-    io.sockets.in(room).emit('draw:end', uid, co_ordinates);
+    io.in(room).emit('draw:end', uid, co_ordinates);
     end_external_path(room, JSON.parse(co_ordinates), uid);
   });
 
@@ -203,7 +185,7 @@ io.sockets.on('connection', function (socket) {
       return;
     }
     clearCanvas(room);
-    io.sockets.in(room).emit('canvas:clear');
+    io.in(room).emit('canvas:clear');
   });
 
   // User removes an item
@@ -260,9 +242,9 @@ function subscribe(socket, data) {
   }
 
   // Broadcast to room the new user count
-  var active_connections = io.sockets.manager.rooms['/' + room].length;
-  io.sockets.in(room).emit('user:connect', active_connections);
-
+  var rooms = socket.adapter.rooms[room]; 
+  var roomUserCount = Object.keys(rooms).length;
+  io.to(room).emit('user:connect', roomUserCount);
 }
 
 // Try to load room from database
@@ -311,7 +293,7 @@ function loadFromMemory(room, socket) {
 // the rooms he subscribed to
 function disconnect(socket) {
   // Get a list of rooms for the client
-  var rooms = io.sockets.manager.roomClients[socket.id];
+  var rooms = io.sockets.adapter.rooms;
 
   // Unsubscribe from the rooms
   for(var room in rooms) {
@@ -321,6 +303,7 @@ function disconnect(socket) {
   }
 
 }
+
 
 // Unsubscribe a client from a room
 function unsubscribe(socket, data) {
@@ -332,6 +315,7 @@ function unsubscribe(socket, data) {
   socket.leave(room);
 
   // Broadcast to room the new user count
+  /*
   if (io.sockets.manager.rooms['/' + room]) {
     var active_connections = io.sockets.manager.rooms['/' + room].length;
     io.sockets.in(room).emit('user:disconnect', active_connections);
@@ -349,6 +333,7 @@ function unsubscribe(socket, data) {
       projects[room] = undefined;
     }, 5000);
   }
+  */
 
 }
 
