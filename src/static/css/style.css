@@ -333,11 +333,9 @@ input[type=checkbox] {
     top: 68px;
   }
   #editbar { 
-    height: 62px;
+    height: 31px;
   }
   .toolbar ul.menu_right { 
-    float: left;
-    margin-top:2px;
   }
   .popup {
     width:100%;
