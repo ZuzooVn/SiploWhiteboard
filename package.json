@@ -5,7 +5,7 @@
     "type" : "git",
     "url" : "http://github.com/JohnMcLear/draw.git"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "engines": {
     "node": ">=0.6.x"
   },
@@ -15,7 +15,7 @@
     "async": "~0.6.2",
     "ueberDB": "~0.2.1",
     "canvas": "1.1.6",
-    "paper": "0.9.20",
+    "paper": "0.9.22",
     "jsonminify":"~0.2.3"
   }
 }
