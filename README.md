@@ -19,7 +19,7 @@ Installation
 
 Requirements
 ------------
- * [NodeJS v8+ < v12] (http://nodejs.org/)
+ * [NodeJS > v12] (http://nodejs.org/)
  * Lib Cairo
  * Lib Jpeg
  * Lib Gif
