@@ -11,13 +11,13 @@ var settings = require('./src/util/Settings.js'),
     paper = require('paper'),
     socket = require('socket.io'),
     async = require('async'),
-    fs = require('fs');
+    fs = require('fs'),
     https = require('https');
 
 /** 
  * SSL Logic
  */ 
-if(settings.ssl)
+if(settings.ssl){
   console.log("SSL Enabled");
   console.log("SSL Key File" + settings.ssl.key);
   console.log("SSL Cert Auth File" + settings.ssl.cert);
@@ -26,10 +26,10 @@ if(settings.ssl)
     key: fs.readFileSync(settings.ssl.key),
     cert: fs.readFileSync(settings.ssl.cert)
   };
-
 }
 
 var app = express(options || {});
+var server = https.createServer(options || {}, app).listen(settings.port);
 
 // Config Express to server static files from /
 app.configure(function(){
@@ -83,7 +83,6 @@ app.use("/static", express.static(__dirname + '/src/static'));
 
 
 // LISTEN FOR REQUESTS
-var server = https.createServer(options || {}, app).listen(settings.port);
 var io = socket.listen(server);
 io.sockets.setMaxListeners(0);
 
