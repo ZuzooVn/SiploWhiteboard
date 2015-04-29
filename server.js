@@ -34,6 +34,13 @@ if(settings.ssl){
   var server = app.listen(settings.port);
 }
 
+/** 
+ * Build Client Settings that we will send to the client
+ */
+var clientSettings = {
+  "tool": settings.tool
+}
+
 // Config Express to server static files from /
 app.configure(function(){
   app.use(express.static(__dirname + '/'));
@@ -210,6 +217,7 @@ function loadFromMemory(room, socket) {
   socket.emit('loading:start');
   var value = project.exportJSON();
   socket.emit('project:load', {project: value});
+  socket.emit('settings', client.settings);
   socket.emit('loading:end');
 }
 

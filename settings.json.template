@@ -15,11 +15,8 @@
   //the database specific settings
   "dbSettings" : {
      "filename" : "var/dirty.db"
-  }
+  },
 
-  /* The default selected tool - 'pencil', 'brush' */
-  "tool": "brush",
-                 
   /* An Example of MySQL Configuration
   "dbType" : "mysql",
   "dbSettings" : {
@@ -27,9 +24,12 @@
     "host"    : "localhost", 
     "password": "", 
     "database": "store"
-  }
+  },
   */
 
+  /* The default selected tool - 'pencil', 'brush' */
+  "tool": "brush",
+                 
   /* Example SSL Configuration
     "ssl" : {
       "key": "/path/to/key.key",
