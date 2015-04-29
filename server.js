@@ -8,16 +8,28 @@ var settings = require('./src/util/Settings.js'),
     projects = require('./src/util/projects.js'),
     db = require('./src/util/db.js'),
     express = require("express"),
-    app = express(),
     paper = require('paper'),
     socket = require('socket.io'),
     async = require('async'),
-    fs = require('fs');
+    fs = require('fs'),
+    https = require('https');
 
-/**
- * A setting, just one
- */
-var port = settings.port;
+/** 
+ * SSL Logic
+ */ 
+if(settings.ssl){
+  console.log("SSL Enabled");
+  console.log("SSL Key File" + settings.ssl.key);
+  console.log("SSL Cert Auth File" + settings.ssl.cert);
+
+  var options = {
+    key: fs.readFileSync(settings.ssl.key),
+    cert: fs.readFileSync(settings.ssl.cert)
+  };
+}
+
+var app = express(options || {});
+var server = https.createServer(options || {}, app).listen(settings.port);
 
 // Config Express to server static files from /
 app.configure(function(){
@@ -71,11 +83,10 @@ app.use("/static", express.static(__dirname + '/src/static'));
 
 
 // LISTEN FOR REQUESTS
-var server = app.listen(port);
 var io = socket.listen(server);
 io.sockets.setMaxListeners(0);
 
-console.log("Access Etherdraw at http://127.0.0.1"+port);
+console.log("Access Etherdraw at http://127.0.0.1"+settings.port);
 
 // SOCKET IO
 io.sockets.on('connection', function (socket) {

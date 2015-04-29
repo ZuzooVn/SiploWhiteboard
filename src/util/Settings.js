@@ -18,7 +18,8 @@ exports.defaults = {
   //the database specific settings
   "dbSettings" : {
                    "filename" : "var/dirty.db"
-                 }
+                 },
+  "ssl": false
 };
 
 
