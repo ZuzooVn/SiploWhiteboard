@@ -12,6 +12,7 @@ var settings = require('./src/util/Settings.js'),
     socket = require('socket.io'),
     async = require('async'),
     fs = require('fs'),
+    http = require('http'),
     https = require('https');
 
 /** 
@@ -29,7 +30,12 @@ if(settings.ssl){
 }
 
 var app = express(options || {});
-var server = https.createServer(options || {}, app).listen(settings.port);
+
+if(settings.ssl){
+  var server = https.createServer(options, app).listen(settings.port);
+}else{
+  var server = http.createServer(options, app).listen(settings.port);
+}
 
 // Config Express to server static files from /
 app.configure(function(){
