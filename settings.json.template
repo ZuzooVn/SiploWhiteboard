@@ -23,7 +23,7 @@
     "user"    : "root", 
     "host"    : "localhost", 
     "password": "", 
-    "database": "store"
+    "database": "etherdraw"
   },
   */
 
