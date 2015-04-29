@@ -16,6 +16,9 @@
   "dbSettings" : {
      "filename" : "var/dirty.db"
   }
+
+  /* The default selected tool - 'pencil', 'brush' */
+  "tool": "brush",
                  
   /* An Example of MySQL Configuration
   "dbType" : "mysql",
