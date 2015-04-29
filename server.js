@@ -86,7 +86,7 @@ app.use("/static", express.static(__dirname + '/src/static'));
 var io = socket.listen(server);
 io.sockets.setMaxListeners(0);
 
-console.log("Access Etherdraw at http://127.0.0.1"+settings.port);
+console.log("Access Etherdraw at http://127.0.0.1:"+settings.port);
 
 // SOCKET IO
 io.sockets.on('connection', function (socket) {
