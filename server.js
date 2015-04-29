@@ -217,7 +217,7 @@ function loadFromMemory(room, socket) {
   socket.emit('loading:start');
   var value = project.exportJSON();
   socket.emit('project:load', {project: value});
-  socket.emit('settings', client.settings);
+  socket.emit('settings', clientSettings);
   socket.emit('loading:end');
 }
 

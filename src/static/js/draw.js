@@ -649,6 +649,9 @@ function uploadImage(file) {
 
 // --------------------------------- 
 // SOCKET.IO EVENTS
+socket.on('settings', function(settings){
+  processSettings(settings);
+});
 
 
 socket.on('draw:progress', function (artist, data) {
@@ -820,3 +823,16 @@ progress_external_path = function (points, artist) {
   view.draw();
 
 };
+
+function processSettings(settings){
+
+  $.each(settings, function(k,v){
+
+    // Handle tool changes
+    if(k === "tool"){
+      $('.buttonicon-'+v).click();
+    }
+
+  })
+
+}
