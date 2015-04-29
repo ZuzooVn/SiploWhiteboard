@@ -328,7 +328,7 @@ input[type=checkbox] {
       padding: 4px 1px
     }
 }
-@media all and (max-width: 400px){
+@media all and (max-width: 199px){
   #editorcontainer { 
     top: 68px;
   }
@@ -458,5 +458,9 @@ input[type=checkbox] {
   left:0px;
   right:0px;
   bottom:0px;
+}
+
+.whiteBG{
+  background-color:#fff;
 }
 

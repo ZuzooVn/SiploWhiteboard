@@ -131,7 +131,21 @@ update_active_color();
 
 
 
+$('#colorToggle').on('click', function() {
+  $('#mycolorpicker').toggle();
+});
 
+$('#clearImage').click(function(){
+  var p = confirm("Are you sure you want to clear the drawing for everyone?");
+  if(p){
+    clearCanvas();
+    socket.emit('canvas:clear', room);
+  }
+});
+
+$('.toggleBackground').click(function(){
+  $('#myCanvas').toggleClass('whiteBG');
+});
 
 // --------------------------------- 
 // DRAWING EVENTS
