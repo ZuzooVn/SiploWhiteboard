@@ -16,7 +16,7 @@ var settings = require('./src/util/Settings.js'),
     https = require('https');
 
 /** 
- * SSL Logic
+ * SSL Logic and Server bindings
  */ 
 if(settings.ssl){
   console.log("SSL Enabled");
@@ -27,14 +27,11 @@ if(settings.ssl){
     key: fs.readFileSync(settings.ssl.key),
     cert: fs.readFileSync(settings.ssl.cert)
   };
-}
-
-var app = express(options || {});
-
-if(settings.ssl){
+  var app = express(options);
   var server = https.createServer(options, app).listen(settings.port);
 }else{
-  var server = http.createServer(options, app).listen(settings.port);
+  var app = express();
+  var server = app.listen(settings.port);
 }
 
 // Config Express to server static files from /
