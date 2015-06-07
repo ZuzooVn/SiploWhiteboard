@@ -1,5 +1,9 @@
+// Please refactor me, this is mostly a complete car crash with globals everywhere.
+
 tool.minDistance = 10;
 tool.maxDistance = 45;
+
+var room = window.location.pathname.split("/")[2];
 
 function pickColor(color) {
   $('#color').val(color);
@@ -35,6 +39,10 @@ $(document).ready(function() {
     scrolled(ev.pageX, ev.pageY, ev.detail);
   });
 
+  var drawingPNG = localStorage.getItem("drawingPNG"+room)
+
+  // Temporarily set background as image from memory to improve UX
+  $('#canvasContainer').css("background-image", 'url(' + drawingPNG + ')');
 
 });
 
@@ -85,7 +93,6 @@ function getParameterByName(name) {
 }
 
 // Join the room
-var room = window.location.pathname.split("/")[2];
 socket.emit('subscribe', {
   room: room
 });
@@ -730,6 +737,9 @@ socket.on('loading:start', function() {
 socket.on('loading:end', function() {
   $('#loading').hide();
   $('#colorpicker').farbtastic(pickColor); // make a color picker
+  // cake
+  $('#canvasContainer').css("background-image", 'none');
+
 });
 
 socket.on('item:remove', function(artist, name) {
@@ -762,9 +772,10 @@ socket.on('image:add', function(artist, data, position, name) {
 });
 
 
+console.log(view);
+
 // --------------------------------- 
 // SOCKET.IO EVENT FUNCTIONS
-
 
 // Updates the active connections
 var $user_count = $('#online_count');
@@ -849,4 +860,15 @@ function processSettings(settings) {
 
   })
 
+}
+
+// Periodically save drawing
+setInterval(function(){
+  saveDrawing();
+}, 1000);
+
+function saveDrawing(){
+  var canvas = document.getElementById('myCanvas');
+  // Save image to localStorage
+  localStorage.setItem("drawingPNG"+room, canvas.toDataURL('image/png'));
 }
