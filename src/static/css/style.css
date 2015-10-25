@@ -467,3 +467,15 @@ input[type=checkbox] {
   background-color:#fff;
 }
 
+.video_conv{
+  float: right;
+  width: 200px;
+  height: 800px;
+}
+
+#remoteVideos video {
+  height: 150px;
+}
+#localVideo {
+  height: 50px;
+}

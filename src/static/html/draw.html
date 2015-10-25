@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>EtherDraw</title>
+        <title>Siplo Classroom</title>
         <link rel='stylesheet' href='/static/css/style.css'>
         <link rel='stylesheet' href='/static/css/farbtastic.css'>
         <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.min.css">
@@ -29,7 +29,7 @@
 	  for the JavaScript code in this page.|
 	  */
 	</script>
-        <meta charset="utf-8"> 
+        <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
         <link rel="shortcut icon" href="/static/img/favicon.ico">
 
@@ -43,6 +43,9 @@
         <script src='/static/js/draw.js' type="text/paperscript" canvas="myCanvas"></script>
         <script>document.domain = document.domain;</script>
         <script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+        <!-- webrtc experiment-->
+        <script src="http://simplewebrtc.com/latest.js"></script>
+
     </head>
     <body>
 
@@ -129,10 +132,10 @@
                         <span id="online_count">1</span>
                     </a>
                 </li>
-                
+
             </ul>
         </div>
-   
+
 
         <div id="settings" class="popup">
             <h1 data-l10n-id="draw.settings.padSettings"></h1>
@@ -152,7 +155,7 @@
                 <h2 data-l10n-id="draw.share.emebdcode">Embed</h2>
                 <input id="embedinput" type="text" value="">
             </div>
-            
+
         </div>
         <div id="settings" class="popup">
             <h1 data-l10n-id="draw.settings.padSettings">Settings</h1>
@@ -191,7 +194,32 @@
           <input type="range" min="0" max="255" value="200" id="opacityRangeVal">
         </div>
       </div>
-
     </div>
+
+
+<!--webrtc-->
+<!-- https://github.com/andyet/SimpleWebRTC-->
+    <div class="video_conv">
+        <div id="remoteVideos"></div>
+        <video id="localVideo"></video>
+    </div>
+
+        <script>
+            var webrtc = new SimpleWebRTC({
+                // the id/element dom element that will hold "our" video
+                localVideoEl: 'localVideo',
+                // the id/element dom element that will hold remote videos
+                remoteVideosEl: 'remoteVideos',
+                // immediately ask for camera access
+                autoRequestMedia: true
+            });
+
+            // we have to wait until it's ready
+            webrtc.on('readyToCall', function () {
+                // you can name it anything
+                webrtc.joinRoom('your awesome room name');
+            });
+        </script>
+
     </body>
 </html>
