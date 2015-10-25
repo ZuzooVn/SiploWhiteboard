@@ -31,7 +31,6 @@ if(settings.ssl){
   var server = https.createServer(options, app).listen(settings.port);
 }else{
   var app = express();
-  app.use(express.vhost('www.siplo.lk', one));
   var server = app.listen(settings.port);
 }
 
