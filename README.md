@@ -39,3 +39,9 @@ Apache 2 License
 Donations
 ---------
 Donate to the [Etherpad Foundation] (http://etherpad.org/#links)
+
+
+Enabling Loging
+
+1. npm install redis
+2. npm install cookies

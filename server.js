@@ -13,7 +13,10 @@ var settings = require('./src/util/Settings.js'),
     async = require('async'),
     fs = require('fs'),
     http = require('http'),
-    https = require('https');
+    https = require('https'),
+    redis = require('redis'),
+    Cookies = require( "cookies" );
+
 
 /** 
  * SSL Logic and Server bindings
@@ -66,11 +69,29 @@ app.configure('production', function(){
 // ROUTES
 // Index page
 app.get('/', function(req, res){
+
   res.sendfile(__dirname + '/src/static/html/index.html');
 });
 
 // Drawings
+//Use this session for authentication
 app.get('/d/*', function(req, res){
+  var cookies = new Cookies( req, res, "PHPSESSID" )
+      , unsigned, signed, tampered;
+  var clientSession = new redis.createClient();
+
+  clientSession.get("foo:"+cookies.get("PHPSESSID"), function(error, result){
+    if(error){
+      console.log("error : "+error);
+    }
+    if(result != null){
+      console.log("result exist");
+      console.log(result);
+    }else{
+      console.log("session does not exist");
+    }
+  });
+
   res.sendfile(__dirname + '/src/static/html/draw.html');
 });
 
