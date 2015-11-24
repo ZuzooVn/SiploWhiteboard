@@ -16,6 +16,8 @@
     "ueberDB": "~0.2.1",
     "canvas": "1.2.1",
     "paper": "0.9.22",
-    "jsonminify":"~0.2.3"
+    "jsonminify":"~0.2.3",
+    "redis":"",
+    "cookies":""
   }
 }
