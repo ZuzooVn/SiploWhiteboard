@@ -74,8 +74,8 @@ app.get('/', function(req, res){
 });
 
 // Drawings
-//Use this session for authentication
-app.get('/d/*', function(req, res){
+//Use this part for authentication
+app.get('/classroom/*', function(req, res){
   var cookies = new Cookies( req, res, "PHPSESSID" )
       , unsigned, signed, tampered;
   var clientSession = new redis.createClient();
