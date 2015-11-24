@@ -45,3 +45,4 @@ Enabling Loging
 
 1. npm install redis
 2. npm install cookies
+3. add <.siplo.lk> for session.cookie_domain in etc/php5/cli/php.ini to enable the cookies for sub domains 
