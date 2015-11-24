@@ -68,7 +68,7 @@ app.configure('production', function(){
 
 // ROUTES
 // Index page
-app.get('/', function(req, res){
+app.get('/classroom', function(req, res){
 
   res.sendfile(__dirname + '/src/static/html/index.html');
 });
