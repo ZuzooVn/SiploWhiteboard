@@ -68,31 +68,38 @@ app.configure('production', function(){
 
 // ROUTES
 // Index page
-app.get('/classroom', function(req, res){
+app.get('/', function(req, res){
 
   res.sendfile(__dirname + '/src/static/html/index.html');
 });
 
 // Drawings
 //Use this part for authentication
-app.get('/classroom/*', function(req, res){
-  var cookies = new Cookies( req, res, "PHPSESSID" )
-      , unsigned, signed, tampered;
-  var clientSession = new redis.createClient();
-
-  clientSession.get("foo:"+cookies.get("PHPSESSID"), function(error, result){
-    if(error){
-      console.log("error : "+error);
-    }
-    if(result != null){
-      console.log("result exist");
-      console.log(result);
-    }else{
-      console.log("session does not exist");
-    }
-  });
+app.get('/live/*', function(req, res){
 
   res.sendfile(__dirname + '/src/static/html/draw.html');
+  //var cookies = new Cookies( req, res, "PHPSESSID" )
+  //    , unsigned, signed, tampered;
+  //var clientSession = new redis.createClient();
+  //
+  //clientSession.get("foo:"+cookies.get("PHPSESSID"), function(error, result){
+  //  if(error){
+  //    console.log("error : "+error);
+  //    //if the session cookie is not found. Display not authorized page
+  //    res.sendfile(__dirname + '/src/static/html/not_authorized.html');
+  //  }
+  //  if(result != null){
+  //    console.log("result exist");
+  //    console.log(result);
+  //
+  //    //if the session cookie is found, go to the class room
+  //    res.sendfile(__dirname + '/src/static/html/draw.html');
+  //  }else{
+  //    console.log("session does not exist");
+  //  }
+  //});
+
+
 });
 
 // Front-end tests
