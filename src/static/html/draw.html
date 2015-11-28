@@ -57,6 +57,7 @@
 <body class="skin-black-light sidebar-mini fixed">
 
 <div class="wrapper">
+    <!--Header start-->
     <header class="main-header">
         <!-- Logo -->
         <a href="{{ path('homepage') }}" class="logo">
@@ -227,188 +228,255 @@
             </div>
         </nav>
     </header>
+    <!--Header end-->
 
-    <!--Draw content start-->
-    <div id="editbar" class="toolbar">
-        <div id="overlay">
-            <div id="overlay-inner"></div>
-        </div>
-        <ul class="menu_left">
-            <!-- paint brush -->
-            <li class="acl-write" id="drawTool" data-key="draw">
-                <a class="grouped-left" data-l10n-id="draw.toolbar.draw.title">
-                    <span class="buttonicon buttonicon-draw"></span>
-                </a>
-            </li>
-            <!-- pencil brush -->
-            <li class="acl-write" id="pencilTool" data-key="pencil">
-                <a class="grouped-middle" data-l10n-id="draw.toolbar.pencil.title">
-                    <span class="buttonicon buttonicon-pencil"></span>
-                </a>
-            </li>
-            <!-- Select Tool -->
-            <li class="acl-write" id="selectTool" data-key="select">
-                <a class="grouped-middle" data-l10n-id="draw.toolbar.select.title">
-                    <span class="buttonicon buttonicon-select"></span>
-                </a>
-            </li>
+    <!--Left Sidebar start-->
+    <aside class="main-sidebar">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+            <!-- search form -->
+            <form action="#" method="get" class="sidebar-form">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control" placeholder="Search...">
+                          <span class="input-group-btn">
+                            <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i
+                                    class="fa fa-search"></i></button>
+                          </span>
+                </div>
+            </form>
+            <!-- /.search form -->
+            <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu">
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-edit"></i> <span>Homework</span>
+                        <span class="label bg-yellow pull-right">4</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="#"><i class="fa fa-circle-o"></i> General Elements</a></li>
+                        <li><a href="#"><i class="fa fa-circle-o"></i> Advanced Elements</a></li>
+                        <li><a href="#"><i class="fa fa-circle-o"></i> Editors</a></li>
+                    </ul>
+                </li>
 
-            <!-- color Selector Toggle -->
-            <li class="acl-write" id="colorToggle" data-key="color">
-                <a class="grouped-middle" data-l10n-id="draw.toolbar.colorToggle.title">
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-edit"></i> <span>Classes</span>
+                        <span class="label bg-yellow pull-right">4</span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li>
+                            <a href="{{ classroom_prefix ~ siploClass.url }}">
+                                <i class="fa fa-circle-o text-red"></i> class
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <i class="fa fa-calendar"></i> <span>Calendar</span>
+                        <small class="label bg-yellow pull-right">3</small>
+                    </a>
+                </li>
+
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+    </aside>
+    <!--Left sidebar end-->
+
+    <div class="content-wrapper">
+        <section class="content-header">
+            <h1>Classroom</h1>
+        </section>
+
+        <section class="content">
+
+            <!--Draw content start-->
+            <div id="editbar" class="toolbar">
+                <div id="overlay">
+                    <div id="overlay-inner"></div>
+                </div>
+                <ul class="menu_left">
+                    <!-- paint brush -->
+                    <li class="acl-write" id="drawTool" data-key="draw">
+                        <a class="grouped-left" data-l10n-id="draw.toolbar.draw.title">
+                            <span class="buttonicon buttonicon-draw"></span>
+                        </a>
+                    </li>
+                    <!-- pencil brush -->
+                    <li class="acl-write" id="pencilTool" data-key="pencil">
+                        <a class="grouped-middle" data-l10n-id="draw.toolbar.pencil.title">
+                            <span class="buttonicon buttonicon-pencil"></span>
+                        </a>
+                    </li>
+                    <!-- Select Tool -->
+                    <li class="acl-write" id="selectTool" data-key="select">
+                        <a class="grouped-middle" data-l10n-id="draw.toolbar.select.title">
+                            <span class="buttonicon buttonicon-select"></span>
+                        </a>
+                    </li>
+
+                    <!-- color Selector Toggle -->
+                    <li class="acl-write" id="colorToggle" data-key="color">
+                        <a class="grouped-middle" data-l10n-id="draw.toolbar.colorToggle.title">
                     <span class="buttonicon buttonicon-color" style="opacity:0.5">
                       <div style="display:inline-block;width:5px; height:16px; background-color:red;margin:0;padding:0;float:left"></div>
                       <div style="display:inline-block;width:5px; height:16px; background-color:blue;margin:0;padding:0;float:left"></div>
                       <div style="display:inline-block;width:5px; height:16px; background-color:green;margin:0;padding:0;float:left"></div>
                     </span>
-                </a>
-            </li>
+                        </a>
+                    </li>
 
-            <li class="acl-write" id="clearImage" data-key="clear">
-                <a class="grouped-right" data-l10n-id="draw.toolbar.clearImage" class="clearCanvasPrompt"
-                   title="Clear Drawing">
+                    <li class="acl-write" id="clearImage" data-key="clear">
+                        <a class="grouped-right" data-l10n-id="draw.toolbar.clearImage" class="clearCanvasPrompt"
+                           title="Clear Drawing">
                 <span class="buttonicon buttonicon-clearImage"
                       style="background-color:transparent;background-image:none;border:dotted 1px black;margin:0;color:#000;height:14px;line-height:14px">X</span>
-                </a>
-            </li>
+                        </a>
+                    </li>
 
-            <li class="acl-write" id="toggleBackground" data-key="clear">
-                <a class="grouped-left" data-l10n-id="draw.toolbar.toggleBackground" class="toggleBackground"
-                   title="Toggle Transparent Background">
+                    <li class="acl-write" id="toggleBackground" data-key="clear">
+                        <a class="grouped-left" data-l10n-id="draw.toolbar.toggleBackground" class="toggleBackground"
+                           title="Toggle Transparent Background">
                     <span class="buttonicon buttonicon-toggleBackground"
                           style="background-color:#fff;background-image:none;border:solid 1px black;margin:0;height:14px">
-                </a>
-            </li>
+                        </a>
+                    </li>
 
-            <!-- Upload -->
-            <li class="acl-write" id="uploadImage" data-key="upload">
-                <a class="grouped-right" data-l10n-id="draw.toolbar.upload.title" title="Upload an Image">
-                    <span class="buttonicon buttonicon-upload"></span>
-                </a>
-            </li>
-        </ul>
-        <ul class="menu_right">
+                    <!-- Upload -->
+                    <li class="acl-write" id="uploadImage" data-key="upload">
+                        <a class="grouped-right" data-l10n-id="draw.toolbar.upload.title" title="Upload an Image">
+                            <span class="buttonicon buttonicon-upload"></span>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="menu_right">
 
-            <!-- settings -->
-            <li data-key="settings">
-                <a id="settingslink" class="grouped-left" data-l10n-id="draw.toolbar.settings.title">
-                    <span class="grouped-left buttonicon buttonicon-settings"></span>
-                </a>
-            </li>
-            <!-- import export -->
-            <li data-key="import_export">
-                <a id="importExport" class="grouped-middle" data-l10n-id="draw.toolbar.import_export.title">
-                    <span class="buttonicon buttonicon-import_export"></span>
-                </a>
-            </li>
-            <!-- share & embed -->
-            <li data-key="embed">
-                <a id="embedlink" class="grouped-right" data-l10n-id="draw.toolbar.embed.title">
-                    <span class="buttonicon buttonicon-embed"></span>
-                </a>
-            </li>
+                    <!-- settings -->
+                    <li data-key="settings">
+                        <a id="settingslink" class="grouped-left" data-l10n-id="draw.toolbar.settings.title">
+                            <span class="grouped-left buttonicon buttonicon-settings"></span>
+                        </a>
+                    </li>
+                    <!-- import export -->
+                    <li data-key="import_export">
+                        <a id="importExport" class="grouped-middle" data-l10n-id="draw.toolbar.import_export.title">
+                            <span class="buttonicon buttonicon-import_export"></span>
+                        </a>
+                    </li>
+                    <!-- share & embed -->
+                    <li data-key="embed">
+                        <a id="embedlink" class="grouped-right" data-l10n-id="draw.toolbar.embed.title">
+                            <span class="buttonicon buttonicon-embed"></span>
+                        </a>
+                    </li>
 
-            <!-- user stuff -->
-            <li class="separator"></li>
-            <li id="usericon" data-key="showusers">
-                <a data-l10n-id="draw.toolbar.showusers.title">
-                    <span class="buttonicon buttonicon-showusers"></span>
-                    <span id="online_count">1</span>
-                </a>
-            </li>
+                    <!-- user stuff -->
+                    <li class="separator"></li>
+                    <li id="usericon" data-key="showusers">
+                        <a data-l10n-id="draw.toolbar.showusers.title">
+                            <span class="buttonicon buttonicon-showusers"></span>
+                            <span id="online_count">1</span>
+                        </a>
+                    </li>
 
-        </ul>
-    </div>
-
-    <div id="settings" class="popup">
-        <h1 data-l10n-id="draw.settings.padSettings"></h1>
-
-        <div class="column">
-            <h2 data-l10n-id="draw.settings.ClearCanvas">Clear Canvas</h2>
-            <a>Warning - This will clear the canvas</a>
-            <button id="clearCanvas">Okay, Clear it!</button>
-        </div>
-    </div>
-    <div id="embed" class="popup">
-        <h1 data-l10n-id="draw.share">Share & Embed</h1>
-
-        <div id="linkcode">
-            <h2 data-l10n-id="draw.share.link">Share</h2>
-            <input id="linkinput" type="text" value="">
-        </div>
-        <br>
-
-        <div id="embedcode">
-            <h2 data-l10n-id="draw.share.emebdcode">Embed</h2>
-            <input id="embedinput" type="text" value="">
-        </div>
-
-    </div>
-    <div id="settings" class="popup">
-        <h1 data-l10n-id="draw.settings.padSettings">Settings</h1>
-
-        <div class="column">
-
-            <h2 data-l10n-id="draw.settings.myView"></h2>
-        </div>
-    </div>
-    <div id="importexport" class="popup">
-        <h1 data-l10n-id="draw.importExport.import_export">Export</h1>
-
-        <div class="column">
-            <h2 data-l10n-id="draw.importExport.export"></h2>
-
-            <div><a id="exportSVG" target="_blank" class="exportlink">Export SVG</a></div>
-            <div><a id="exportPNG" target="_blank" class="exportlink">Export PNG</a></div>
-        </div>
-    </div>
-
-    <div id="lostConnection" class="hidden">
-        <p>Lost connection to the server! Please refresh this page.</p>
-    </div>
-    <div id="loading" class="hidden" style="display:block;">
-        <p>Loading existing sketch... Click and hold to access the colour wheel</p>
-    </div>
-
-    <input type="file" id="imageInput" accept="image/*"/>
-
-    <div id="activeColorSwatch"></div>
-    <div id="canvasContainer">
-        <canvas id="myCanvas" resize="true"></canvas>
-        <div id="mycolorpicker">
-            <div id="colorpickerMover"></div>
-            <div id="colorpicker"></div>
-            <div id="opacity">
-                <div id="opacityLabel">Opacity</div>
-                <input type="range" min="0" max="255" value="200" id="opacityRangeVal">
+                </ul>
             </div>
-        </div>
+
+            <div id="settings" class="popup">
+                <h1 data-l10n-id="draw.settings.padSettings"></h1>
+
+                <div class="column">
+                    <h2 data-l10n-id="draw.settings.ClearCanvas">Clear Canvas</h2>
+                    <a>Warning - This will clear the canvas</a>
+                    <button id="clearCanvas">Okay, Clear it!</button>
+                </div>
+            </div>
+            <div id="embed" class="popup">
+                <h1 data-l10n-id="draw.share">Share & Embed</h1>
+
+                <div id="linkcode">
+                    <h2 data-l10n-id="draw.share.link">Share</h2>
+                    <input id="linkinput" type="text" value="">
+                </div>
+                <br>
+
+                <div id="embedcode">
+                    <h2 data-l10n-id="draw.share.emebdcode">Embed</h2>
+                    <input id="embedinput" type="text" value="">
+                </div>
+
+            </div>
+            <div id="settings" class="popup">
+                <h1 data-l10n-id="draw.settings.padSettings">Settings</h1>
+
+                <div class="column">
+
+                    <h2 data-l10n-id="draw.settings.myView"></h2>
+                </div>
+            </div>
+            <div id="importexport" class="popup">
+                <h1 data-l10n-id="draw.importExport.import_export">Export</h1>
+
+                <div class="column">
+                    <h2 data-l10n-id="draw.importExport.export"></h2>
+
+                    <div><a id="exportSVG" target="_blank" class="exportlink">Export SVG</a></div>
+                    <div><a id="exportPNG" target="_blank" class="exportlink">Export PNG</a></div>
+                </div>
+            </div>
+
+            <div id="lostConnection" class="hidden">
+                <p>Lost connection to the server! Please refresh this page.</p>
+            </div>
+            <div id="loading" class="hidden" style="display:block;">
+                <p>Loading existing sketch... Click and hold to access the colour wheel</p>
+            </div>
+
+            <input type="file" id="imageInput" accept="image/*"/>
+
+            <div id="activeColorSwatch"></div>
+            <div id="canvasContainer">
+                <canvas id="myCanvas" resize="true"></canvas>
+                <div id="mycolorpicker">
+                    <div id="colorpickerMover"></div>
+                    <div id="colorpicker"></div>
+                    <div id="opacity">
+                        <div id="opacityLabel">Opacity</div>
+                        <input type="range" min="0" max="255" value="200" id="opacityRangeVal">
+                    </div>
+                </div>
+            </div>
+
+            <!--webrtc-->
+            <!-- https://github.com/andyet/SimpleWebRTC-->
+            <div class="video_conv">
+                <div id="remoteVideos"></div>
+                <video id="localVideo"></video>
+            </div>
+
+            <script>
+                var webrtc = new SimpleWebRTC({
+                    // the id/element dom element that will hold "our" video
+                    localVideoEl: 'localVideo',
+                    // the id/element dom element that will hold remote videos
+                    remoteVideosEl: 'remoteVideos',
+                    // immediately ask for camera access
+                    autoRequestMedia: true
+                });
+
+                // we have to wait until it's ready
+                webrtc.on('readyToCall', function () {
+                    // you can name it anything
+                    webrtc.joinRoom('your awesome room name');
+                });
+            </script>
+            <!--Draw content end-->
+
+        </section>
     </div>
-
-    <!--webrtc-->
-    <!-- https://github.com/andyet/SimpleWebRTC-->
-    <div class="video_conv">
-        <div id="remoteVideos"></div>
-        <video id="localVideo"></video>
-    </div>
-
-    <script>
-        var webrtc = new SimpleWebRTC({
-            // the id/element dom element that will hold "our" video
-            localVideoEl: 'localVideo',
-            // the id/element dom element that will hold remote videos
-            remoteVideosEl: 'remoteVideos',
-            // immediately ask for camera access
-            autoRequestMedia: true
-        });
-
-        // we have to wait until it's ready
-        webrtc.on('readyToCall', function () {
-            // you can name it anything
-            webrtc.joinRoom('your awesome room name');
-        });
-    </script>
-    <!--Draw content end-->
 
 </div>
 </body>
