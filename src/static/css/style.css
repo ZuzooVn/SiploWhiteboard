@@ -475,9 +475,11 @@ input[type=checkbox] {
 }
 
 #remoteVideos video {
+  z-index: 1500;
   height: 150px;
 }
 #localVideo {
+  z-index: 1500;
   float: right;
   height: 50px;
 }
