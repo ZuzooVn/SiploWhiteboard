@@ -531,6 +531,7 @@ input[type=checkbox] {
 }
 
 #remoteVideos video {
+    position: relative;
     z-index: 1500;
     height: 150px;
 }
