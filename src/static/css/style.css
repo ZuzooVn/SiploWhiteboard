@@ -39,8 +39,8 @@ body {
 .toolbar ul {
   position: relative;
   list-style: none;
-  padding-right: 3px;
-  padding-left: 1px;
+  /*padding-right: 3px;*/
+  /*padding-left: 1px;*/
   z-index: 2;
   overflow: hidden;
   float: left
@@ -469,7 +469,7 @@ input[type=checkbox] {
 
 .video_conv{
   float: right;
-  width: 200px;
+  /*width: 200px;*/
   height: 800px;
 }
 
