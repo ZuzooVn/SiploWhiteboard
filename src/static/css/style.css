@@ -458,7 +458,7 @@ input[type=checkbox] {
 #myCanvas{
   position:absolute;
   cursor:hand;
-  top:37px;
+  top:0px;
   left:0px;
   right:0px;
   bottom:0px;
