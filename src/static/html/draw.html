@@ -75,7 +75,7 @@
 
         <!-- color Selector Toggle -->
         <li class="acl-write" id="colorToggle" data-key="color">
-            <a class="grouped-middle" data-l10n-id="draw.toolbar.colorToggle.title" title="Color">
+            <a class="grouped-right" data-l10n-id="draw.toolbar.colorToggle.title" title="Color">
                     <span class="buttonicon buttonicon-color" style="opacity:0.5">
                       <div style="display:inline-block;width:5px; height:16px; background-color:red;margin:0;padding:0;float:left"></div>
                       <div style="display:inline-block;width:5px; height:16px; background-color:blue;margin:0;padding:0;float:left"></div>
@@ -84,9 +84,11 @@
             </a>
         </li>
 
+        <li class="separator"></li>
+
         <!--Clear Drawing-->
         <li class="acl-write" id="clearImage" data-key="clear">
-            <a class="grouped-right" data-l10n-id="draw.toolbar.clearImage"
+            <a class="grouped-left" data-l10n-id="draw.toolbar.clearImage"
                class="clearCanvasPrompt"
                title="Clear Drawing">
                 <span class="buttonicon buttonicon-clearImage"
@@ -95,54 +97,62 @@
         </li>
 
         <!--<li class="acl-write" id="toggleBackground" data-key="clear">-->
-            <!--<a class="grouped-left" data-l10n-id="draw.toolbar.toggleBackground"-->
-               <!--class="toggleBackground"-->
-               <!--title="Toggle Transparent Background">-->
-                    <!--<span class="buttonicon buttonicon-toggleBackground"-->
-                          <!--style="background-color:#fff;background-image:none;border:solid 1px black;margin:0;height:14px">-->
-            <!--</a>-->
+        <!--<a class="grouped-left" data-l10n-id="draw.toolbar.toggleBackground"-->
+        <!--class="toggleBackground"-->
+        <!--title="Toggle Transparent Background">-->
+        <!--<span class="buttonicon buttonicon-toggleBackground"-->
+        <!--style="background-color:#fff;background-image:none;border:solid 1px black;margin:0;height:14px">-->
+        <!--</a>-->
         <!--</li>-->
 
         <!-- Upload -->
         <li class="acl-write" id="uploadImage" data-key="upload">
-            <a class="grouped-right" data-l10n-id="draw.toolbar.upload.title"
+            <a class="grouped-middle" data-l10n-id="draw.toolbar.upload.title"
                title="Upload an Image">
                 <span class="buttonicon buttonicon-upload"></span>
             </a>
         </li>
-    </ul>
-    <ul class="menu_right">
 
-        <!-- settings -->
-        <!--<li data-key="settings">-->
-            <!--<a id="settingslink" class="grouped-left" data-l10n-id="draw.toolbar.settings.title">-->
-                <!--<span class="grouped-left buttonicon buttonicon-settings"></span>-->
-            <!--</a>-->
-        <!--</li>-->
-        <!-- import export -->
+        <!--Import or export-->
         <li data-key="import_export">
-            <a id="importExport" class="grouped-middle"
+            <a id="importExport" class="grouped-right"
                data-l10n-id="draw.toolbar.import_export.title">
                 <span class="buttonicon buttonicon-import_export"></span>
             </a>
         </li>
-        <!-- share & embed -->
-        <!--<li data-key="embed">-->
-            <!--<a id="embedlink" class="grouped-right" data-l10n-id="draw.toolbar.embed.title">-->
-                <!--<span class="buttonicon buttonicon-embed"></span>-->
-            <!--</a>-->
-        <!--</li>-->
-
-        <!-- user stuff -->
-        <!--<li class="separator"></li>-->
-        <!--<li id="usericon" data-key="showusers">-->
-            <!--<a data-l10n-id="draw.toolbar.showusers.title">-->
-                <!--<span class="buttonicon buttonicon-showusers"></span>-->
-                <!--<span id="online_count">1</span>-->
-            <!--</a>-->
-        <!--</li>-->
-
     </ul>
+
+    <!--<ul class="menu_right">-->
+        <!--&lt;!&ndash; settings &ndash;&gt;-->
+        <!--&lt;!&ndash;<li data-key="settings">&ndash;&gt;-->
+        <!--&lt;!&ndash;<a id="settingslink" class="grouped-left" data-l10n-id="draw.toolbar.settings.title">&ndash;&gt;-->
+        <!--&lt;!&ndash;<span class="grouped-left buttonicon buttonicon-settings"></span>&ndash;&gt;-->
+        <!--&lt;!&ndash;</a>&ndash;&gt;-->
+        <!--&lt;!&ndash;</li>&ndash;&gt;-->
+        <!--&lt;!&ndash; import export &ndash;&gt;-->
+        <!--<li data-key="import_export">-->
+            <!--<a id="importExport" class="grouped-middle"-->
+               <!--data-l10n-id="draw.toolbar.import_export.title">-->
+                <!--<span class="buttonicon buttonicon-import_export"></span>-->
+            <!--</a>-->
+        <!--</li>-->
+        <!--&lt;!&ndash; share & embed &ndash;&gt;-->
+        <!--&lt;!&ndash;<li data-key="embed">&ndash;&gt;-->
+        <!--&lt;!&ndash;<a id="embedlink" class="grouped-right" data-l10n-id="draw.toolbar.embed.title">&ndash;&gt;-->
+        <!--&lt;!&ndash;<span class="buttonicon buttonicon-embed"></span>&ndash;&gt;-->
+        <!--&lt;!&ndash;</a>&ndash;&gt;-->
+        <!--&lt;!&ndash;</li>&ndash;&gt;-->
+
+        <!--&lt;!&ndash; user stuff &ndash;&gt;-->
+        <!--&lt;!&ndash;<li class="separator"></li>&ndash;&gt;-->
+        <!--&lt;!&ndash;<li id="usericon" data-key="showusers">&ndash;&gt;-->
+        <!--&lt;!&ndash;<a data-l10n-id="draw.toolbar.showusers.title">&ndash;&gt;-->
+        <!--&lt;!&ndash;<span class="buttonicon buttonicon-showusers"></span>&ndash;&gt;-->
+        <!--&lt;!&ndash;<span id="online_count">1</span>&ndash;&gt;-->
+        <!--&lt;!&ndash;</a>&ndash;&gt;-->
+        <!--&lt;!&ndash;</li>&ndash;&gt;-->
+
+    <!--</ul>-->
 </div>
 
 <div id="settings" class="popup">
