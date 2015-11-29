@@ -209,6 +209,18 @@
 
 <div id="activeColorSwatch"></div>
 <div id="canvasContainer">
+    <canvas id="myCanvas" resize="true"></canvas>
+    <div id="mycolorpicker">
+        <div id="colorpickerMover"></div>
+        <div id="colorpicker"></div>
+        <div id="opacity">
+            <div id="opacityLabel">Opacity</div>
+            <input type="range" min="0" max="255" value="200" id="opacityRangeVal">
+        </div>
+    </div>
+</div>
+
+<div class="tools">
     <ul class="menu_left">
         <!-- paint brush -->
         <li class="acl-write" id="drawTool" data-key="draw">
@@ -277,16 +289,6 @@
             </a>
         </li>
     </ul>
-
-    <canvas id="myCanvas" resize="true"></canvas>
-    <div id="mycolorpicker">
-        <div id="colorpickerMover"></div>
-        <div id="colorpicker"></div>
-        <div id="opacity">
-            <div id="opacityLabel">Opacity</div>
-            <input type="range" min="0" max="255" value="200" id="opacityRangeVal">
-        </div>
-    </div>
 </div>
 
 <!--webrtc-->

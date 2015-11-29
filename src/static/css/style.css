@@ -483,3 +483,8 @@ input[type=checkbox] {
   float: right;
   height: 50px;
 }
+
+.tools{
+  bottom: 0px;
+  
+}
