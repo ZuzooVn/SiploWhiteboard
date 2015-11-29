@@ -468,6 +468,7 @@ input[type=checkbox] {
 }
 
 .video_conv{
+  margin-top: 32px;
   float: right;
   /*width: 200px;*/
   height: 800px;
