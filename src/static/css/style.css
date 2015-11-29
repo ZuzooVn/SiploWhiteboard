@@ -20,7 +20,7 @@ body {
   /*background: -o-linear-gradient(#f7f7f7, #f1f1f1 80%);*/
   /*background: -ms-linear-gradient(#f7f7f7, #f1f1f1 80%);*/
   /*background: linear-gradient(#f7f7f7, #f1f1f1 80%);*/
-  border-top: 1px solid #ccc;
+  /*border-top: 1px solid #ccc;*/
   bottom: 0px;
   overflow: hidden;
   padding-top: 0px;
@@ -469,7 +469,7 @@ input[type=checkbox] {
 }
 
 .video_conv{
-  margin-top: 32px;
+  margin-top: 0px;
   float: right;
   /*width: 200px;*/
   height: 800px;
