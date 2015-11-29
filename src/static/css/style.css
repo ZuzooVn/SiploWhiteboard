@@ -478,5 +478,6 @@ input[type=checkbox] {
   height: 150px;
 }
 #localVideo {
+  float: right;
   height: 50px;
 }
