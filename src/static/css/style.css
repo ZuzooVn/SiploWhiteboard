@@ -14,12 +14,12 @@ body {
 }
 
 .toolbar {
-  background: #f7f7f7;
-  background: -webkit-linear-gradient(#f7f7f7, #f1f1f1 80%);
-  background: -moz-linear-gradient(#f7f7f7, #f1f1f1 80%);
-  background: -o-linear-gradient(#f7f7f7, #f1f1f1 80%);
-  background: -ms-linear-gradient(#f7f7f7, #f1f1f1 80%);
-  background: linear-gradient(#f7f7f7, #f1f1f1 80%);
+  /*background: #f7f7f7;*/
+  /*background: -webkit-linear-gradient(#f7f7f7, #f1f1f1 80%);*/
+  /*background: -moz-linear-gradient(#f7f7f7, #f1f1f1 80%);*/
+  /*background: -o-linear-gradient(#f7f7f7, #f1f1f1 80%);*/
+  /*background: -ms-linear-gradient(#f7f7f7, #f1f1f1 80%);*/
+  /*background: linear-gradient(#f7f7f7, #f1f1f1 80%);*/
   border-top: 1px solid #ccc;
   bottom: 0px;
   overflow: hidden;
@@ -40,8 +40,8 @@ body {
 .toolbar ul {
   position: relative;
   list-style: none;
-  /*padding-right: 3px;*/
-  /*padding-left: 1px;*/
+  left: 40%;
+  margin: 0 auto;
   z-index: 2;
   overflow: hidden;
   float: left
