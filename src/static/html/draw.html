@@ -45,457 +45,276 @@
     <script src="/static/css/AdminLTE-2.3.0/bootstrap/js/bootstrap.min.js"></script>
     <!-- webrtc experiment-->
     <script src="http://simplewebrtc.com/latest.js"></script>
-
-    <!--Foreign css & js-->
-    <link rel="stylesheet" href="/static/css/AdminLTE-2.3.0/dist/css/skins/_all-skins.min.css">
-    <link rel="stylesheet" href="/static/css/AdminLTE-2.3.0/dist/css/AdminLTE.css">
-    <link rel="stylesheet" href="/static/css/AdminLTE-2.3.0/dist/js/app.js">
-    <link rel="stylesheet" href="/static/css/AdminLTE-2.3.0/dist/js/demo.js">
-    <link rel="stylesheet" href="/static/css/app.css">
-    <link rel="stylesheet" href="/static/css/font-awesome.css">
-    <link rel="stylesheet" href="/static/css/ionicons.css">
-
-
 </head>
-<body class="skin-black-light sidebar-mini fixed">
 
-<div class="wrapper">
-    <!--Header start-->
-    <header class="main-header">
-        <!-- Logo -->
-        <a href="#" class="logo">
-            <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><b>A</b>LT</span>
-            <!-- logo for regular state and mobile devices -->
-                <span class="logo-lg">
+<body style="overflow: hidden">
+<!--Draw content start-->
+<div id="editbar" class="toolbar">
+    <div id="overlay">
+        <div id="overlay-inner"></div>
+    </div>
+    <ul class="menu_left">
+        <!-- paint brush -->
+        <li class="acl-write" id="drawTool" data-key="draw">
+            <a class="grouped-left" data-l10n-id="draw.toolbar.draw.title" title="Brush Tool">
+                <span class="buttonicon buttonicon-draw"></span>
+            </a>
+        </li>
+        <!-- pencil brush -->
+        <li class="acl-write" id="pencilTool" data-key="pencil">
+            <a class="grouped-middle" data-l10n-id="draw.toolbar.pencil.title" title="Pencil Tool">
+                <span class="buttonicon buttonicon-pencil"></span>
+            </a>
+        </li>
+        <!-- Select Tool -->
+        <li class="acl-write" id="selectTool" data-key="select">
+            <a class="grouped-middle" data-l10n-id="draw.toolbar.select.title" title="Select Tool">
+                <span class="buttonicon buttonicon-select"></span>
+            </a>
+        </li>
 
-            <img width="100px" src="/static/img/Logo03.png"></span>
-
-        </a>
-        <!-- Header Navbar: style can be found in header.less -->
-        <nav class="navbar navbar-static-top" role="navigation" id="navbar-right-side">
-            <div class="navbar-custom-menu">
-                <ul class="nav navbar-nav">
-                    <!-- Messages: style can be found in dropdown.less-->
-                    <li class="dropdown messages-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-envelope-o"></i>
-                                    <span class="label label-success">
-                                        <span class="label label-warning">
-                                            4
-                                        </span>
-                                    </span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="header">
-                                You have 4 messages
-                            </li>
-                            <li>
-                                <!-- inner menu: contains the actual data -->
-
-                                <ul class="menu">
-                                    <!-- end message -->
-                                    <li><!-- start message -->
-                                        <a href="#">
-                                            <div class="pull-left">
-                                                <img src=""
-                                                     class="img-circle" alt="User Image">
-                                            </div>
-                                            <h4>
-                                                Sender
-                                                <small>
-                                                    <i class="fa fa-clock-o"></i> Date
-                                                </small>
-                                            </h4>
-                                            <p>Message Body</p>
-                                        </a>
-                                    </li>
-                                    <!-- end message -->
-                                </ul>
-                            </li>
-                            <li class="footer"><a href="#">See All Messages</a></li>
-                        </ul>
-                    </li>
-                    <!-- Notifications: style can be found in dropdown.less -->
-                    <li class="dropdown notifications-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-bell-o"></i>
-                                    <span class="label label-warning">
-                                        4
-                                    </span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li class="header">You have 4 notifications</li>
-                            <li>
-                                <!-- inner menu: contains the actual data -->
-                                <ul class="menu">
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-users text-aqua"></i> Go to Class
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-warning text-yellow"></i> Very long description here
-                                            that may not fit into the page and may cause design problems
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-users text-red"></i> 5 new members joined
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-user text-red"></i> You changed your username
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="footer"><a href="#">View all</a></li>
-                        </ul>
-                    </li>
-                    <!-- Tasks: style can be found in dropdown.less -->
-
-                    <!-- User Account: style can be found in dropdown.less -->
-                    <li class="dropdown user user-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src=""
-                                 class="user-image" alt="User Image"/>
-                            <span class="hidden-xs">Username</span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <!-- User image -->
-                            <li class="user-header" style="background-color: white">
-
-                                <img src=""
-                                     class="img-circle" alt="User Image"/>
-
-                                <p style="color: #666666">
-                                    Username
-                                </p>
-                            </li>
-
-                            <!-- Menu Footer-->
-                            <li class="user-footer">
-                                <div class="pull-left">
-                                    <a href="#" class="btn btn-default btn-flat">Profile</a>
-                                </div>
-                                <div class="pull-right">
-                                    <a href="{{ path('fos_user_security_logout') }}"
-                                       class="btn btn-default btn-flat">Sign out</a>
-                                </div>
-                            </li>
-                        </ul>
-                    </li>
-                    <!-- Control Sidebar Toggle Button -->
-                    <li class="dropdown notifications-menu">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <i class="fa fa-gears"></i>
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <!-- inner menu: contains the actual data -->
-                                <ul class="menu">
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-users text-aqua"></i> Activity Log
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-warning text-yellow"></i> Preferences
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-users text-red"></i> View
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-shopping-cart text-green"></i> Help
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-    <!--Header end-->
-
-    <!--Left Sidebar start-->
-    <aside class="main-sidebar">
-        <!-- sidebar: style can be found in sidebar.less -->
-        <section class="sidebar">
-            <!-- search form -->
-            <form action="#" method="get" class="sidebar-form">
-                <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Search...">
-                          <span class="input-group-btn">
-                            <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i
-                                    class="fa fa-search"></i></button>
-                          </span>
-                </div>
-            </form>
-            <!-- /.search form -->
-            <!-- sidebar menu: : style can be found in sidebar.less -->
-            <ul class="sidebar-menu">
-                <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-edit"></i> <span>Homework</span>
-                        <span class="label bg-yellow pull-right">4</span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li><a href="#"><i class="fa fa-circle-o"></i> General Elements</a></li>
-                        <li><a href="#"><i class="fa fa-circle-o"></i> Advanced Elements</a></li>
-                        <li><a href="#"><i class="fa fa-circle-o"></i> Editors</a></li>
-                    </ul>
-                </li>
-
-                <li class="treeview">
-                    <a href="#">
-                        <i class="fa fa-edit"></i> <span>Classes</span>
-                        <span class="label bg-yellow pull-right">4</span>
-                    </a>
-                    <ul class="treeview-menu">
-                        <li>
-                            <a href="{{ classroom_prefix ~ siploClass.url }}">
-                                <i class="fa fa-circle-o text-red"></i> class
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <li>
-                    <a href="#">
-                        <i class="fa fa-calendar"></i> <span>Calendar</span>
-                        <small class="label bg-yellow pull-right">3</small>
-                    </a>
-                </li>
-
-            </ul>
-        </section>
-        <!-- /.sidebar -->
-    </aside>
-    <!--Left sidebar end-->
-
-    <div class="content-wrapper">
-        <section class="content-header">
-            <h1>Classroom</h1>
-        </section>
-
-        <section class="content">
-            <div class="row">
-                <div class="col-md-12">
-                    <!--Draw content start-->
-                    <div id="editbar" class="toolbar">
-                        <div id="overlay">
-                            <div id="overlay-inner"></div>
-                        </div>
-                        <ul class="menu_left">
-                            <!-- paint brush -->
-                            <li class="acl-write" id="drawTool" data-key="draw">
-                                <a class="grouped-left" data-l10n-id="draw.toolbar.draw.title">
-                                    <span class="buttonicon buttonicon-draw"></span>
-                                </a>
-                            </li>
-                            <!-- pencil brush -->
-                            <li class="acl-write" id="pencilTool" data-key="pencil">
-                                <a class="grouped-middle" data-l10n-id="draw.toolbar.pencil.title">
-                                    <span class="buttonicon buttonicon-pencil"></span>
-                                </a>
-                            </li>
-                            <!-- Select Tool -->
-                            <li class="acl-write" id="selectTool" data-key="select">
-                                <a class="grouped-middle" data-l10n-id="draw.toolbar.select.title">
-                                    <span class="buttonicon buttonicon-select"></span>
-                                </a>
-                            </li>
-
-                            <!-- color Selector Toggle -->
-                            <li class="acl-write" id="colorToggle" data-key="color">
-                                <a class="grouped-middle" data-l10n-id="draw.toolbar.colorToggle.title">
+        <!-- color Selector Toggle -->
+        <li class="acl-write" id="colorToggle" data-key="color">
+            <a class="grouped-right" data-l10n-id="draw.toolbar.colorToggle.title" title="Color">
                     <span class="buttonicon buttonicon-color" style="opacity:0.5">
                       <div style="display:inline-block;width:5px; height:16px; background-color:red;margin:0;padding:0;float:left"></div>
                       <div style="display:inline-block;width:5px; height:16px; background-color:blue;margin:0;padding:0;float:left"></div>
                       <div style="display:inline-block;width:5px; height:16px; background-color:green;margin:0;padding:0;float:left"></div>
                     </span>
-                                </a>
-                            </li>
+            </a>
+        </li>
 
-                            <li class="acl-write" id="clearImage" data-key="clear">
-                                <a class="grouped-right" data-l10n-id="draw.toolbar.clearImage"
-                                   class="clearCanvasPrompt"
-                                   title="Clear Drawing">
+        <li class="separator"></li>
+
+        <!--Clear Drawing-->
+        <li class="acl-write" id="clearImage" data-key="clear">
+            <a class="grouped-left" data-l10n-id="draw.toolbar.clearImage"
+               class="clearCanvasPrompt"
+               title="Clear Drawing">
                 <span class="buttonicon buttonicon-clearImage"
                       style="background-color:transparent;background-image:none;border:dotted 1px black;margin:0;color:#000;height:14px;line-height:14px">X</span>
-                                </a>
-                            </li>
+            </a>
+        </li>
 
-                            <li class="acl-write" id="toggleBackground" data-key="clear">
-                                <a class="grouped-left" data-l10n-id="draw.toolbar.toggleBackground"
-                                   class="toggleBackground"
-                                   title="Toggle Transparent Background">
-                    <span class="buttonicon buttonicon-toggleBackground"
-                          style="background-color:#fff;background-image:none;border:solid 1px black;margin:0;height:14px">
-                                </a>
-                            </li>
+        <!--<li class="acl-write" id="toggleBackground" data-key="clear">-->
+        <!--<a class="grouped-left" data-l10n-id="draw.toolbar.toggleBackground"-->
+        <!--class="toggleBackground"-->
+        <!--title="Toggle Transparent Background">-->
+        <!--<span class="buttonicon buttonicon-toggleBackground"-->
+        <!--style="background-color:#fff;background-image:none;border:solid 1px black;margin:0;height:14px">-->
+        <!--</a>-->
+        <!--</li>-->
 
-                            <!-- Upload -->
-                            <li class="acl-write" id="uploadImage" data-key="upload">
-                                <a class="grouped-right" data-l10n-id="draw.toolbar.upload.title"
-                                   title="Upload an Image">
-                                    <span class="buttonicon buttonicon-upload"></span>
-                                </a>
-                            </li>
-                        </ul>
-                        <ul class="menu_right">
+        <!-- Upload -->
+        <li class="acl-write" id="uploadImage" data-key="upload">
+            <a class="grouped-middle" data-l10n-id="draw.toolbar.upload.title"
+               title="Upload an Image">
+                <span class="buttonicon buttonicon-upload"></span>
+            </a>
+        </li>
 
-                            <!-- settings -->
-                            <li data-key="settings">
-                                <a id="settingslink" class="grouped-left" data-l10n-id="draw.toolbar.settings.title">
-                                    <span class="grouped-left buttonicon buttonicon-settings"></span>
-                                </a>
-                            </li>
-                            <!-- import export -->
-                            <li data-key="import_export">
-                                <a id="importExport" class="grouped-middle"
-                                   data-l10n-id="draw.toolbar.import_export.title">
-                                    <span class="buttonicon buttonicon-import_export"></span>
-                                </a>
-                            </li>
-                            <!-- share & embed -->
-                            <li data-key="embed">
-                                <a id="embedlink" class="grouped-right" data-l10n-id="draw.toolbar.embed.title">
-                                    <span class="buttonicon buttonicon-embed"></span>
-                                </a>
-                            </li>
+        <!--Import or export-->
+        <li data-key="import_export">
+            <a id="importExport" class="grouped-right"
+               data-l10n-id="draw.toolbar.import_export.title">
+                <span class="buttonicon buttonicon-import_export"></span>
+            </a>
+        </li>
+    </ul>
 
-                            <!-- user stuff -->
-                            <li class="separator"></li>
-                            <li id="usericon" data-key="showusers">
-                                <a data-l10n-id="draw.toolbar.showusers.title">
-                                    <span class="buttonicon buttonicon-showusers"></span>
-                                    <span id="online_count">1</span>
-                                </a>
-                            </li>
+    <!--<ul class="menu_right">-->
+        <!-- settings -->
+        <!--<li data-key="settings">-->
+        <!--<a id="settingslink" class="grouped-left" data-l10n-id="draw.toolbar.settings.title">-->
+        <!--<span class="grouped-left buttonicon buttonicon-settings"></span>-->
+        <!--</a>-->
+        <!--</li>-->
+        <!-- import export -->
+        <!--<li data-key="import_export">-->
+            <!--<a id="importExport" class="grouped-middle"-->
+               <!--data-l10n-id="draw.toolbar.import_export.title">-->
+                <!--<span class="buttonicon buttonicon-import_export"></span>-->
+            <!--</a>-->
+        <!--</li>-->
+        <!-- share & embed -->
+        <!--<li data-key="embed">-->
+        <!--<a id="embedlink" class="grouped-right" data-l10n-id="draw.toolbar.embed.title">-->
+        <!--<span class="buttonicon buttonicon-embed"></span>-->
+        <!--</a>-->
+        <!--</li>-->
 
-                        </ul>
-                    </div>
+        <!-- user stuff -->
+        <!--<li class="separator"></li>-->
+        <!--<li id="usericon" data-key="showusers">-->
+        <!--<a data-l10n-id="draw.toolbar.showusers.title">-->
+        <!--<span class="buttonicon buttonicon-showusers"></span>-->
+        <!--<span id="online_count">1</span>-->
+        <!--</a>-->
+        <!--</li>-->
 
-                    <div id="settings" class="popup">
-                        <h1 data-l10n-id="draw.settings.padSettings"></h1>
+    <!--</ul>-->
+</div>
 
-                        <div class="column">
-                            <h2 data-l10n-id="draw.settings.ClearCanvas">Clear Canvas</h2>
-                            <a>Warning - This will clear the canvas</a>
-                            <button id="clearCanvas">Okay, Clear it!</button>
-                        </div>
-                    </div>
-                    <div id="embed" class="popup">
-                        <h1 data-l10n-id="draw.share">Share & Embed</h1>
+<div id="settings" class="popup">
+    <h1 data-l10n-id="draw.settings.padSettings"></h1>
 
-                        <div id="linkcode">
-                            <h2 data-l10n-id="draw.share.link">Share</h2>
-                            <input id="linkinput" type="text" value="">
-                        </div>
-                        <br>
+    <div class="column">
+        <h2 data-l10n-id="draw.settings.ClearCanvas">Clear Canvas</h2>
+        <a>Warning - This will clear the canvas</a>
+        <button id="clearCanvas">Okay, Clear it!</button>
+    </div>
+</div>
+<div id="embed" class="popup">
+    <h1 data-l10n-id="draw.share">Share & Embed</h1>
 
-                        <div id="embedcode">
-                            <h2 data-l10n-id="draw.share.emebdcode">Embed</h2>
-                            <input id="embedinput" type="text" value="">
-                        </div>
+    <div id="linkcode">
+        <h2 data-l10n-id="draw.share.link">Share</h2>
+        <input id="linkinput" type="text" value="">
+    </div>
+    <br>
 
-                    </div>
-                    <div id="settings" class="popup">
-                        <h1 data-l10n-id="draw.settings.padSettings">Settings</h1>
-
-                        <div class="column">
-
-                            <h2 data-l10n-id="draw.settings.myView"></h2>
-                        </div>
-                    </div>
-                    <div id="importexport" class="popup">
-                        <h1 data-l10n-id="draw.importExport.import_export">Export</h1>
-
-                        <div class="column">
-                            <h2 data-l10n-id="draw.importExport.export"></h2>
-
-                            <div><a id="exportSVG" target="_blank" class="exportlink">Export SVG</a></div>
-                            <div><a id="exportPNG" target="_blank" class="exportlink">Export PNG</a></div>
-                        </div>
-                    </div>
-
-                    <div id="lostConnection" class="hidden">
-                        <p>Lost connection to the server! Please refresh this page.</p>
-                    </div>
-                    <div id="loading" class="hidden" style="display:block;">
-                        <p>Loading existing sketch... Click and hold to access the colour wheel</p>
-                    </div>
-
-                    <input type="file" id="imageInput" accept="image/*"/>
-
-                    <div id="activeColorSwatch"></div>
-                    <div id="canvasContainer">
-                        <canvas id="myCanvas" resize="true"></canvas>
-                        <div id="mycolorpicker">
-                            <div id="colorpickerMover"></div>
-                            <div id="colorpicker"></div>
-                            <div id="opacity">
-                                <div id="opacityLabel">Opacity</div>
-                                <input type="range" min="0" max="255" value="200" id="opacityRangeVal">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--webrtc-->
-                    <!-- https://github.com/andyet/SimpleWebRTC-->
-                    <div class="video_conv">
-                        <div id="remoteVideos"></div>
-                        <video id="localVideo"></video>
-                    </div>
-
-                    <script>
-                        var webrtc = new SimpleWebRTC({
-                            // the id/element dom element that will hold "our" video
-                            localVideoEl: 'localVideo',
-                            // the id/element dom element that will hold remote videos
-                            remoteVideosEl: 'remoteVideos',
-                            // immediately ask for camera access
-                            autoRequestMedia: true
-                        });
-
-                        // we have to wait until it's ready
-                        webrtc.on('readyToCall', function () {
-                            // you can name it anything
-                            webrtc.joinRoom('your awesome room name');
-                        });
-                    </script>
-                    <!--Draw content end-->
-                </div>
-            </div>
-        </section>
+    <div id="embedcode">
+        <h2 data-l10n-id="draw.share.emebdcode">Embed</h2>
+        <input id="embedinput" type="text" value="">
     </div>
 
-    <!--Footer Start-->
-    <footer class="main-footer">
-        <div class="pull-right hidden-xs">
-            <b>Version</b> 1.0.0
-        </div>
-        <strong>Copyright &copy; 2015 <a href="#">Siplo</a></strong> | All
-        rights reserved.
-    </footer>
-    <!--Footer end-->
-
 </div>
+<div id="settings" class="popup">
+    <h1 data-l10n-id="draw.settings.padSettings">Settings</h1>
+
+    <div class="column">
+
+        <h2 data-l10n-id="draw.settings.myView"></h2>
+    </div>
+</div>
+<div id="importexport" class="popup">
+    <h1 data-l10n-id="draw.importExport.import_export">Export</h1>
+
+    <div class="column">
+        <h2 data-l10n-id="draw.importExport.export"></h2>
+
+        <div><a id="exportSVG" target="_blank" class="exportlink">Export SVG</a></div>
+        <div><a id="exportPNG" target="_blank" class="exportlink">Export PNG</a></div>
+    </div>
+</div>
+
+<div id="lostConnection" class="hidden">
+    <p>Lost connection to the server! Please refresh this page.</p>
+</div>
+<div id="loading" class="hidden" style="display:block;">
+    <p>Loading existing sketch... Click and hold to access the colour wheel</p>
+</div>
+
+<input type="file" id="imageInput" accept="image/*"/>
+
+<div id="activeColorSwatch"></div>
+<div id="canvasContainer">
+    <canvas id="myCanvas" resize="true"></canvas>
+    <div id="mycolorpicker">
+        <div id="colorpickerMover"></div>
+        <div id="colorpicker"></div>
+        <div id="opacity">
+            <div id="opacityLabel">Opacity</div>
+            <input type="range" min="0" max="255" value="200" id="opacityRangeVal">
+        </div>
+    </div>
+</div>
+
+<!--<div class="tools">-->
+    <!--<ul class="menu_left">-->
+        <!--&lt;!&ndash; paint brush &ndash;&gt;-->
+        <!--<li class="acl-write" id="drawTool" data-key="draw">-->
+            <!--<a class="grouped-left" data-l10n-id="draw.toolbar.draw.title" title="Brush Tool">-->
+                <!--<span class="buttonicon buttonicon-draw"></span>-->
+            <!--</a>-->
+        <!--</li>-->
+        <!--&lt;!&ndash; pencil brush &ndash;&gt;-->
+        <!--<li class="acl-write" id="pencilTool" data-key="pencil">-->
+            <!--<a class="grouped-middle" data-l10n-id="draw.toolbar.pencil.title" title="Pencil Tool">-->
+                <!--<span class="buttonicon buttonicon-pencil"></span>-->
+            <!--</a>-->
+        <!--</li>-->
+        <!--&lt;!&ndash; Select Tool &ndash;&gt;-->
+        <!--<li class="acl-write" id="selectTool" data-key="select">-->
+            <!--<a class="grouped-middle" data-l10n-id="draw.toolbar.select.title" title="Select Tool">-->
+                <!--<span class="buttonicon buttonicon-select"></span>-->
+            <!--</a>-->
+        <!--</li>-->
+
+        <!--&lt;!&ndash; color Selector Toggle &ndash;&gt;-->
+        <!--<li class="acl-write" id="colorToggle" data-key="color">-->
+            <!--<a class="grouped-right" data-l10n-id="draw.toolbar.colorToggle.title" title="Color">-->
+                    <!--<span class="buttonicon buttonicon-color" style="opacity:0.5">-->
+                      <!--<div style="display:inline-block;width:5px; height:16px; background-color:red;margin:0;padding:0;float:left"></div>-->
+                      <!--<div style="display:inline-block;width:5px; height:16px; background-color:blue;margin:0;padding:0;float:left"></div>-->
+                      <!--<div style="display:inline-block;width:5px; height:16px; background-color:green;margin:0;padding:0;float:left"></div>-->
+                    <!--</span>-->
+            <!--</a>-->
+        <!--</li>-->
+
+        <!--<li class="separator"></li>-->
+
+        <!--&lt;!&ndash;Clear Drawing&ndash;&gt;-->
+        <!--<li class="acl-write" id="clearImage" data-key="clear">-->
+            <!--<a class="grouped-left" data-l10n-id="draw.toolbar.clearImage"-->
+               <!--class="clearCanvasPrompt"-->
+               <!--title="Clear Drawing">-->
+                <!--<span class="buttonicon buttonicon-clearImage"-->
+                      <!--style="background-color:transparent;background-image:none;border:dotted 1px black;margin:0;color:#000;height:14px;line-height:14px">X</span>-->
+            <!--</a>-->
+        <!--</li>-->
+
+        <!--&lt;!&ndash;<li class="acl-write" id="toggleBackground" data-key="clear">&ndash;&gt;-->
+        <!--&lt;!&ndash;<a class="grouped-left" data-l10n-id="draw.toolbar.toggleBackground"&ndash;&gt;-->
+        <!--&lt;!&ndash;class="toggleBackground"&ndash;&gt;-->
+        <!--&lt;!&ndash;title="Toggle Transparent Background">&ndash;&gt;-->
+        <!--&lt;!&ndash;<span class="buttonicon buttonicon-toggleBackground"&ndash;&gt;-->
+        <!--&lt;!&ndash;style="background-color:#fff;background-image:none;border:solid 1px black;margin:0;height:14px">&ndash;&gt;-->
+        <!--&lt;!&ndash;</a>&ndash;&gt;-->
+        <!--&lt;!&ndash;</li>&ndash;&gt;-->
+
+        <!--&lt;!&ndash; Upload &ndash;&gt;-->
+        <!--<li class="acl-write" id="uploadImage" data-key="upload">-->
+            <!--<a class="grouped-middle" data-l10n-id="draw.toolbar.upload.title"-->
+               <!--title="Upload an Image">-->
+                <!--<span class="buttonicon buttonicon-upload"></span>-->
+            <!--</a>-->
+        <!--</li>-->
+
+        <!--&lt;!&ndash;Import or export&ndash;&gt;-->
+        <!--<li data-key="import_export">-->
+            <!--<a id="importExport" class="grouped-right"-->
+               <!--data-l10n-id="draw.toolbar.import_export.title">-->
+                <!--<span class="buttonicon buttonicon-import_export"></span>-->
+            <!--</a>-->
+        <!--</li>-->
+    <!--</ul>-->
+<!--</div>-->
+
+<!--webrtc-->
+<!-- https://github.com/andyet/SimpleWebRTC-->
+<div class="video_conv" style="line-height: 0">
+    <div id="remoteVideos"></div>
+    <video id="localVideo"></video>
+</div>
+
+<script>
+    var webrtc = new SimpleWebRTC({
+        // the id/element dom element that will hold "our" video
+        localVideoEl: 'localVideo',
+        // the id/element dom element that will hold remote videos
+        remoteVideosEl: 'remoteVideos',
+        // immediately ask for camera access
+        autoRequestMedia: true
+    });
+
+    // we have to wait until it's ready
+    webrtc.on('readyToCall', function () {
+        // you can name it anything
+        webrtc.joinRoom('your awesome room name');
+    });
+</script>
+<!--Draw content end-->
+
 </body>
 </html>
