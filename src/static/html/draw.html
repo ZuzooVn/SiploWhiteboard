@@ -291,29 +291,29 @@
     <!--</ul>-->
 <!--</div>-->
 
-<!--webrtc-->
-<!-- https://github.com/andyet/SimpleWebRTC-->
-<div class="video_conv" style="line-height: 0">
-    <div id="remoteVideos"></div>
-    <video id="localVideo"></video>
-</div>
+<!--&lt;!&ndash;webrtc&ndash;&gt;-->
+<!--&lt;!&ndash; https://github.com/andyet/SimpleWebRTC&ndash;&gt;-->
+<!--<div class="video_conv" style="line-height: 0">-->
+    <!--<div id="remoteVideos"></div>-->
+    <!--<video id="localVideo"></video>-->
+<!--</div>-->
 
-<script>
-    var webrtc = new SimpleWebRTC({
-        // the id/element dom element that will hold "our" video
-        localVideoEl: 'localVideo',
-        // the id/element dom element that will hold remote videos
-        remoteVideosEl: 'remoteVideos',
-        // immediately ask for camera access
-        autoRequestMedia: true
-    });
+<!--<script>-->
+    <!--var webrtc = new SimpleWebRTC({-->
+        <!--// the id/element dom element that will hold "our" video-->
+        <!--localVideoEl: 'localVideo',-->
+        <!--// the id/element dom element that will hold remote videos-->
+        <!--remoteVideosEl: 'remoteVideos',-->
+        <!--// immediately ask for camera access-->
+        <!--autoRequestMedia: true-->
+    <!--});-->
 
-    // we have to wait until it's ready
-    webrtc.on('readyToCall', function () {
-        // you can name it anything
-        webrtc.joinRoom('your awesome room name');
-    });
-</script>
+    <!--// we have to wait until it's ready-->
+    <!--webrtc.on('readyToCall', function () {-->
+        <!--// you can name it anything-->
+        <!--webrtc.joinRoom('your awesome room name');-->
+    <!--});-->
+<!--</script>-->
 <!--Draw content end-->
 
 </body>
