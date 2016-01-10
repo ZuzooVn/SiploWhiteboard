@@ -21,7 +21,6 @@
     "kurento-client": "Kurento/kurento-client-js",
     "minimist": "^1.1.1",
     "paper": "0.9.22",
-    "pm2": "^1.0.0",
     "redis": "",
     "socket.io": "~1.0.0",
     "ueberDB": "~0.2.1",
