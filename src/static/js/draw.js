@@ -1,6 +1,6 @@
 // Please refactor me, this is mostly a complete car crash with globals everywhere.
 
-tool.minDistance = 10;
+tool.minDistance = 1;
 tool.maxDistance = 45;
 
 var room = window.location.pathname.split("/")[2];
@@ -253,7 +253,7 @@ function onMouseDrag(event) {
     }
     path.add(top);
     path.insert(0, bottom);
-    path.smooth();
+    //path.smooth();
     view.draw();
 
     // Add data to path
@@ -323,7 +323,7 @@ function onMouseUp(event) {
     // Close the users path
     path.add(event.point);
     path.closed = true;
-    path.smooth();
+    //path.smooth();
     view.draw();
 
     // Send the path to other users
@@ -796,7 +796,7 @@ var end_external_path = function(points, artist) {
     // Close the path
     path.add(new Point(points.end[1], points.end[2]));
     path.closed = true;
-    path.smooth();
+    //path.smooth();
     view.draw();
 
     // Remove the old data
@@ -844,7 +844,7 @@ progress_external_path = function(points, artist) {
 
   }
 
-  path.smooth();
+  //path.smooth();
   view.draw();
 
 };
