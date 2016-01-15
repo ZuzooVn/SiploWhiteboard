@@ -75,7 +75,7 @@ app.get('/', function(req, res){
 
 // Drawings
 //Use this part for authentication
-app.get('/live/*', function(req, res){
+app.get('/whiteboard/*', function(req, res){
 
   res.sendfile(__dirname + '/src/static/html/draw.html');
   //var cookies = new Cookies( req, res, "PHPSESSID" )
