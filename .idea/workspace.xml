@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f4f2f468-4d88-4f24-acce-532990a98232" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/static/html/draw.html" afterPath="$PROJECT_DIR$/src/static/html/draw.html" />
-    </list>
+    <list default="true" id="f4f2f468-4d88-4f24-acce-532990a98232" name="Default" comment="" />
     <ignored path="draw.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />

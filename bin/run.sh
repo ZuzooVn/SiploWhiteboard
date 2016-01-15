@@ -25,4 +25,4 @@ bin/installDeps.sh $* || exit 1
 
 #Move to the node folder and start
 echo "start..."
-node classroom.js $*
+node whiteboard.js $*
