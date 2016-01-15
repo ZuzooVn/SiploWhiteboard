@@ -115,7 +115,7 @@ app.get('/tests/frontend', function (req, res) {
 });
 
 // Static files IE Javascript and CSS
-app.use("/static", express.static(__dirname + '/src/static'));
+//app.use("/static", express.static(__dirname + '/src/static'));
 app.use("/wb_assets/static", express.static(__dirname + '/src/static'));
 
 
