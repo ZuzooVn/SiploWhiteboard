@@ -3,3 +3,4 @@ settings.json
 npm-debug.log
 *~
 .idea/
+src/static/bower_components
