@@ -6,7 +6,7 @@
     "url": "http://github.com/JohnMcLear/draw.git"
   },
   "scripts": {
-    "postinstall": "cd src/static && bower install"
+    "postinstall": "bower install"
   },
   "version": "0.1.2",
   "engines": {
