@@ -260,6 +260,10 @@ body {
     background-image: url('../../static/img/pencil.png');
 }
 
+.buttonicon-eraser{
+    background-image: url('../../static/img/marker.png');
+}
+
 .buttonicon-select {
     background-image: url('../../static/img/select.png');
 }

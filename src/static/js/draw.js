@@ -190,13 +190,16 @@ function onMouseDown(event) {
     }
   }, 100);
 
-  if (activeTool == "draw" || activeTool == "pencil") {
+  if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser") {
     var point = event.point;
     path = new Path();
     if (activeTool == "draw") {
       path.fillColor = active_color_rgb;
     } else if (activeTool == "pencil") {
       path.strokeColor = active_color_rgb;
+      path.strokeWidth = 2;
+    }else if (activeTool == "eraser") {
+      path.strokeColor = new RgbColor(255, 255, 255, 67);;
       path.strokeWidth = 2;
     }
     path.add(event.point);
@@ -241,13 +244,26 @@ function onMouseDrag(event) {
     return;
   }
 
-  if (activeTool == "draw" || activeTool == "pencil") {
+  if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser") {
     var step = event.delta / 2;
     step.angle += 90;
     if (activeTool == "draw") {
       var top = event.middlePoint + step;
       var bottom = event.middlePoint - step;
     } else if (activeTool == "pencil") {
+      var top = event.middlePoint;
+      bottom = event.middlePoint;
+    }else if (activeTool == "eraser"){
+      //TODO remove debug
+      console.log('active tool : eraser');
+      //active_color_rgb = new RgbColor(255, 0, 0, 67);
+      //active_color_rgb._alpha = opacity;
+      //active_color_json = {
+      //  "red": 25,
+      //  "green": 0,
+      //  "blue": 0,
+      //  "opacity": 50
+      //};
       var top = event.middlePoint;
       bottom = event.middlePoint;
     }
@@ -539,6 +555,19 @@ $('#pencilTool').on('click', function() {
   $('#myCanvas').css('cursor', 'pointer');
   paper.project.activeLayer.selected = false;
 });
+$('#eraserTool').on('click', function() {
+  //TODO remove debug
+  console.log('eraser selected');
+  $('#editbar > ul > li > a').css({
+    background: ""
+  }); // remove the backgrounds from other buttons
+  $('#eraserTool > a').css({
+    background: "#eee"
+  }); // set the selecttool css to show it as active
+  activeTool = "eraser";
+  $('#myCanvas').css('cursor', 'pointer');
+  paper.project.activeLayer.selected = false;
+});
 $('#drawTool').on('click', function() {
   $('#editbar > ul > li > a').css({
     background: ""
@@ -718,7 +747,7 @@ socket.on('project:load', function(json) {
   })
 
   view.draw();
-  $.get("../static/img/wheel.png");
+  $.get("../src/static/img/wheel.png");
 });
 
 socket.on('project:load:error', function() {
