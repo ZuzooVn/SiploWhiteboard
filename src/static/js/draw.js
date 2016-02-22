@@ -199,7 +199,7 @@ function onMouseDown(event) {
       path.strokeColor = active_color_rgb;
       path.strokeWidth = 2;
     }else if (activeTool == "eraser") {
-      path.strokeColor = new RgbColor(255, 255, 255, 67);;
+      path.strokeColor = new RgbColor(255, 255, 255, 67);
       path.strokeWidth = 2;
     }
     path.add(event.point);
@@ -258,12 +258,12 @@ function onMouseDrag(event) {
       console.log('active tool : eraser');
       //active_color_rgb = new RgbColor(255, 0, 0, 67);
       //active_color_rgb._alpha = opacity;
-      //active_color_json = {
-      //  "red": 25,
-      //  "green": 0,
-      //  "blue": 0,
-      //  "opacity": 50
-      //};
+      active_color_json = {
+        "red": 25,
+        "green": 0,
+        "blue": 0,
+        "opacity": 50
+      };
       var top = event.middlePoint;
       bottom = event.middlePoint;
     }
@@ -335,7 +335,7 @@ function onMouseUp(event) {
   }
   clearInterval(mouseHeld);
 
-  if (activeTool == "draw" || activeTool == "pencil") {
+  if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser") {
     // Close the users path
     path.add(event.point);
     path.closed = true;
@@ -565,6 +565,19 @@ $('#eraserTool').on('click', function() {
     background: "#eee"
   }); // set the selecttool css to show it as active
   activeTool = "eraser";
+  $('#myCanvas').css('cursor', 'pointer');
+  paper.project.activeLayer.selected = false;
+});
+$('#lineTool').on('click', function() {
+  //TODO remove debug
+  console.log('line tool selected');
+  $('#editbar > ul > li > a').css({
+    background: ""
+  }); // remove the backgrounds from other buttons
+  $('#lineTool > a').css({
+    background: "#eee"
+  }); // set the selecttool css to show it as active
+  activeTool = "line";
   $('#myCanvas').css('cursor', 'pointer');
   paper.project.activeLayer.selected = false;
 });

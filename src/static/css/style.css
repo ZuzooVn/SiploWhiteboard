@@ -264,6 +264,10 @@ body {
     background-image: url('../../static/img/marker.png');
 }
 
+.buttonicon-line{
+    background-image: url('../../static/img/upload.png');
+}
+
 .buttonicon-select {
     background-image: url('../../static/img/select.png');
 }

@@ -28,7 +28,11 @@ exports.progressExternalPath = function (room, points, artist) {
     else if (points.tool == "pencil") {
       path.strokeColor = color;
       path.strokeWidth = 2;
-    } else { // assume tool is not supplied, set to 'draw' as default
+    }else if (points.tool == "eraser") {
+      path.strokeColor = color;
+      path.strokeWidth = 2;
+    }
+    else { // assume tool is not supplied, set to 'draw' as default
       path.fillColor = color;
     }
     path.name = points.name;
