@@ -191,8 +191,19 @@ function onMouseDown(event) {
   }, 100);
 
   if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser") {
+    // The data we will send every 100ms on mouse drag
+
     var point = event.point;
     path = new Path();
+    path.add(event.point);
+    path.name = uid + ":" + (++paper_object_count);
+    path_to_send = {
+      name: path.name,
+      rgba: active_color_json,
+      start: event.point,
+      path: [],
+      tool: activeTool
+    };
     if (activeTool == "draw") {
       path.fillColor = active_color_rgb;
     } else if (activeTool == "pencil") {
@@ -201,27 +212,24 @@ function onMouseDown(event) {
     }else if (activeTool == "eraser") {
       path.strokeColor = new RgbColor(255, 255, 255, 1);
       path.strokeWidth = 4;
-      active_color_rgb = new RgbColor(255, 255, 255, 1);
-      active_color_rgb._alpha = 1;
-      active_color_json = {
-        "red": 255,
-        "green": 255,
-        "blue": 255,
-        "opacity": 1
+      // The data we will send every 100ms on mouse drag
+      path_to_send = {
+        name: path.name,
+        rgba:  {
+          "red": 255,
+          "green": 255,
+          "blue": 255,
+          "opacity": 1
+        },
+        start: event.point,
+        path: [],
+        tool: activeTool
       };
     }
-    path.add(event.point);
-    path.name = uid + ":" + (++paper_object_count);
+
     view.draw();
 
-    // The data we will send every 100ms on mouse drag
-    path_to_send = {
-      name: path.name,
-      rgba: active_color_json,
-      start: event.point,
-      path: [],
-      tool: activeTool
-    };
+
   } else if (activeTool == "select") {
     // Select item
     $("#myCanvas").css("cursor", "pointer");
@@ -551,7 +559,7 @@ $('#pencilTool').on('click', function() {
     background: ""
   }); // remove the backgrounds from other buttons
   $('#pencilTool > a').css({
-    background: "#eee"
+    background: "orange"
   }); // set the selecttool css to show it as active
   activeTool = "pencil";
   $('#myCanvas').css('cursor', 'pointer');
@@ -562,7 +570,7 @@ $('#eraserTool').on('click', function() {
     background: ""
   }); // remove the backgrounds from other buttons
   $('#eraserTool > a').css({
-    background: "#eee"
+    background: "orange"
   }); // set the selecttool css to show it as active
   activeTool = "eraser";
   $('#myCanvas').css('cursor', 'pointer');
@@ -576,7 +584,7 @@ $('#lineTool').on('click', function() {
     background: ""
   }); // remove the backgrounds from other buttons
   $('#lineTool > a').css({
-    background: "#eee"
+    background: "orange"
   }); // set the selecttool css to show it as active
   activeTool = "line";
   $('#myCanvas').css('cursor', 'pointer');
@@ -587,7 +595,7 @@ $('#drawTool').on('click', function() {
     background: ""
   }); // remove the backgrounds from other buttons
   $('#drawTool > a').css({
-    background: "#eee"
+    background: "orange"
   }); // set the selecttool css to show it as active
   activeTool = "draw";
   $('#myCanvas').css('cursor', 'pointer');
@@ -598,7 +606,7 @@ $('#selectTool').on('click', function() {
     background: ""
   }); // remove the backgrounds from other buttons
   $('#selectTool > a').css({
-    background: "#eee"
+    background: "orange"
   }); // set the selecttool css to show it as active
   activeTool = "select";
   $('#myCanvas').css('cursor', 'default');

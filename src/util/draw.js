@@ -47,7 +47,7 @@ exports.progressExternalPath = function (room, points, artist) {
     path.insert(0, new drawing.Point(paths[i].bottom[1], paths[i].bottom[2]));
   }
 
-  path.smooth();
+  //path.smooth();
   project.view.draw();
 };
 
@@ -59,7 +59,7 @@ exports.endExternalPath = function (room, points, artist) {
     // Close the path
     path.add(new drawing.Point(points.end[1], points.end[2]));
     path.closed = true;
-    path.smooth();
+    //path.smooth();
     project.view.draw();
     // Remove the old data
     projects[room].external_paths[artist] = false;

@@ -72,23 +72,29 @@ body {
 }
 
 .toolbar ul li a:hover {
-    background: #fff;
-    background: -webkit-linear-gradient(#f4f4f4, #e4e4e4);
-    background: -moz-linear-gradient(#f4f4f4, #e4e4e4);
-    background: -o-linear-gradient(#f4f4f4, #e4e4e4);
-    background: -ms-linear-gradient(#f4f4f4, #e4e4e4);
-    background: linear-gradient(#f4f4f4, #e4e4e4);
+    background: rgba(255,154,0,.5);
+    background: -webkit-linear-gradient( rgba(255,154,0,.5),  rgba(255,154,0,.5));
+    background: -moz-linear-gradient( rgba(255,154,0,.5),  rgba(255,154,0,.5));
+    background: -o-linear-gradient( rgba(255,154,0,.5),  rgba(255,154,0,.5));
+    background: -ms-linear-gradient( rgba(255,154,0,.5),  rgba(255,154,0,.5));
+    background: linear-gradient( rgba(255,154,0,.5), rgba(255,154,0,.5));
+    /*background: -webkit-linear-gradient(#f4f4f4, #e4e4e4);*/
+    /*background: -moz-linear-gradient(#f4f4f4, #e4e4e4);*/
+    /*background: -o-linear-gradient(#f4f4f4, #e4e4e4);*/
+    /*background: -ms-linear-gradient(#f4f4f4, #e4e4e4);*/
+    /*background: linear-gradient(#f4f4f4, #e4e4e4);*/
 }
 
 .toolbar ul li a {
+
     background: #fff;
     background: -webkit-linear-gradient(#fff, #f0f0f0);
     background: -moz-linear-gradient(#fff, #f0f0f0);
     background: -o-linear-gradient(#fff, #f0f0f0);
     background: -ms-linear-gradient(#fff, #f0f0f0);
     background: linear-gradient(#fff, #f0f0f0);
-    border: 1px solid #ccc;
-    border-radius: 3px;
+    /*border: 1px solid #ccc;*/
+    /*border-radius: 3px;*/
     color: #ccc;
     cursor: pointer;
     display: inline-block;
@@ -244,8 +250,8 @@ body {
 }
 
 .buttonicon {
-    width: 16px;
-    height: 16px;
+    width: 24px;
+    height: 24px;
     background-image: url('../../static/img/etherpad_lite_icons.png');
     background-repeat: no-repeat;
     display: inline-block;
@@ -261,7 +267,7 @@ body {
 }
 
 .buttonicon-eraser{
-    background-image: url('../../static/img/marker.png');
+    background-image: url('../../static/img/eraser.png');
 }
 
 .buttonicon-line{
@@ -275,13 +281,19 @@ body {
 .buttonicon-upload {
     background-image: url('../../static/img/upload.png');
 }
-
+.buttonicon-color {
+    background-image: url('../../static/img/color.png');
+}
+.buttonicon-clearImage {
+    background-image: url('../../static/img/close.png');
+}
 .buttonicon-settings {
     background-position: 0px -436px
 }
 
 .buttonicon-import_export {
-    background-position: 0px -68px
+    background-image: url('../../static/img/export.png');
+    /*background-position: 0px -68px*/
 }
 
 .buttonicon-embed {

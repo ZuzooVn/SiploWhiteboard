@@ -141,7 +141,7 @@ io.sockets.on('connection', function (socket) {
       loadError(socket);
       return;
     }
-    console.log(co_ordinates);
+    //console.log(co_ordinates);
     io.in(room).emit('draw:progress', uid, co_ordinates);
     draw.progressExternalPath(room, JSON.parse(co_ordinates), uid);
   });
