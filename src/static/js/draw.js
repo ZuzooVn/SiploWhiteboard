@@ -873,7 +873,7 @@ progress_external_path = function(points, artist) {
     }
     else if (points.tool == "eraser") {
       path.strokeColor = color;
-      path.strokeWidth = 2;
+      path.strokeWidth = 4;
     }
     path.name = points.name;
     path.add(start_point);
