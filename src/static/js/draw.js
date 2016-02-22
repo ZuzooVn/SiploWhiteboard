@@ -199,8 +199,16 @@ function onMouseDown(event) {
       path.strokeColor = active_color_rgb;
       path.strokeWidth = 2;
     }else if (activeTool == "eraser") {
-      path.strokeColor = new RgbColor(255, 255, 255, 67);
-      path.strokeWidth = 2;
+      path.strokeColor = new RgbColor(255, 255, 255, 1);
+      path.strokeWidth = 4;
+      active_color_rgb = new RgbColor(255, 255, 255, 1);
+      active_color_rgb._alpha = 1;
+      active_color_json = {
+        "red": 255,
+        "green": 255,
+        "blue": 255,
+        "opacity": 1
+      };
     }
     path.add(event.point);
     path.name = uid + ":" + (++paper_object_count);
@@ -256,14 +264,8 @@ function onMouseDrag(event) {
     }else if (activeTool == "eraser"){
       //TODO remove debug
       console.log('active tool : eraser');
-      //active_color_rgb = new RgbColor(255, 0, 0, 67);
-      //active_color_rgb._alpha = opacity;
-      active_color_json = {
-        "red": 25,
-        "green": 0,
-        "blue": 0,
-        "opacity": 50
-      };
+
+
       var top = event.middlePoint;
       bottom = event.middlePoint;
     }
@@ -556,8 +558,6 @@ $('#pencilTool').on('click', function() {
   paper.project.activeLayer.selected = false;
 });
 $('#eraserTool').on('click', function() {
-  //TODO remove debug
-  console.log('eraser selected');
   $('#editbar > ul > li > a').css({
     background: ""
   }); // remove the backgrounds from other buttons
@@ -567,6 +567,7 @@ $('#eraserTool').on('click', function() {
   activeTool = "eraser";
   $('#myCanvas').css('cursor', 'pointer');
   paper.project.activeLayer.selected = false;
+
 });
 $('#lineTool').on('click', function() {
   //TODO remove debug
@@ -757,7 +758,7 @@ socket.on('project:load', function(json) {
     ev.stopPropagation();
   }).on('change', function(ev) {
     update_active_color();
-  })
+  });
 
   view.draw();
   $.get("../src/static/img/wheel.png");
@@ -870,7 +871,10 @@ progress_external_path = function(points, artist) {
       path.strokeColor = color;
       path.strokeWidth = 2;
     }
-
+    else if (points.tool == "eraser") {
+      path.strokeColor = color;
+      path.strokeWidth = 2;
+    }
     path.name = points.name;
     path.add(start_point);
 
