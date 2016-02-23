@@ -40,11 +40,16 @@ exports.progressExternalPath = function (room, points, artist) {
   }
 
   // Draw all the points along the length of the path
-  var paths = points.path;
-  var length = paths.length;
-  for (var i = 0; i < length; i++) {
-    path.add(new drawing.Point(paths[i].top[1], paths[i].top[2]));
-    path.insert(0, new drawing.Point(paths[i].bottom[1], paths[i].bottom[2]));
+  if(points.tool == "line"){
+
+  }
+  else {
+    var paths = points.path;
+    var length = paths.length;
+    for (var i = 0; i < length; i++) {
+      path.add(new drawing.Point(paths[i].top[1], paths[i].top[2]));
+      path.insert(0, new drawing.Point(paths[i].bottom[1], paths[i].bottom[2]));
+    }
   }
 
   //path.smooth();

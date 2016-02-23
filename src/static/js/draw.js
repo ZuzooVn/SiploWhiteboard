@@ -39,7 +39,7 @@ $(document).ready(function() {
     scrolled(ev.pageX, ev.pageY, ev.detail);
   });
 
-  var drawingPNG = localStorage.getItem("drawingPNG"+room)
+  var drawingPNG = localStorage.getItem("drawingPNG"+room);
 
   // Temporarily set background as image from memory to improve UX
   $('#canvasContainer').css("background-image", 'url(' + drawingPNG + ')');
@@ -146,7 +146,7 @@ $('#colorToggle').on('click', function() {
 });
 
 $('#clearImage').click(function() {
-  var p = confirm("Are you sure you want to clear the drawing for everyone?");
+  var p = confirm("Are you sure you want to clear the drawing?");
   if (p) {
     clearCanvas();
     socket.emit('canvas:clear', room);
@@ -168,6 +168,8 @@ var activeTool = "pencil";
 var mouseTimer = 0; // used for getting if the mouse is being held down but not dragged IE when bringin up color picker
 var mouseHeld; // global timer for if mouse is held.
 
+var lineStart;
+var lineEnd;
 function onMouseDown(event) {
   if (event.which === 2) return; // If it's middle mouse button do nothing -- This will be reserved for panning in the future.
   $('.popup').fadeOut();
@@ -190,7 +192,7 @@ function onMouseDown(event) {
     }
   }, 100);
 
-  if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser") {
+  if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser" ||activeTool == "line") {
     // The data we will send every 100ms on mouse drag
 
     var point = event.point;
@@ -226,6 +228,17 @@ function onMouseDown(event) {
         tool: activeTool
       };
     }
+    else if(activeTool == "line"){
+
+      lineStart = point;
+      //path.add(2);
+      //path.insert(0, 3);
+      //var rectangle = new Rectangle(new Point(50, 50), new Point(150, 100));
+      //var cornerSize = new Size(20, 20);
+      //var path = new Path.RoundRectangle(rectangle, cornerSize);
+      //path.fillColor = 'black';
+
+    }
 
     view.draw();
 
@@ -243,19 +256,6 @@ function onMouseDown(event) {
     } else {
       paper.project.activeLayer.selected = false;
     }
-  } else if(activeTool == "line"){
-    var point = event.point;
-    path = new Path();
-    path.add(event.point);
-    path.name = uid + ":" + (++paper_object_count);
-    path_to_send = {
-      name: path.name,
-      rgba: active_color_json,
-      start: event.point,
-      path: [],
-      tool: activeTool
-    };
-    path.fillColor = active_color_rgb;
   }
 }
 
@@ -273,7 +273,7 @@ function onMouseDrag(event) {
     return;
   }
 
-  if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser") {
+  if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser"||activeTool=="line") {
     var step = event.delta / 2;
     step.angle += 90;
     if (activeTool == "draw") {
@@ -290,16 +290,29 @@ function onMouseDrag(event) {
       var top = event.middlePoint;
       bottom = event.middlePoint;
     }
-    path.add(top);
-    path.insert(0, bottom);
+
+
     //path.smooth();
+    if(activeTool == "line"){
+      path.removeSegment(0);
+      lineEnd = event.point;
+      path = new Path.Line(lineStart,lineEnd);
+      path.strokeColor = active_color_rgb;
+      path.strokeWidth = 2;
+      path_to_send.path = path;
+    }
+    else{
+      path.add(top);
+      path.insert(0, bottom);
+      // Add data to path
+      path_to_send.path.push({
+        top: top,
+        bottom: bottom
+      });
+    }
     view.draw();
 
-    // Add data to path
-    path_to_send.path.push({
-      top: top,
-      bottom: bottom
-    });
+
 
     // Send paths every 100ms
     if (!timer_is_active) {
@@ -346,6 +359,7 @@ function onMouseDrag(event) {
     }
     item_move_timer_is_active = true;
   }
+
 
 }
 
@@ -782,7 +796,7 @@ socket.on('project:load', function(json) {
   });
 
   view.draw();
-  $.get("../src/static/img/wheel.png");
+  $.get("../../img/wheel.png");
 });
 
 socket.on('project:load:error', function() {
@@ -896,8 +910,14 @@ progress_external_path = function(points, artist) {
       path.strokeColor = color;
       path.strokeWidth = 4;
     }
-    path.name = points.name;
-    path.add(start_point);
+    if(points.tool == "line"){
+      path.name = points.name;
+      path.add(start_point);
+    }
+    else {
+      path.name = points.name;
+      path.add(start_point);
+    }
 
   }
 
