@@ -243,6 +243,19 @@ function onMouseDown(event) {
     } else {
       paper.project.activeLayer.selected = false;
     }
+  } else if(activeTool == "line"){
+    var point = event.point;
+    path = new Path();
+    path.add(event.point);
+    path.name = uid + ":" + (++paper_object_count);
+    path_to_send = {
+      name: path.name,
+      rgba: active_color_json,
+      start: event.point,
+      path: [],
+      tool: activeTool
+    };
+    path.fillColor = active_color_rgb;
   }
 }
 
