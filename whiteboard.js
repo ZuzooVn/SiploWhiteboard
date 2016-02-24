@@ -42,7 +42,7 @@ if(settings.ssl){
  */
 var clientSettings = {
   "tool": settings.tool
-}
+};
 
 // Config Express to server static files from /
 app.configure(function(){
