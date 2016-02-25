@@ -179,18 +179,18 @@ function onMouseDown(event) {
     return;
   }
 
-  mouseTimer = 0;
-  mouseHeld = setInterval(function() { // is the mouse being held and not dragged?
-    mouseTimer++;
-    if (mouseTimer > 5) {
-      mouseTimer = 0;
-      $('#mycolorpicker').toggle(); // show the color picker
-      $('#mycolorpicker').css({
-        "left": event.event.pageX - 250,
-        "top": event.event.pageY - 100
-      }); // make it in the smae position
-    }
-  }, 100);
+  //mouseTimer = 0;
+  //mouseHeld = setInterval(function() { // is the mouse being held and not dragged?
+  //  mouseTimer++;
+  //  if (mouseTimer > 5) {
+  //    mouseTimer = 0;
+  //    $('#mycolorpicker').toggle(); // show the color picker
+  //    $('#mycolorpicker').css({
+  //      "left": event.event.pageX - 250,
+  //      "top": event.event.pageY - 100
+  //    }); // make it in the smae position
+  //  }
+  //}, 100);
 
   if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser" ||activeTool == "line") {
     // The data we will send every 100ms on mouse drag
@@ -231,6 +231,7 @@ function onMouseDown(event) {
     else if(activeTool == "line"){
 
       lineStart = point;
+      console.log("line start");
       //path.add(2);
       //path.insert(0, 3);
       //var rectangle = new Rectangle(new Point(50, 50), new Point(150, 100));
@@ -299,7 +300,12 @@ function onMouseDrag(event) {
       path = new Path.Line(lineStart,lineEnd);
       path.strokeColor = active_color_rgb;
       path.strokeWidth = 2;
-      path_to_send.path = path;
+      path_to_send.path={
+        start:lineStart,
+        end:lineEnd
+      };
+      //console.log("line draw");
+      //console.log(path_to_send);
     }
     else{
       path.add(top);
@@ -320,6 +326,8 @@ function onMouseDrag(event) {
       send_paths_timer = setInterval(function() {
 
         socket.emit('draw:progress', room, uid, JSON.stringify(path_to_send));
+        console.log("sending");
+        console.log(path_to_send);
         path_to_send.path = new Array();
 
       }, 100);
@@ -372,7 +380,7 @@ function onMouseUp(event) {
   }
   clearInterval(mouseHeld);
 
-  if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser") {
+  if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser"||activeTool=="line") {
     // Close the users path
     path.add(event.point);
     path.closed = true;
@@ -796,7 +804,7 @@ socket.on('project:load', function(json) {
   });
 
   view.draw();
-  $.get("/../img/wheel.png");
+  $.get("../../img/wheel.png");
 });
 
 socket.on('project:load:error', function() {
@@ -887,9 +895,23 @@ var end_external_path = function(points, artist) {
 // Continues to draw a path in real time
 progress_external_path = function(points, artist) {
   if(points.tool=="line") {
-    var path = points.path;
-    path.strokeColor = active_color_rgb;
-    path.strokeWidth = 2;
+    //var path = external_paths[artist];
+    //if (!path) {
+
+      // Creates the path in an easy to access way
+      external_paths[artist] = new Path();
+      //path = external_paths[artist];
+      //console.log("empty path");
+      //console.log(points);
+
+    //}
+    console.log("external path");
+    console.log(points);
+    var line = new Path.Line(new Point(points.path.start[1], points.path.start[2]), new Point(points.path.end[1], points.path.end[2]));
+    line.strokeColor = new RgbColor(255, 0, 0, 1);
+    line.strokeWidth = 2;
+    path = line;
+
 
   }
   else{
@@ -918,7 +940,7 @@ progress_external_path = function(points, artist) {
       }
       if (points.tool == "line") {
         //start_point = new Line();
-        path.add(points.path);
+        //path.add(points.path);
       }
       else {
         path.name = points.name;
