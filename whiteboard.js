@@ -129,8 +129,9 @@ console.log("Access Etherdraw at http://127.0.0.1:"+settings.port);
 
 // SOCKET IO
 io.sockets.on('connection', function (socket) {
+  console.log("Socket connected: "+socket);
   socket.on('disconnect', function () {
-    console.log("Socket disconnected");
+    console.log("Socket disconnected: "+socket);
     // TODO: We should have logic here to remove a drawing from memory as we did previously
   });
 
@@ -138,10 +139,13 @@ io.sockets.on('connection', function (socket) {
   // Having room as a parameter is not good for secure rooms
   socket.on('draw:progress', function (room, uid, co_ordinates) {
     if (!projects.projects[room] || !projects.projects[room].project) {
+      console.log("Socket Error! room:"+room+" uid:"+uid+" coordinates:"+co_ordinates);
+
       loadError(socket);
       return;
     }
     //console.log(co_ordinates);
+    console.log("draw progress. room:"+room+" uid:"+uid+" coordinates:"+co_ordinates);
     io.in(room).emit('draw:progress', uid, co_ordinates);
     draw.progressExternalPath(room, JSON.parse(co_ordinates), uid);
   });

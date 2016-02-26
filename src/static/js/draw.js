@@ -324,10 +324,14 @@ function onMouseDrag(event) {
     if (!timer_is_active) {
 
       send_paths_timer = setInterval(function() {
-
-        socket.emit('draw:progress', room, uid, JSON.stringify(path_to_send));
-        console.log("sending");
-        console.log(path_to_send);
+        if(activeTool!="line" || path_to_send.path.start) {
+          socket.emit('draw:progress', room, uid, JSON.stringify(path_to_send));
+          console.log("sending");
+          console.log(path_to_send);
+        }
+        else{
+          console.log("not send");
+        }
         path_to_send.path = new Array();
 
       }, 100);
@@ -379,8 +383,26 @@ function onMouseUp(event) {
     return;
   }
   clearInterval(mouseHeld);
+  if(activeTool == "line"){
+    lineEnd = event.point;
+    path = new Path.Line(lineStart,lineEnd);
+    path.strokeColor = active_color_rgb;
+    path.strokeWidth = 2;
+    path_to_send.path={
+      start:lineStart,
+      end:lineEnd
+    };
+    path.closed = true;
 
-  if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser"||activeTool=="line") {
+      socket.emit('draw:progress', room, uid, JSON.stringify(path_to_send));
+      socket.emit('draw:end', room, uid, JSON.stringify(path_to_send));
+
+    // Stop new path data being added & sent
+    clearInterval(send_paths_timer);
+    path_to_send.path = new Array();
+    timer_is_active = false;
+  }
+  else if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser") {
     // Close the users path
     path.add(event.point);
     path.closed = true;
@@ -766,6 +788,7 @@ socket.on('draw:progress', function(artist, data) {
 
   // It wasnt this user who created the event
   if (artist !== uid && data) {
+  //if ( data) {
     progress_external_path(JSON.parse(data), artist);
   }
 
@@ -804,7 +827,7 @@ socket.on('project:load', function(json) {
   });
 
   view.draw();
-  $.get("../../img/wheel.png");
+  $.get("../img/wheel.png");
 });
 
 socket.on('project:load:error', function() {
@@ -874,43 +897,59 @@ var external_paths = {};
 
 // Ends a path
 var end_external_path = function(points, artist) {
-
+  prevpath = null;
   var path = external_paths[artist];
-
-  if (path) {
-
-    // Close the path
-    path.add(new Point(points.end[1], points.end[2]));
+  if(points.tool=="line") {
     path.closed = true;
-    //path.smooth();
-    view.draw();
-
-    // Remove the old data
-    external_paths[artist] = false;
-
   }
+  else {
+    if (path) {
+
+      // Close the path
+      path.add(new Point(points.end[1], points.end[2]));
+      path.closed = true;
+      //path.smooth();
+      view.draw();
+      external_paths[artist] = false;
+
+
+
+    }
+  }
+  // Remove the old data
+
 
 };
 
 // Continues to draw a path in real time
+var prevpath = null;
 progress_external_path = function(points, artist) {
+  var color = new RgbColor(points.rgba.red, points.rgba.green, points.rgba.blue, points.rgba.opacity);
   if(points.tool=="line") {
-    //var path = external_paths[artist];
-    //if (!path) {
+   if(prevpath){
+     prevpath.remove();
+   }
+    path = external_paths[artist];
+    //path.remove();
 
-      // Creates the path in an easy to access way
+    //path.removeSegment(0);
+    if (!path) {
+      //path.removeSegment(0);
+    //
+    //  // Creates the path in an easy to access way
       external_paths[artist] = new Path();
-      //path = external_paths[artist];
+      path = external_paths[artist];
       //console.log("empty path");
       //console.log(points);
-
-    //}
+    //
+    }
     console.log("external path");
     console.log(points);
     var line = new Path.Line(new Point(points.path.start[1], points.path.start[2]), new Point(points.path.end[1], points.path.end[2]));
-    line.strokeColor = new RgbColor(255, 0, 0, 1);
+    line.strokeColor = color;
     line.strokeWidth = 2;
     path = line;
+    prevpath = path;
 
 
   }
@@ -927,7 +966,7 @@ progress_external_path = function(points, artist) {
 
       // Starts the path
       var start_point = new Point(points.start[1], points.start[2]);
-      var color = new RgbColor(points.rgba.red, points.rgba.green, points.rgba.blue, points.rgba.opacity);
+
       if (points.tool == "draw") {
         path.fillColor = color;
       } else if (points.tool == "pencil") {
