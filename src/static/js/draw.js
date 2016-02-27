@@ -385,14 +385,13 @@ function onMouseUp(event) {
   clearInterval(mouseHeld);
   if(activeTool == "line"){
     lineEnd = event.point;
-    path = new Path.Line(lineStart,lineEnd);
-    path.strokeColor = active_color_rgb;
-    path.strokeWidth = 2;
+    path=(new Path.Line(lineStart,lineEnd));
     path_to_send.path={
       start:lineStart,
       end:lineEnd
     };
     path.closed = true;
+    view.draw();
 
       socket.emit('draw:progress', room, uid, JSON.stringify(path_to_send));
       socket.emit('draw:end', room, uid, JSON.stringify(path_to_send));
@@ -900,7 +899,14 @@ var end_external_path = function(points, artist) {
   prevpath = null;
   var path = external_paths[artist];
   if(points.tool=="line") {
-    path.closed = true;
+    if(path) {
+      path= new Path.Line(new Point(points.path.start[1], points.path.start[2]), new Point(points.path.end[1], points.path.end[2]));
+
+
+      path.closed = true;
+      view.draw();
+      external_paths[artist] = false;
+    }
   }
   else {
     if (path) {

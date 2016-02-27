@@ -9,12 +9,23 @@ var drawing = paper.setup(new paper.Canvas(1920, 1080));
 
 // Continues to draw a path in real time
 exports.progressExternalPath = function (room, points, artist) {
-  if(points.tool == "line"){
+  var color = new drawing.Color(points.rgba.red, points.rgba.green, points.rgba.blue, points.rgba.opacity);
+  var project = projects[room].project;
+  project.activate();
+  var path = projects[room].external_paths[artist];
 
+  if(points.tool == "line"){
+    if (!path) {
+      projects[room].external_paths[artist] = new drawing.Path();
+      path = projects[room].external_paths[artist];
+    }
+    path.strokeColor = color;
+    path.strokeWidth = 2;
+    path.add( new drawing.Line(new drawing.Point(points.path.start[1],points.path.start[2]), new drawing.Point(points.path.end[1], points.path.end[2])));
+
+    project.view.draw();
   }else {
-    var project = projects[room].project;
-    project.activate();
-    var path = projects[room].external_paths[artist];
+
 
     // The path hasn't already been started
     // So start it
@@ -24,7 +35,7 @@ exports.progressExternalPath = function (room, points, artist) {
 
       // Starts the path
       var start_point = new drawing.Point(points.start[1], points.start[2]);
-      var color = new drawing.Color(points.rgba.red, points.rgba.green, points.rgba.blue, points.rgba.opacity);
+
       if (points.tool == "draw") {
         path.fillColor = color;
       }
@@ -65,10 +76,13 @@ exports.endExternalPath = function (room, points, artist) {
   if (path) {
     // Close the path
     if(points.tool=="line"){
-      var line = new Path.Line(new Point(points.path.start[1], points.path.start[2]), new Point(points.path.end[1], points.path.end[2]));
-      line.strokeColor = new RgbColor(0, 0, 255, 1);
-      line.strokeWidth = 2;
-      path = line;
+      //path.add( new drawing.Line(new drawing.Point(points.path.start[1], points.path.start[2]), new drawing.Point(points.path.end[1], points.path.end[2])));
+
+      path.add(new drawing.Point(points.path.start[1], points.path.start[2]));
+      path.add(new drawing.Point(points.path.end[1], points.path.end[2]));
+      //db.storeProject(room);
+      console.log("\nend:"+points.path.start[1]);
+
     } else{
       path.add(new drawing.Point(points.end[1], points.end[2]));
     }
