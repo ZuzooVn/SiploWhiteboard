@@ -129,6 +129,22 @@
                 <span class="buttonicon buttonicon-import_export"></span>
             </a>
         </li>
+
+        <!--Undo-->
+        <li data-key="undo">
+            <a id="undoTool" class="grouped-right"
+               data-l10n-id="draw.toolbar.import_export.title">
+                <span class="buttonicon buttonicon-undo"></span>
+            </a>
+        </li>
+
+        <!--Redo-->
+        <li data-key="redo">
+            <a id="redoTool" class="grouped-right"
+               data-l10n-id="draw.toolbar.import_export.title">
+                <span class="buttonicon buttonicon-redo"></span>
+            </a>
+        </li>
     </ul>
 
     <!--<ul class="menu_right">-->
@@ -201,9 +217,8 @@
 
     <div class="column">
         <h2 data-l10n-id="draw.importExport.export"></h2>
-
-        <div><a id="exportSVG" target="_blank" class="exportlink">Export SVG</a></div>
-        <div><a id="exportPNG" target="_blank" class="exportlink">Export PNG</a></div>
+        <div><a id="exportSVG" download="siplo.svg" target="_blank" class="exportlink">Export SVG</a></div>
+        <div><a id="exportPNG" download="siplo.png" target="_self" class="exportlink">Export PNG</a></div>
     </div>
 </div>
 

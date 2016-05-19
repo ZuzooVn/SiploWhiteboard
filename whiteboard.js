@@ -204,6 +204,17 @@ io.sockets.on('connection', function (socket) {
     io.sockets.in(room).emit('image:add', uid, data, position, name);
   });
 
+  // User performs UNDO
+  socket.on('undo', function(room, uid) {
+    draw.undoItem(room);
+    io.sockets.in(room).emit('undo', uid);
+  });
+
+  // User performs REDO
+  socket.on('redo', function(room, uid) {
+    draw.redoItem(room);
+    io.sockets.in(room).emit('redo', uid);
+  });
 });
 
 // Subscribe a client to a room

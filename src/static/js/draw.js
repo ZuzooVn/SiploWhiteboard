@@ -4,6 +4,7 @@ tool.minDistance = 1;
 tool.maxDistance = 45;
 
 var room = window.location.pathname.split("/")[2];
+var redoStack = new Array(); // stack to store undo items
 
 function pickColor(color) {
   $('#color').val(color);
@@ -43,6 +44,9 @@ $(document).ready(function() {
 
   // Temporarily set background as image from memory to improve UX
   $('#canvasContainer').css("background-image", 'url(' + drawingPNG + ')');
+
+  if(paper.project.activeLayer.hasChildren())  // notifying user that he can undo now
+    $('.buttonicon-undo').css({opacity: 1});
 
 });
 
@@ -97,7 +101,7 @@ socket.emit('subscribe', {
   room: room
 });
 
-// JSON data ofthe users current drawing
+// JSON data of the users current drawing
 // Is sent to the user
 var path_to_send = {};
 
@@ -170,6 +174,7 @@ var mouseHeld; // global timer for if mouse is held.
 
 var lineStart;
 var lineEnd;
+
 function onMouseDown(event) {
   if (event.which === 2) return; // If it's middle mouse button do nothing -- This will be reserved for panning in the future.
   $('.popup').fadeOut();
@@ -248,6 +253,7 @@ function onMouseDown(event) {
     // Select item
     $("#myCanvas").css("cursor", "pointer");
     if (event.item) {
+      console.log('selected item - ' + event.item);
       // If holding shift key down, don't clear selection - allows multiple selections
       if (!event.event.shiftKey) {
         paper.project.activeLayer.selected = false;
@@ -295,9 +301,11 @@ function onMouseDrag(event) {
 
     //path.smooth();
     if(activeTool == "line"){
-      path.removeSegment(0);
+      //path.removeSegment(0);
+      paper.project.activeLayer.lastChild.remove();
       lineEnd = event.point;
       path = new Path.Line(lineStart,lineEnd);
+      path.name = uid + ":" + (paper_object_count);
       path.strokeColor = active_color_rgb;
       path.strokeWidth = 2;
       path_to_send.path={
@@ -377,15 +385,27 @@ function onMouseDrag(event) {
 
 
 function onMouseUp(event) {
+  if(paper.project.activeLayer.hasChildren())  // notifying user that he can undo now
+    $('.buttonicon-undo').css({opacity: 1});
 
-  // Ignore middle or right mouse button clicks for now
+  if(activeTool != 'undo' && activeTool != 'redo' && redoStack.length > 0){  // clearing redo stack after user restarts drawing
+    $('.buttonicon-redo').css({opacity: 0.5}); // notifying user that he can't redo now
+    redoStack.length = 0;
+  }
+
+    // Ignore middle or right mouse button clicks for now
   if (event.event.button == 1 || event.event.button == 2) {
     return;
   }
+
   clearInterval(mouseHeld);
+
   if(activeTool == "line"){
     lineEnd = event.point;
-    path=(new Path.Line(lineStart,lineEnd));
+    /*paper.project.activeLayer.lastChild.remove();
+    path = new Path.Line(lineStart,lineEnd);
+    path.strokeColor = active_color_rgb;
+    path.strokeWidth = 2;*/
     path_to_send.path={
       start:lineStart,
       end:lineEnd
@@ -490,9 +510,8 @@ function onKeyDown(event) {
   }
 }
 
-
-
 function onKeyUp(event) {
+
   if (event.key == "delete") {
     // Delete selected items
     var items = paper.project.selectedItems;
@@ -525,8 +544,6 @@ function onKeyUp(event) {
     key_move_timer_is_active = false;
   }
 }
-
-
 
 function moveItemsBy1Pixel(point) {
   if (!point) {
@@ -595,6 +612,10 @@ $('#embedlink').on('click', function() {
 });
 $('#importExport').on('click', function() {
   $('#importexport').fadeToggle();
+  if(redoStack.length > 0){  // clearing redo stack after user restarts drawing
+    $('.buttonicon-redo').css({opacity: 0.5}); // notifying user that he can't redo now
+    redoStack.length = 0;
+  }
 });
 $('#usericon').on('click', function() {
   $('#mycolorpicker').fadeToggle();
@@ -604,10 +625,12 @@ $('#clearCanvas').on('click', function() {
   socket.emit('canvas:clear', room);
 });
 $('#exportSVG').on('click', function() {
+  //this.href = document.getElementById('myCanvas').toDataURL('image/svg');
   exportSVG();
 });
 $('#exportPNG').on('click', function() {
-  exportPNG();
+    this.href = document.getElementById('myCanvas').toDataURL();
+    //exportPNG();
 });
 
 $('#pencilTool').on('click', function() {
@@ -672,6 +695,43 @@ $('#uploadImage').on('click', function() {
   $('#imageInput').click();
 });
 
+$('#undoTool').on('click', function() {
+    $('#editbar > ul > li > a').css({
+        background: ""
+    }); // remove the backgrounds from other buttons
+    if(paper.project.activeLayer.hasChildren()){
+        $('#undoTool > a').css({
+            background: "orange"
+        }); // set the selecttool css to show it as active
+        $('.buttonicon-redo').css({opacity: 1});
+        activeTool = "undo";
+        redoStack.push(paper.project.activeLayer.lastChild);
+        socket.emit('undo', room, uid);
+        paper.project.activeLayer.lastChild.remove();
+        if(!paper.project.activeLayer.hasChildren())
+            $('.buttonicon-undo').css({opacity: 0.5});
+        view.draw();
+    }
+});
+
+$('#redoTool').on('click', function() {
+    $('#editbar > ul > li > a').css({
+        background: ""
+    }); // remove the backgrounds from other buttons
+    if(redoStack.length > 0) {
+        $('#redoTool > a').css({
+            background: "orange"
+        }); // set the selecttool css to show it as active
+        $('.buttonicon-undo').css({opacity: 1});
+        activeTool = "redo";
+        socket.emit('redo', room, uid);
+        paper.project.activeLayer.addChild(redoStack.pop());
+        if(redoStack.length == 0)
+            $('.buttonicon-redo').css({opacity: 0.5});
+        view.draw();
+    }
+});
+
 function clearCanvas() {
   // Remove all but the active layer
   if (project.layers.length > 1) {
@@ -688,6 +748,8 @@ function clearCanvas() {
   if (paper.project.activeLayer && paper.project.activeLayer.hasChildren()) {
     paper.project.activeLayer.removeChildren();
   }
+  $('.buttonicon-undo').css({opacity: 0.5});
+  $('.buttonicon-redo').css({opacity: 0.5});
   view.draw();
 }
 
@@ -755,6 +817,10 @@ $('#imageInput').bind('change', function(e) {
     var file = files[i];
     uploadImage(file);
   }
+  if(redoStack.length > 0){  // clearing redo stack after user restarts drawing
+    $('.buttonicon-redo').css({opacity: 0.5}); // notifying user that he can't redo now
+    redoStack.length = 0;
+  }
 });
 
 function uploadImage(file) {
@@ -782,10 +848,9 @@ socket.on('settings', function(settings) {
   processSettings(settings);
 });
 
-
 socket.on('draw:progress', function(artist, data) {
 
-  // It wasnt this user who created the event
+  // It wasn't this user who created the event
   if (artist !== uid && data) {
   //if ( data) {
     progress_external_path(JSON.parse(data), artist);
@@ -795,7 +860,7 @@ socket.on('draw:progress', function(artist, data) {
 
 socket.on('draw:end', function(artist, data) {
 
-  // It wasnt this user who created the event
+  // It wasn't this user who created the event
   if (artist !== uid && data) {
     end_external_path(JSON.parse(data), artist);
   }
@@ -879,8 +944,20 @@ socket.on('image:add', function(artist, data, position, name) {
   }
 });
 
+socket.on('undo', function(artist) {
+    if (artist != uid ) {
+        redoStack.push(paper.project.activeLayer.lastChild);
+        paper.project.activeLayer.lastChild.remove();
+        view.draw();
+    }
+});
 
-console.log(view);
+socket.on('redo', function(artist) {
+    if (artist != uid ) {
+        paper.project.activeLayer.addChild(redoStack.pop());
+        view.draw();
+    }
+});
 
 // --------------------------------- 
 // SOCKET.IO EVENT FUNCTIONS
@@ -929,7 +1006,7 @@ var end_external_path = function(points, artist) {
 
 // Continues to draw a path in real time
 var prevpath = null;
-progress_external_path = function(points, artist) {
+var progress_external_path = function(points, artist) {
   var color = new RgbColor(points.rgba.red, points.rgba.green, points.rgba.blue, points.rgba.opacity);
   if(points.tool=="line") {
    if(prevpath){

@@ -2,6 +2,8 @@ var paper = require('paper');
 var projects = require('./projects.js');
 var db = require('./db.js');
 
+var redoStack = new Array(); // stack to store undo items
+
 projects = projects.projects;
 
 // Create an in memory paper canvas
@@ -165,6 +167,25 @@ exports.addImage = function(room, artist, data, position, name) {
     var raster = new drawing.Raster(image);
     raster.position = new drawing.Point(position[1], position[2]);
     raster.name = name;
+    db.storeProject(room);
+  }
+}
+
+// Undo an item from the canvas
+exports.undoItem = function(room) {
+  var project = projects[room].project;
+  if (project && project.activeLayer && project.activeLayer.hasChildren()) {
+    redoStack.push(project.activeLayer.lastChild);
+    project.activeLayer.lastChild.remove();
+    db.storeProject(room);
+  }
+}
+
+// Redo an item from the canvas
+exports.redoItem = function(room) {
+  var project = projects[room].project;
+  if (project && project.activeLayer && project.activeLayer.hasChildren()) {
+    project.activeLayer.addChild(redoStack.pop());
     db.storeProject(room);
   }
 }

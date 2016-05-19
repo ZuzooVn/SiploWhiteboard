@@ -296,6 +296,16 @@ body {
     /*background-position: 0px -68px*/
 }
 
+.buttonicon-undo {
+    background-image: url('../../static/img/undo.png');
+    opacity: 0.5;
+}
+
+.buttonicon-redo {
+    background-image: url('../../static/img/redo.png');
+    opacity: 0.5;
+}
+
 .buttonicon-embed {
     background-position: 0px -18px
 }
@@ -367,6 +377,10 @@ input[type=checkbox] {
 .column {
     float: left;
     width: 50%;
+}
+
+.popup .exportlink:hover{
+    cursor: pointer;
 }
 
 #settings,
