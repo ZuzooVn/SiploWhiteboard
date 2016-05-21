@@ -102,6 +102,12 @@ app.get('/whiteboard/*', function(req, res){
 
 });
 
+//pdf viewer page
+app.get('/pdf', function(req, res){
+
+  res.sendfile(__dirname + '/src/static/html/pdf_viewer.html');
+});
+
 // Front-end tests
 app.get('/tests/frontend/specs_list.js', function(req, res){
   tests.specsList(function(tests){
@@ -117,6 +123,8 @@ app.get('/tests/frontend', function (req, res) {
 // Static files IE Javascript and CSS
 //app.use("/static", express.static(__dirname + '/src/static'));
 app.use("/wb_assets/static", express.static(__dirname + '/src/static'));
+app.use("/build", express.static(__dirname + '/src/static/pdfjs/build'));
+app.use("/web", express.static(__dirname + '/src/static/pdfjs/web'));
 
 
 
