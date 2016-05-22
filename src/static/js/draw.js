@@ -732,6 +732,18 @@ $('#redoTool').on('click', function() {
     }
 });
 
+$('#documentTool').on('click', function(){
+  //$('#documentViewer').hide();
+  //$('#documentViewer').css('z-index',-1);
+  var documentViewer =  $('#documentViewer');
+  if(documentViewer.css('visibility')=='hidden'){
+    documentViewer.css('visibility', 'visible');
+  }
+  else {
+    documentViewer.css('visibility', 'hidden');
+  }
+});
+
 function clearCanvas() {
   // Remove all but the active layer
   if (project.layers.length > 1) {

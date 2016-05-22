@@ -544,9 +544,15 @@ input[type=checkbox] {
     background-position: 0px 37px;
 }
 
-#pdfViewer {
+#documentViewer {
     position: absolute;
-    z-index: -1;
+    cursor: hand;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 0;
+    visibility: hidden;
 }
 
 #myCanvas {

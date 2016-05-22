@@ -43,7 +43,13 @@
     <script src='/wb_assets/static/js/draw.js' type="text/paperscript" canvas="myCanvas"></script>
     <script>document.domain = document.domain;</script>
     <script src="/wb_assets/static/css/AdminLTE-2.3.0/bootstrap/js/bootstrap.min.js"></script>
-    <!-- webrtc experiment-->
+    <!--pdfjs on whiteboard-->
+    <!--<link rel="stylesheet" href="/web/viewer.css">-->
+    <!--<script src="/web/compatibility.js"></script>-->
+    <!--<script src="/web/l10n.js"></script>-->
+    <!--<script src="/build/pdf.js"></script>-->
+    <!--<script src="/web/viewer.js"></script>-->
+    <!--end pdfjs-->
 </head>
 
 <body style="overflow: hidden">
@@ -145,6 +151,14 @@
                 <span class="buttonicon buttonicon-redo"></span>
             </a>
         </li>
+
+        <!--documentviewer-->
+        <li data-key="document">
+            <a id="documentTool" class="grouped-right"
+               data-l10n-id="draw.toolbar.import_export.title">
+                <span class="buttonicon buttonicon-undo"></span>
+            </a>
+        </li>
     </ul>
 
     <!--<ul class="menu_right">-->
@@ -234,6 +248,10 @@
 <div id="activeColorSwatch"></div>
 <div id="canvasContainer">
     <canvas id="myCanvas" resize="true"></canvas>
+    <div id="documentViewer">
+        <iframe src="http://localhost:9002/pdf" style="width: 100%; height: 100%"></iframe>
+        <h1>test</h1>
+    </div>
     <div id="mycolorpicker">
         <div id="colorpickerMover"></div>
         <div id="colorpicker"></div>
@@ -242,9 +260,6 @@
             <input type="range" min="0" max="255" value="200" id="opacityRangeVal">
         </div>
     </div>
-</div>
-<div id="pdfViewer">
-    <h1>test</h1>
 </div>
 
 <!--<div class="tools">-->
