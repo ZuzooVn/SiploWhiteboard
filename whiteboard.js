@@ -108,6 +108,11 @@ app.get('/pdf', function(req, res){
   res.sendfile(__dirname + '/src/static/html/pdf_viewer.html');
 });
 
+//file tree
+app.get('/files', function(req, res){
+  res.sendfile(__dirname + '/src/static/html/file_tree.html');
+});
+
 // Front-end tests
 app.get('/tests/frontend/specs_list.js', function(req, res){
   tests.specsList(function(tests){
