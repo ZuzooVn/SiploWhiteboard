@@ -15,7 +15,8 @@ var settings = require('./src/util/Settings.js'),
     http = require('http'),
     https = require('https'),
     redis = require('redis'),
-    Cookies = require( "cookies" );
+    Cookies = require( "cookies"),
+    files = require("./src/util/files.js");
 
 
 /** 
@@ -106,6 +107,14 @@ app.get('/whiteboard/*', function(req, res){
 app.get('/pdf', function(req, res){
 
   res.sendfile(__dirname + '/src/static/html/pdf_viewer.html');
+});
+
+app.get('/files', function(req, res){
+  res.sendfile(__dirname + '/src/static/html/files_tree.html');
+});
+
+app.get('/tree', function(req, res){
+  files.processPath(req, res);
 });
 
 // Front-end tests
