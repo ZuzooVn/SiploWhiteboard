@@ -129,7 +129,7 @@ app.get('/tests/frontend', function (req, res) {
 //app.use("/static", express.static(__dirname + '/src/static'));
 app.use("/wb_assets/static", express.static(__dirname + '/src/static'));
 app.use("/build", express.static(__dirname + '/src/static/pdfjs/build'));
-app.use("/web", express.static(__dirname + '/src/static/pdfjs/web'));
+app.use("/web", express.static(__dirname + '/src/static/vendor/pdfjs-dist/web'));
 
 
 
