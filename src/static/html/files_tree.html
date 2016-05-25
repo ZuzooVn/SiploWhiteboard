@@ -5,6 +5,7 @@
     <title>Title</title>
     <script src='/wb_assets/static/vendor/jquery/dist/jquery.min.js'></script>
     <script src='/wb_assets/static/vendor/jstree/dist/jstree.min.js'></script>
+    <script src='/wb_assets/static/pdfjs/fileBrowser/siploPdfViewer.js'></script>
 
     <link rel="stylesheet" href="/wb_assets/static/vendor/jstree/dist/themes/default/style.min.css" />
 
@@ -14,29 +15,6 @@
     <div id="container">
     </div>
     <script>
-//    $(function() {
-//        $('#container').jstree({
-//            'core' : {
-//                'data' : {
-//                    "url" : "http://localhost:9002/tree/",
-//                    "dataType" : "json" // needed only if you do not supply JSON headers
-//                }
-//            }
-//        });
-//    });
-
-    $(function() {
-        $('#container').jstree({
-            'core' : {
-                'data' : {
-                    "url" : "http://localhost:9002/tree/",
-                    "data" : function (node) {
-                        return { "id" : node.id };
-                    }
-                }
-            }
-        });
-    });
     </script>
 
 </body>

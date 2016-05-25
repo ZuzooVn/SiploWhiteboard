@@ -40,7 +40,7 @@ function processNode(pathToProcess, text) {
     return {
         "id": path.join(pathToProcess, text),
         "text": text,
-        "icon" : s.isDirectory() ? 'jstree-custom-folder' : 'jstree-custom-file',
+        //"icon" : s.isDirectory() ? 'jstree-custom-folder' : 'jstree-custom-file',
         "state": {
             "opened": false,
             "disabled": false,
