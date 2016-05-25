@@ -50,6 +50,14 @@
     <!--<script src="/build/pdf.js"></script>-->
     <!--<script src="/web/viewer.js"></script>-->
     <!--end pdfjs-->
+
+    <!--File Browser-->
+    <!--<script src='/wb_assets/static/vendor/jquery/dist/jquery.min.js'></script>-->
+    <script src='/wb_assets/static/vendor/jstree/dist/jstree.min.js'></script>
+    <script src='/wb_assets/static/pdfjs/fileBrowser/siploPdfViewer.js'></script>
+    <link rel="stylesheet" href="/wb_assets/static/vendor/jstree/dist/themes/default/style.min.css" />
+    <link rel="stylesheet" href="/wb_assets/static/pdfjs/fileBrowser/siploPdfViewer.css" />
+    <!--File Browser-->
 </head>
 
 <body style="overflow: hidden">
@@ -262,25 +270,20 @@
     </div>
 </div>
 
+<!--http://stackoverflow.com/questions/25874001/how-to-put-scrollbar-only-for-modal-body-in-bootstrap-modal-dialog-->
 <div id = 'fileBrowserModal' class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">ASDFASDFASDFASDF</h3>
+                <h3 class="modal-title">Select a File</h3>
             </div>
-            <div class="modal-body">ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF
-                ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF
-                ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF
-                ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF
-                ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF
-                ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF
-                ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF
-                ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF
-                ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF
-                ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF
-                ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF
-                ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF ASFASDFASDFASDF</div>
-            <div class="modal-footer">ASDFASDFASDFASDF</div>
+            <div class="modal-body">
+                <div id="container">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id='openFileButton' class="btn btn-default">Open</button>
+            </div>
         </div>
     </div>
 </div>
