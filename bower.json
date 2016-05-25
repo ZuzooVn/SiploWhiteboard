@@ -19,9 +19,8 @@
     "tests"
   ],
   "dependencies": {
-    "adapter.js": "*",
-    "bootstrap": "~3.3.0",
     "jstree": "^3.3.1",
-    "pdfjs-dist": "^1.5.264"
+    "jquery-ui": "^1.11.4",
+    "bootstrap": "^3.3.6"
   }
 }
