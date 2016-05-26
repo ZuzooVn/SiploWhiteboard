@@ -43,7 +43,21 @@
     <script src='/wb_assets/static/js/draw.js' type="text/paperscript" canvas="myCanvas"></script>
     <script>document.domain = document.domain;</script>
     <script src="/wb_assets/static/css/AdminLTE-2.3.0/bootstrap/js/bootstrap.min.js"></script>
-    <!-- webrtc experiment-->
+    <!--pdfjs on whiteboard-->
+    <!--<link rel="stylesheet" href="/web/viewer.css">-->
+    <!--<script src="/web/compatibility.js"></script>-->
+    <!--<script src="/web/l10n.js"></script>-->
+    <!--<script src="/build/pdf.js"></script>-->
+    <!--<script src="/web/viewer.js"></script>-->
+    <!--end pdfjs-->
+
+    <!--File Browser-->
+    <!--<script src='/wb_assets/static/vendor/jquery/dist/jquery.min.js'></script>-->
+    <script src='/wb_assets/static/vendor/jstree/dist/jstree.min.js'></script>
+    <script src='/wb_assets/static/pdfjs/fileBrowser/siploPdfViewer.js'></script>
+    <link rel="stylesheet" href="/wb_assets/static/vendor/jstree/dist/themes/default/style.min.css" />
+    <link rel="stylesheet" href="/wb_assets/static/pdfjs/fileBrowser/siploPdfViewer.css" />
+    <!--File Browser-->
 </head>
 
 <body style="overflow: hidden">
@@ -145,6 +159,48 @@
             </a>
         </div>
     </div>
+        </li>
+
+        <!--documentviewer-->
+        <li data-key="document">
+            <a id="documentTool" class="grouped-right"
+               data-l10n-id="draw.toolbar.import_export.title">
+                <span class="buttonicon buttonicon-undo"></span>
+            </a>
+        </li>
+    </ul>
+
+    <!--<ul class="menu_right">-->
+        <!-- settings -->
+        <!--<li data-key="settings">-->
+        <!--<a id="settingslink" class="grouped-left" data-l10n-id="draw.toolbar.settings.title">-->
+        <!--<span class="grouped-left buttonicon buttonicon-settings"></span>-->
+        <!--</a>-->
+        <!--</li>-->
+        <!-- import export -->
+        <!--<li data-key="import_export">-->
+            <!--<a id="importExport" class="grouped-middle"-->
+               <!--data-l10n-id="draw.toolbar.import_export.title">-->
+                <!--<span class="buttonicon buttonicon-import_export"></span>-->
+            <!--</a>-->
+        <!--</li>-->
+        <!-- share & embed -->
+        <!--<li data-key="embed">-->
+        <!--<a id="embedlink" class="grouped-right" data-l10n-id="draw.toolbar.embed.title">-->
+        <!--<span class="buttonicon buttonicon-embed"></span>-->
+        <!--</a>-->
+        <!--</li>-->
+
+        <!-- user stuff -->
+        <!--<li class="separator"></li>-->
+        <!--<li id="usericon" data-key="showusers">-->
+        <!--<a data-l10n-id="draw.toolbar.showusers.title">-->
+        <!--<span class="buttonicon buttonicon-showusers"></span>-->
+        <!--<span id="online_count">1</span>-->
+        <!--</a>-->
+        <!--</li>-->
+
+    <!--</ul>-->
 </div>
 <div id="settings" class="popup">
     <h1 data-l10n-id="draw.settings.padSettings"></h1>
@@ -200,6 +256,10 @@
 <div id="activeColorSwatch"></div>
 <div id="canvasContainer">
     <canvas id="myCanvas" resize="true"></canvas>
+    <div id="documentViewer">
+        <iframe src="http://localhost:9002/pdf" style="width: 100%; height: 100%"></iframe>
+        <h1>test</h1>
+    </div>
     <div id="mycolorpicker">
         <div id="colorpickerMover"></div>
         <div id="colorpicker"></div>
@@ -210,6 +270,23 @@
     </div>
 </div>
 
+<!--http://stackoverflow.com/questions/25874001/how-to-put-scrollbar-only-for-modal-body-in-bootstrap-modal-dialog-->
+<div id = 'fileBrowserModal' class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Select a File</h3>
+            </div>
+            <div class="modal-body">
+                <div id="container">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id='openFileButton' class="btn btn-default">Open</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!--<div class="tools">-->
     <!--<ul class="menu_left">-->
         <!--&lt;!&ndash; paint brush &ndash;&gt;-->

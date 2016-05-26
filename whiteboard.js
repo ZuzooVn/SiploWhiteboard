@@ -15,7 +15,8 @@ var settings = require('./src/util/Settings.js'),
     http = require('http'),
     https = require('https'),
     redis = require('redis'),
-    Cookies = require( "cookies" );
+    Cookies = require( "cookies"),
+    files = require("./src/util/files.js");
 
 
 /** 
@@ -102,6 +103,20 @@ app.get('/whiteboard/*', function(req, res){
 
 });
 
+//pdf viewer page
+app.get('/pdf', function(req, res){
+
+  res.sendfile(__dirname + '/src/static/html/pdf_viewer.html');
+});
+
+app.get('/files', function(req, res){
+  res.sendfile(__dirname + '/src/static/html/files_tree.html');
+});
+
+app.get('/tree', function(req, res){
+  files.processPath(req, res);
+});
+
 // Front-end tests
 app.get('/tests/frontend/specs_list.js', function(req, res){
   tests.specsList(function(tests){
@@ -117,6 +132,8 @@ app.get('/tests/frontend', function (req, res) {
 // Static files IE Javascript and CSS
 //app.use("/static", express.static(__dirname + '/src/static'));
 app.use("/wb_assets/static", express.static(__dirname + '/src/static'));
+app.use("/build", express.static(__dirname + '/src/static/pdfjs/build'));
+app.use("/web", express.static(__dirname + '/src/static/pdfjs/web'));
 
 
 

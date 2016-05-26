@@ -19,11 +19,8 @@
     "tests"
   ],
   "dependencies": {
-    "adapter.js": "*",
-    "bootstrap": "~3.3.0",
-    "draggabilly": "~1.2.4",
-    "demo-console": "1.5.1",
-    "ekko-lightbox": "~3.3.0",
-    "kurento-utils": "master"
+    "jstree": "^3.3.1",
+    "jquery-ui": "^1.11.4",
+    "bootstrap": "^3.3.6"
   }
 }
