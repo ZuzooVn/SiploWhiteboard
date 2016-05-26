@@ -27,6 +27,15 @@ body {
     padding: 5px 15px;
 }
 
+.tool-box .redo-undo-box{
+    display: -webkit-inline-box;
+}
+
+.tool-box .redo-undo-box a{
+    display: block;
+    margin: 0 15px;
+}
+
 .tool-box .shape-box{
     width: 65px;
     min-width: 60px;
@@ -326,6 +335,10 @@ body {
 .buttonicon-redo {
     background-image: url('../../static/img/redo.png');
     opacity: 0.5;
+}
+
+.buttonicon-pdf {
+    background-image: url('../../static/img/pdf.png');
 }
 
 .buttonicon-shapes {
