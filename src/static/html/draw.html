@@ -2,10 +2,10 @@
 <html>
 <head>
     <title>Siplo Whiteboard</title>
-    <link rel='stylesheet' href='/wb_assets/static/css/style.css'>
     <link rel='stylesheet' href='/wb_assets/static/css/farbtastic.css'>
     <link rel="stylesheet" href="/wb_assets/static/css/AdminLTE-2.3.0/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="/wb_assets/static/css/AdminLTE-2.3.0/bootstrap/css/bootstrap-theme.css">
+    <link rel='stylesheet' href='/wb_assets/static/css/style.css'>
     <script>
         /*
          |@licstart  The following is the entire license notice for the
@@ -48,138 +48,104 @@
 
 <body style="overflow: hidden">
 <!--Draw content start-->
-<div id="editbar" class="toolbar">
-    <div id="overlay">
-        <div id="overlay-inner"></div>
-    </div>
-    <ul class="menu_left">
+<div class="container tool-box">
+    <div class="row">
         <!-- paint brush -->
-        <li class="acl-write" id="drawTool" data-key="draw">
+        <div class="col-md-1 col-sm-1 col-xs-1 tool" id="drawTool">
             <a class="grouped-left" data-l10n-id="draw.toolbar.draw.title" title="Brush Tool">
                 <span class="buttonicon buttonicon-draw"></span>
             </a>
-        </li>
-        <!-- pencil brush -->
-        <li class="acl-write" id="pencilTool" data-key="pencil">
+        </div>
+        <!-- pencil -->
+        <div class="col-md-1 col-sm-1 col-xs-1 tool"  id="pencilTool">
             <a class="grouped-middle" data-l10n-id="draw.toolbar.pencil.title" title="Pencil Tool">
                 <span class="buttonicon buttonicon-pencil"></span>
             </a>
-        </li>
+        </div>
+        <!-- Shapes -->
+        <div class="col-md-1 col-sm-1 col-xs-1 tool">
+            <div class="dropup">
+                <button class="btn dropdown-toggle buttonicon buttonicon-shapes" type="button" data-toggle="dropdown"></button>
+                <ul class="dropdown-menu shape-box">
+                    <li id="lineTool" >
+                        <a>
+                            <span class="buttonicon buttonicon-line"></span>
+                        </a>
+                    </li>
+                    <li id="rectangleTool" >
+                        <a>
+                            <span class="buttonicon buttonicon-rectangle"></span>
+                        </a>
+                    </li>
+                    <li id="triangleTool" >
+                        <a>
+                            <span class="buttonicon buttonicon-triangle"></span>
+                        </a>
+                    </li>
+                    <li id="circleTool" >
+                        <a>
+                            <span class="buttonicon buttonicon-circle"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
         <!--Eraser-->
-        <li class="acl-write" id="eraserTool" data-key="eraser">
+        <div class="col-md-1 col-sm-1 col-xs-1 tool" id="eraserTool">
             <a class="grouped-middle" data-l10n-id="draw.toolbar.pencil.title" title="Eraser Tool">
                 <span class="buttonicon buttonicon-eraser"></span>
             </a>
-        </li>
-        <!--Line-->
-        <li class="acl-write" id="lineTool" data-key="line">
-            <a class="grouped-middle" data-l10n-id="draw.toolbar.pencil.title" title="Line Tool">
-                <span class="buttonicon buttonicon-line"></span>
-            </a>
-        </li>
+        </div>
         <!-- Select Tool -->
-        <li class="acl-write" id="selectTool" data-key="select">
+        <div class="col-md-1 col-sm-1 col-xs-1 tool" id="selectTool">
             <a class="grouped-middle" data-l10n-id="draw.toolbar.select.title" title="Select Tool">
                 <span class="buttonicon buttonicon-select"></span>
             </a>
-        </li>
-
+        </div>
         <!-- color Selector Toggle -->
-        <li class="acl-write" id="colorToggle" data-key="color">
+        <div class="col-md-1 col-sm-1 col-xs-1 tool" id="colorToggle">
             <a class="grouped-right" data-l10n-id="draw.toolbar.colorToggle.title" title="Color">
-                    <span class="buttonicon buttonicon-color" style="">
-
-                    </span>
+                <span class="buttonicon buttonicon-color" style=""></span>
             </a>
-        </li>
-
-        <li class="separator"></li>
-
+        </div>
         <!--Clear Drawing-->
-        <li class="acl-write" id="clearImage" data-key="clear">
-            <a class="grouped-left" data-l10n-id="draw.toolbar.clearImage"
-               class="clearCanvasPrompt"
-               title="Clear Drawing">
+        <div class="col-md-1 col-sm-1 col-xs-1 tool" id="clearImage">
+            <a class="grouped-left clearCanvasPrompt"  data-l10n-id="draw.toolbar.clearImage" title="Clear Drawing">
                 <span class="buttonicon buttonicon-clearImage"></span>
             </a>
-        </li>
-
-        <!--<li class="acl-write" id="toggleBackground" data-key="clear">-->
-            <!--<a class="grouped-left" data-l10n-id="draw.toolbar.toggleBackground"-->
-                <!--class="toggleBackground"-->
-                <!--title="Toggle Transparent Background">-->
-                <!--<span class="buttonicon buttonicon-toggleBackground"-->
-                    <!--style="background-color:#fff;background-image:none;border:solid 1px black;margin:0;height:14px">-->
-                <!--</span>-->
-            <!--</a>-->
-        <!--</li>-->
-
+        </div>
         <!-- Upload -->
-        <li class="acl-write" id="uploadImage" data-key="upload">
-            <a class="grouped-middle" data-l10n-id="draw.toolbar.upload.title"
-               title="Upload an Image">
+        <div class="col-md-1 col-sm-1 col-xs-1 tool" id="uploadImage">
+            <a class="grouped-middle" data-l10n-id="draw.toolbar.upload.title" title="Upload an Image">
                 <span class="buttonicon buttonicon-upload"></span>
             </a>
-        </li>
-
+        </div>
+        <!--Crop-->
+        <div class="col-md-1 col-sm-1 col-xs-1 tool" id="cropTool">
+            <a class="grouped-right" data-l10n-id="draw.toolbar.cropTool.title" title="Crop Image">
+                <span class="buttonicon buttonicon-crop"></span>
+            </a>
+        </div>
         <!--Import or export-->
-        <li data-key="import_export">
-            <a id="importExport" class="grouped-right"
-               data-l10n-id="draw.toolbar.import_export.title">
+        <div class="col-md-1 col-sm-1 col-xs-1 tool" id="importExport">
+            <a class="grouped-right" data-l10n-id="draw.toolbar.import_export.title">
                 <span class="buttonicon buttonicon-import_export"></span>
             </a>
-        </li>
-
+        </div>
         <!--Undo-->
-        <li data-key="undo">
-            <a id="undoTool" class="grouped-right"
-               data-l10n-id="draw.toolbar.import_export.title">
+        <div class="col-md-1 col-sm-1 col-xs-1 tool">
+            <a id="undoTool" class="grouped-right" data-l10n-id="draw.toolbar.undoTool.title" title="Undo">
                 <span class="buttonicon buttonicon-undo"></span>
             </a>
-        </li>
-
+        </div>
         <!--Redo-->
-        <li data-key="redo">
-            <a id="redoTool" class="grouped-right"
-               data-l10n-id="draw.toolbar.import_export.title">
+        <div class="col-md-1 col-sm-1 col-xs-1 tool">
+            <a id="redoTool" class="grouped-right" data-l10n-id="draw.toolbar.redoTool.title" title="Redo">
                 <span class="buttonicon buttonicon-redo"></span>
             </a>
-        </li>
-    </ul>
-
-    <!--<ul class="menu_right">-->
-        <!-- settings -->
-        <!--<li data-key="settings">-->
-        <!--<a id="settingslink" class="grouped-left" data-l10n-id="draw.toolbar.settings.title">-->
-        <!--<span class="grouped-left buttonicon buttonicon-settings"></span>-->
-        <!--</a>-->
-        <!--</li>-->
-        <!-- import export -->
-        <!--<li data-key="import_export">-->
-            <!--<a id="importExport" class="grouped-middle"-->
-               <!--data-l10n-id="draw.toolbar.import_export.title">-->
-                <!--<span class="buttonicon buttonicon-import_export"></span>-->
-            <!--</a>-->
-        <!--</li>-->
-        <!-- share & embed -->
-        <!--<li data-key="embed">-->
-        <!--<a id="embedlink" class="grouped-right" data-l10n-id="draw.toolbar.embed.title">-->
-        <!--<span class="buttonicon buttonicon-embed"></span>-->
-        <!--</a>-->
-        <!--</li>-->
-
-        <!-- user stuff -->
-        <!--<li class="separator"></li>-->
-        <!--<li id="usericon" data-key="showusers">-->
-        <!--<a data-l10n-id="draw.toolbar.showusers.title">-->
-        <!--<span class="buttonicon buttonicon-showusers"></span>-->
-        <!--<span id="online_count">1</span>-->
-        <!--</a>-->
-        <!--</li>-->
-
-    <!--</ul>-->
+        </div>
+    </div>
 </div>
-
 <div id="settings" class="popup">
     <h1 data-l10n-id="draw.settings.padSettings"></h1>
 

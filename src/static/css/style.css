@@ -15,6 +15,28 @@ body {
     font-family: Helvetica, Arial, sans-serif
 }
 
+.tool-box{
+    position: absolute;
+    z-index: 10;
+    top: 93%;
+    width: 100%;
+    padding: 0 350px;
+}
+
+.tool-box .tool{
+    padding: 5px 15px;
+}
+
+.tool-box .shape-box{
+    width: 65px;
+    min-width: 60px;
+    left: -70%;
+}
+
+.shape-box>li>a:hover{
+    background: orange!important;
+}
+
 .toolbar {
     /*background: #f7f7f7;*/
     /*background: -webkit-linear-gradient(#f7f7f7, #f1f1f1 80%);*/
@@ -306,6 +328,37 @@ body {
     opacity: 0.5;
 }
 
+.buttonicon-shapes {
+    background-image: url('../../static/img/shapes.png');
+    background-color: white;
+}
+
+.buttonicon-shapes:active {
+    background-image: url('../../static/img/shapes.png');
+    background-color: white;
+}
+
+.buttonicon-shapes:active:focus {
+    outline: none;
+}
+
+.buttonicon-rectangle {
+    background-image: url('../../static/img/rectangle.png');
+}
+
+.buttonicon-triangle {
+    background-image: url('../../static/img/triangle.png');
+}
+
+.buttonicon-circle {
+    background-image: url('../../static/img/circle.png');
+}
+
+.buttonicon-crop {
+    background-image: url('../../static/img/crop.png');
+    opacity: 0.5;
+}
+
 .buttonicon-embed {
     background-position: 0px -18px
 }
@@ -395,7 +448,7 @@ input[type=checkbox] {
     z-index: 500;
 }
 
-@media screen and (max-width: 600px) {
+/*@media screen and (max-width: 600px) {
     .toolbar ul li.separator {
         display: none;
     }
@@ -498,7 +551,7 @@ input[type=checkbox] {
     #online_count {
         line-height: 24px
     }
-}
+}*/
 
 #lostConnection {
     display: none;
@@ -580,4 +633,10 @@ input[type=checkbox] {
 
 .tools {
     bottom: 0px;
+}
+
+@media (max-width: 1050px){
+    .tool-box {
+        padding: 0 10px;
+    }
 }

@@ -140,12 +140,9 @@ io.sockets.on('connection', function (socket) {
   socket.on('draw:progress', function (room, uid, co_ordinates) {
     if (!projects.projects[room] || !projects.projects[room].project) {
       //console.log("Socket Error! room:"+room+" uid:"+uid+" coordinates:"+co_ordinates);
-
       loadError(socket);
       return;
     }
-    //console.log(co_ordinates);
-    //console.log("draw progress. room:"+room+" uid:"+uid+" coordinates:"+co_ordinates);
     io.in(room).emit('draw:progress', uid, co_ordinates);
     draw.progressExternalPath(room, JSON.parse(co_ordinates), uid);
   });
@@ -224,6 +221,9 @@ function subscribe(socket, data) {
   // Subscribe the client to the room
   socket.join(room);
 
+  // declare a redo stack for classroom of it is not declared
+  if(!draw.hasDeclaredRedoStack(room))
+      draw.initRedoStack(room);
   // If the close timer is set, cancel it
   // if (closeTimer[room]) {
   //  clearTimeout(closeTimer[room]);

@@ -18,7 +18,7 @@ exports.storeProject = function(room) {
   var json = project.exportJSON();
 
   db.set(room, {project: json});
-  console.log("Writing project to database. pr:"+project+" room: "+room+" json:"+json);
+  //console.log("Writing project to database. pr:"+project+" room: "+room+" json:"+json);
 
 
 };
