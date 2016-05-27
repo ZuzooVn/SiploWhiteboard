@@ -11,7 +11,7 @@ exports.processPath = function(req, res){
     console.log(__dirname);
     console.log(req.query.id);
     if(req.query.id == '#'){
-        pathToProcess = path.resolve(__dirname, '..', '..');
+        pathToProcess = path.resolve(__dirname, '..', '..', 'user_files');
     }
     else {
         pathToProcess = req.query.id;
