@@ -26,6 +26,8 @@ $(function(){
             openFileButton.prop('disabled', false);
             openFileButton.click(function(){
                 console.log('openning ' + data.instance.get_selected(true)[0].text);
+                //PDFViewerApplication is an object defined in viewer.js
+                PDFViewerApplication.open('/web/compressed.tracemonkey-pldi-09.pdf');
             });
         }
         else {
@@ -34,6 +36,9 @@ $(function(){
     });
 });
 
-function openFle(){
-
-}
+$(function(){
+    $('#browsFiles').on('click', function(){
+        console.log('Can Browse Files');
+        $('#fileBrowserModal').modal('show');
+    });
+});
