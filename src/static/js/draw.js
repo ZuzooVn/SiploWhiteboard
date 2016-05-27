@@ -932,16 +932,21 @@ $('#redoTool').on('click', function () {
     }
 });
 
-$('#documentTool').on('click', function(){
-  //$('#documentViewer').hide();
-  //$('#documentViewer').css('z-index',-1);
-  var documentViewer =  $('#documentViewer');
-  if(documentViewer.css('visibility')=='hidden'){
-    documentViewer.css('visibility', 'visible');
-  }
-  else {
-    documentViewer.css('visibility', 'hidden');
-  }
+$('#documentTool').on('click', function () {
+    //$('#documentViewer').hide();
+    //$('#documentViewer').css('z-index',-1);
+    var documentViewer = $('#documentViewer');
+    var body = $('body');
+    if (documentViewer.css('visibility') == 'hidden') {
+        documentViewer.css('visibility', 'visible');
+        //dynamically assigning the background color and image as in viewer.css #230. Otherwise
+        //this background color for body tag will make conflicts with whiteboard
+        body.css('background-color', '#404040');
+    }
+    else {
+        documentViewer.css('visibility', 'hidden');
+        body.css('background-color', '');
+    }
 });
 
 function clearCanvas() {
