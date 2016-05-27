@@ -27,7 +27,9 @@ $(function(){
             openFileButton.click(function(){
                 console.log('openning ' + data.instance.get_selected(true)[0].text);
                 //PDFViewerApplication is an object defined in viewer.js
-                PDFViewerApplication.open('/web/compressed.tracemonkey-pldi-09.pdf');
+                //PDFViewerApplication.open('/web/compressed.tracemonkey-pldi-09.pdf');
+                $('#fileBrowserModal').modal('hide');
+                PDFViewerApplication.open('/files/'+data.instance.get_selected(true)[0].text);
             });
         }
         else {
