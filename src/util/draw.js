@@ -267,3 +267,13 @@ exports.redoItem = function (room) {
         db.storeProject(room);
     }
 }
+
+// Resize an image
+exports.resizeImage = function (room,imageName, scalingFactor) {
+    var project = projects[room].project;
+    if (project && project.activeLayer && project.activeLayer._namedChildren[imageName] && project.activeLayer._namedChildren[imageName][0]) {
+        var namedChildren = project.activeLayer._namedChildren;
+        namedChildren[imageName][0].scale(scalingFactor);
+        db.storeProject(room);
+    }
+}

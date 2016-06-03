@@ -193,6 +193,11 @@ var mouseHeld; // global timer for if mouse is held.
 var shapeStartPoint;
 var shapeEndPoint;
 var imageToCrop = null;
+var selectionRectangle = null;
+var selectionRectangleScale = 0;
+var currentRatio = 1;
+var previousRatio = 1;
+var selectToolMode = "ITEM_DRAG";
 
 function onMouseDown(event) {
     if (event.which === 2) return; // If it's middle mouse button do nothing -- This will be reserved for panning in the future.
@@ -201,6 +206,21 @@ function onMouseDown(event) {
     // Ignore middle or right mouse button clicks for now
     if (event.event.button == 1 || event.event.button == 2) {
         return;
+    }
+
+    //remove cropping tool availability. itz only available just after image is uploaded
+    if(activeTool != "crop" && imageToCrop){
+        $('.buttonicon-crop').css({opacity: 0.5});
+        imageToCrop = null;
+    }
+
+    // remove the selectionRectangle
+    if(activeTool != "select" && selectionRectangle){
+        currentRatio = 1;
+        previousRatio = 1;
+        selectionRectangle.remove();
+        selectionRectangle = null;
+        selectionRectangleScale = 0;
     }
 
     //mouseTimer = 0;
@@ -266,7 +286,8 @@ function onMouseDown(event) {
         view.draw();
 
 
-    } else if (activeTool == "select") {
+    }
+    else if (activeTool == "select") {
         // Select item
         $("#myCanvas").css("cursor", "pointer");
         if (event.item) {
@@ -274,7 +295,31 @@ function onMouseDown(event) {
             if (!event.event.shiftKey) {
                 paper.project.activeLayer.selected = false;
             }
-            event.item.selected = true;
+            if(event.item.image){ // check for image selection since it needs to be handled differently from item selection
+               if(event.item.cropingRectangle)  // selected image is a cropped one so draw the selectionRectangle on cropped path
+                    selectionRectangle = new Path.Rectangle(event.item.cropingRectangle.topLeft,event.item.cropingRectangle.bottomRight);
+               else // selected image is not a cropped one so draw the selectionRectangle on bounding rectangle path
+                    selectionRectangle = new Path.Rectangle(event.item.bounds.topLeft,event.item.bounds.bottomRight);
+
+                selectionRectangle.name = "selectionRectangle";
+                selectionRectangle.selected = true;
+                selectionRectangle.selectedImage = event.item;  // keep track of selected image data
+                selectToolMode = "IMAGE_DRAG";
+            } else if (selectionRectangle != null && event.item.name == "selectionRectangle"){  //image selected and now clicking on its selectionRectangle
+               var hitResult = project.hitTest(event.point); // check in which part of the selectionRectangle is clicked by user
+                selectionRectangle.selected = true;  //maintain the selected state of selectionRectangle
+                if(hitResult.type == "segment"){  // clicked on corner of selectionRectangle. so user needs to resize the image
+                    selectionRectangleScale = event.point.subtract(selectionRectangle.bounds.center).length; // original scale of image
+                    selectToolMode = "IMAGE_RESIZE";
+                }
+                else if (hitResult.type == "stroke"){ // clicked on edge of selectionRectangle. so user needs to move the image
+                    selectToolMode = "IMAGE_DRAG";
+                }
+            } else{ // an item selected not an image
+                event.item.selected = true;
+                selectToolMode = "ITEM_DRAG";
+            }
+
             view.draw();
         } else {
             paper.project.activeLayer.selected = false;
@@ -345,7 +390,7 @@ function onMouseDrag(event) {
             shapeEndPoint = event.point;
             path = new Path.Rectangle(shapeStartPoint, shapeEndPoint);
             path.name = uid + ":" + (paper_object_count);
-            path.strokeColor = '#33D7FF';
+            path.strokeColor = '#33D7FF'; // light blue color cropping rectangle
             path.strokeWidth = 2;
             path_to_send.path = {
                 start: shapeStartPoint,
@@ -411,12 +456,36 @@ function onMouseDrag(event) {
         }
 
         timer_is_active = true;
-    } else if (activeTool == "select") {
-        // Move item locally
-        for (x in paper.project.selectedItems) {
-            var item = paper.project.selectedItems[x];
-            item.position += event.delta;
+    }
+    else if (activeTool == "select") {
+        if (selectionRectangleScale != null && selectionRectangleScale > 0 && selectToolMode == "IMAGE_RESIZE") {
+            // resize the selected image based on ratio change
+            currentRatio = event.point.subtract(selectionRectangle.bounds.center).length/selectionRectangleScale;
+            if(currentRatio < previousRatio){
+                selectionRectangle.scale(1 - currentRatio*0.01, selectionRectangle.selectedImage.bounds.center);
+                selectionRectangle.selectedImage.scale(1 - currentRatio*0.01,selectionRectangle.selectedImage.bounds.center);
+                socket.emit('image:resize', room, uid, selectionRectangle.selectedImage.name, (1 - currentRatio*0.01));
+            } else {
+                selectionRectangle.scale(1 + 0.01*currentRatio,selectionRectangle.selectedImage.bounds.center);
+                selectionRectangle.selectedImage.scale(1 + 0.01*currentRatio,selectionRectangle.selectedImage.bounds.center);
+                socket.emit('image:resize', room, uid, selectionRectangle.selectedImage.name, (1 + currentRatio*0.01));
+            }
+            previousRatio = currentRatio;
+            view.draw();
         }
+        else if(selectToolMode == "IMAGE_DRAG"){
+            // move selected image locally
+            selectionRectangle.selectedImage.position += event.delta;
+            selectionRectangle.position += event.delta;
+        }
+        else if (selectToolMode == "ITEM_DRAG"){
+            // Move item locally
+            for (x in paper.project.selectedItems) {
+                var item = paper.project.selectedItems[x];
+                item.position += event.delta;
+            }
+        }
+
         // Store delta
         if (paper.project.selectedItems) {
             if (!item_move_delta) {
@@ -429,12 +498,14 @@ function onMouseDrag(event) {
         // Send move updates every 50 ms
         if (!item_move_timer_is_active) {
             send_item_move_timer = setInterval(function () {
-                if (item_move_delta) {
+                if (item_move_delta && selectToolMode != "IMAGE_RESIZE") {
                     var itemNames = new Array();
                     for (x in paper.project.selectedItems) {
                         var item = paper.project.selectedItems[x];
-                        itemNames.push(item._name);
-                        console.log(item._name);
+                        if(item._name == "selectionRectangle")
+                            itemNames.push(selectionRectangle.selectedImage.name);
+                        else
+                            itemNames.push(item._name);
                     }
                     socket.emit('item:move:progress', room, uid, itemNames, item_move_delta);
                     item_move_delta = null;
@@ -487,9 +558,14 @@ function onMouseUp(event) {
         var group = new Group(); //cropping the image with clip-mask rectangle
         group.addChild(imageToCrop);
         group.addChild(path);
-        var rasterizedImage = group.rasterize(); // ratserizing group into one object
-        rasterizedImage.name = uid + ":" + (++paper_object_count); // name the cropped image to a new object
+        var rasterizedItem = group.rasterize(); // ratserizing group into one item
+        var rasterizedImage = new Raster(rasterizedItem.toDataURL()); // creating raster from rasterized item
+        rasterizedImage.name = uid + ":" + (++paper_object_count); // name the raster to new object on canvas
+        rasterizedImage.position = imageToCrop.position;
+        rasterizedImage.cropingRectangle = {topLeft: path.bounds.topLeft, bottomRight: path.bounds.bottomRight}; // keep track of cropped path to use at image selection later
+        rasterizedImage.sendToBack();  // send the cropped image back to bottom layer of canvas so cropped areas of image will not make issues when selecting items near cropped image
         group.remove();  // remove the group after rasterizing
+        rasterizedItem.remove(); // remove the rasterized item after creating image from it
         imageToCrop = null;
         $('.buttonicon-crop').css({opacity: 0.5});
         $('#cropTool').css({
@@ -534,17 +610,28 @@ function onMouseUp(event) {
     else if (activeTool == "select") {
         // End movement timer
         clearInterval(send_item_move_timer);
-        if (item_move_delta) {
+        if (selectToolMode == "IMAGE_DRAG" || selectToolMode == "ITEM_DRAG") {
             // Send any remaining movement info
             var itemNames = new Array();
             for (x in paper.project.selectedItems) {
                 var item = paper.project.selectedItems[x];
-                itemNames.push(item._name);
+                if(item._name == "selectionRectangle")
+                    itemNames.push(selectionRectangle.selectedImage.name);
+                else
+                    itemNames.push(item._name);
             }
-            socket.emit('item:move:end', room, uid, itemNames, item_move_delta);
-        } else {
-            // delta is null, so send 0 change
-            socket.emit('item:move:end', room, uid, itemNames, new Point(0, 0));
+            if(selectToolMode == "IMAGE_DRAG")
+                selectionRectangle.selectedImage.cropingRectangle = {topLeft: selectionRectangle.bounds.topLeft, bottomRight: selectionRectangle.bounds.bottomRight};
+
+            (item_move_delta) ? socket.emit('item:move:end', room, uid, itemNames, item_move_delta) : socket.emit('item:move:end', room, uid, itemNames, new Point(0, 0));
+        }
+        else if(selectionRectangleScale != null && selectionRectangleScale > 0 && selectToolMode == "IMAGE_RESIZE") {
+            if(currentRatio < previousRatio){
+                socket.emit('image:resize', room, uid, selectionRectangle.selectedImage.name, (1 - currentRatio*0.01));
+            } else {
+                socket.emit('image:resize', room, uid, selectionRectangle.selectedImage.name, (1 + currentRatio*0.01));
+            }
+            selectionRectangle.selectedImage.cropingRectangle = {topLeft: selectionRectangle.bounds.topLeft, bottomRight: selectionRectangle.bounds.bottomRight};
         }
         item_move_delta = null;
         item_move_timer_is_active = false;
@@ -1143,7 +1230,7 @@ socket.on('item:move', function (artist, itemNames, delta) {
     if (artist != uid) {
         for (x in itemNames) {
             var itemName = itemNames[x];
-            if (paper.project.activeLayer._namedChildren[itemName][0]) {
+            if (paper.project.activeLayer._namedChildren[itemName] && paper.project.activeLayer._namedChildren[itemName][0] ) {
                 paper.project.activeLayer._namedChildren[itemName][0].position += new Point(delta[1], delta[2]);
             }
         }
@@ -1177,6 +1264,15 @@ socket.on('redo', function (artist) {
     }
 });
 
+socket.on('image:resize', function (artist, imageName, scalingFactor) {
+    if (artist != uid) {
+        if (paper.project.activeLayer._namedChildren[imageName] && paper.project.activeLayer._namedChildren[imageName][0]) {
+            paper.project.activeLayer._namedChildren[imageName][0].scale(scalingFactor);
+        }
+        view.draw();
+    }
+});
+
 // --------------------------------- 
 // SOCKET.IO EVENT FUNCTIONS
 
@@ -1196,9 +1292,13 @@ var end_external_path = function (points, artist) {
         var group = new Group();
         group.addChild(imageToCrop);
         group.addChild(prevpath);
-        var rasterizedImage = group.rasterize(); // ratserizing group into one object
-        rasterizedImage.name = points.name; // name the cropped image to a new object
-        group.remove();
+        var rasterizedItem = group.rasterize(); // ratserizing group into one item
+        var rasterizedImage = new Raster(rasterizedItem.toDataURL()); // creating raster from rasterized item
+        rasterizedImage.name = points.name; // name the raster to a new item of canvas
+        rasterizedImage.position = imageToCrop.position;
+        rasterizedImage.sendToBack();
+        group.remove();  // remove the group after rasterizing
+        rasterizedItem.remove(); // remove the rasterized item after creating image from it
         imageToCrop = null;
         view.draw();
     }
@@ -1247,7 +1347,7 @@ var progress_external_path = function (points, artist) {
             path = external_paths[artist];
         }
         var rectangle = new Path.Rectangle(new Point(points.path.start[1], points.path.start[2]), new Point(points.path.end[1], points.path.end[2]));
-        rectangle.strokeColor = color;
+        rectangle.strokeColor = (points.tool == "crop") ? "#33D7FF" : color;  // light blue for cropping ans selected color for rectangle
         rectangle.strokeWidth = 2;
         rectangle.name = points.name;
         path = rectangle;
@@ -1364,5 +1464,5 @@ setInterval(function () {
 function saveDrawing() {
     var canvas = document.getElementById('myCanvas');
     // Save image to localStorage
-    localStorage.setItem("drawingPNG" + room, canvas.toDataURL('image/png'));
+    //localStorage.setItem("drawingPNG" + room, canvas.toDataURL('image/png'));
 }

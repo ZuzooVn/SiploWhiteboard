@@ -200,8 +200,8 @@ io.sockets.on('connection', function (socket) {
   // User moves one or more items on their canvas - progress
   socket.on('item:move:progress', function(room, uid, itemNames, delta) {
     draw.moveItemsProgress(room, uid, itemNames, delta);
-    if (itemNames) {
-      io.sockets.in(room).emit('item:move', uid, itemNames, delta);
+      if (itemNames) {
+        io.sockets.in(room).emit('item:move', uid, itemNames, delta);
     }
   });
 
@@ -229,6 +229,12 @@ io.sockets.on('connection', function (socket) {
   socket.on('redo', function(room, uid) {
     draw.redoItem(room);
     io.sockets.in(room).emit('redo', uid);
+  });
+
+  // User performs Resizing image
+  socket.on('image:resize', function(room, uid, image, scalingFactor) {
+    draw.resizeImage(room,image,scalingFactor);
+    io.sockets.in(room).emit('image:resize', uid, image, scalingFactor);
   });
 });
 
