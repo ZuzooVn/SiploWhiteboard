@@ -154,7 +154,7 @@ $('#colorToggle').on('click', function () {
     $('#colorToggle').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
-    $('#mycolorpicker').toggle();
+    $('#mycolorpicker').fadeToggle();
 });
 
 $('#clearImage').click(function () {
@@ -223,6 +223,17 @@ function onMouseDown(event) {
         selectionRectangleScale = 0;
     }
 
+    // remove the color picker after picking color and start drawing again
+    if($('#mycolorpicker').is(':visible')){
+        $('#mycolorpicker').fadeToggle();
+        $('.tool-box .tool').css({
+            border: "none"
+        }); // remove the backgrounds from other buttons
+        $('.shape-box>li> a').css({
+            background: "none"
+        }); // remove the shapes tool css to show it as in-active
+    }
+
     //mouseTimer = 0;
     //mouseHeld = setInterval(function() { // is the mouse being held and not dragged?
     //  mouseTimer++;
@@ -257,7 +268,7 @@ function onMouseDown(event) {
             path.strokeWidth = 2;
         } else if (activeTool == "eraser") {
             path.strokeColor = new RgbColor(255, 255, 255, 1);
-            path.strokeWidth = 4;
+            path.strokeWidth = 15; // increase this size for a larger eraser
             // The data we will send every 100ms on mouse drag
             path_to_send = {
                 name: path.name,
@@ -351,12 +362,8 @@ function onMouseDrag(event) {
             var top = event.middlePoint;
             bottom = event.middlePoint;
         } else if (activeTool == "eraser") {
-            //TODO remove debug
-            console.log('active tool : eraser');
-
-
-            var top = event.middlePoint;
-            bottom = event.middlePoint;
+            var top = event.middlePoint + 10; // 10 is added since clicking point is taken as the top left corner of cursor_eraser
+            var bottom = event.middlePoint + 10; // increase this size appropriately for a larger eraser
         }
 
 
@@ -803,9 +810,9 @@ $('#importExport').on('click', function () {
         redoStack.length = 0;
     }
 });
-$('#usericon').on('click', function () {
+/*$('#usericon').on('click', function () {
     $('#mycolorpicker').fadeToggle();
-});
+});*/
 $('#clearCanvas').on('click', function () {
     $('.tool-box .tool').css({
         border: "none"
@@ -868,7 +875,7 @@ $('#eraserTool').on('click', function () {
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
     activeTool = "eraser";
-    $('#myCanvas').css('cursor', 'pointer');
+    $('#myCanvas').css('cursor', 'url(/wb_assets/static/img/cursor_eraser.png),pointer');
     paper.project.activeLayer.selected = false;
 
 });
@@ -1415,7 +1422,7 @@ var progress_external_path = function (points, artist) {
             }
             else if (points.tool == "eraser") {
                 path.strokeColor = color;
-                path.strokeWidth = 4;
+                path.strokeWidth = 15;
             }
             if (points.tool == "line") {
                 //start_point = new Line();

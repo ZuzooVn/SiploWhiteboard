@@ -83,7 +83,7 @@ exports.progressExternalPath = function (room, points, artist) {
                 path.strokeWidth = 2;
             } else if (points.tool == "eraser") {
                 path.strokeColor = color;
-                path.strokeWidth = 4;
+                path.strokeWidth = 15;
             }
             else { // assume tool is not supplied, set to 'draw' as default
                 path.fillColor = color;

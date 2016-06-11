@@ -185,9 +185,9 @@ body {
 #mycolorpicker {
 
     position: absolute;
-    left: 250px;
-    top: 30px;
-    z-index: 101;
+    left: 40% !important;
+    top: 48% !important;
+    z-index: 100;
     display: none;
     border-radius: 6px;
 
