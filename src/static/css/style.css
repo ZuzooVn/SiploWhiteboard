@@ -15,6 +15,11 @@ body {
     font-family: Helvetica, Arial, sans-serif
 }
 
+#dummy-cursor{
+    position: absolute;
+    display: none;
+}
+
 .tool-box{
     position: absolute;
     z-index: 10;

@@ -336,6 +336,9 @@ function onMouseDown(event) {
             paper.project.activeLayer.selected = false;
         }
     }
+
+    // send the position of cursor to other party of the class
+    socket.emit('cursor:position', room, uid, event.point);
 }
 
 var item_move_delta;
@@ -447,11 +450,9 @@ function onMouseDrag(event) {
         // Send paths every 100ms
         if (!timer_is_active) {
 
-            send_paths_timer = setInterval(function () {
+            setInterval(function () {
                 if ((activeTool != "line" && activeTool != "rectangle" && activeTool != "triangle" && activeTool != "circle" && activeTool != "crop") || path_to_send.path.start) {
                     socket.emit('draw:progress', room, uid, JSON.stringify(path_to_send));
-                    console.log("sending");
-                    console.log(path_to_send.path.start);
                 }
                 else {
                     console.log("not send");
@@ -521,6 +522,10 @@ function onMouseDrag(event) {
         }
         item_move_timer_is_active = true;
     }
+
+    // send the position of cursor to other party of the class
+    socket.emit('cursor:position', room, uid, event.point);
+
 
 
 }
@@ -1280,6 +1285,13 @@ socket.on('image:resize', function (artist, imageName, scalingFactor) {
     }
 });
 
+socket.on('cursor:position', function (artist, position) {
+    if (artist != uid) {
+        $('#dummy-cursor').css({"top":position[2] + 'px', "left":position[1] + 'px', "display": "block"});
+        view.draw();
+    }
+});
+
 // --------------------------------- 
 // SOCKET.IO EVENT FUNCTIONS
 
@@ -1354,7 +1366,7 @@ var progress_external_path = function (points, artist) {
             path = external_paths[artist];
         }
         var rectangle = new Path.Rectangle(new Point(points.path.start[1], points.path.start[2]), new Point(points.path.end[1], points.path.end[2]));
-        rectangle.strokeColor = (points.tool == "crop") ? "#33D7FF" : color;  // light blue for cropping ans selected color for rectangle
+        rectangle.strokeColor = (points.tool == "crop") ? "#33D7FF" : color;  // light blue for cropping and selected color for rectangle
         rectangle.strokeWidth = 2;
         rectangle.name = points.name;
         path = rectangle;
