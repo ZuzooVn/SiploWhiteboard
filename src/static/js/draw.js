@@ -450,7 +450,7 @@ function onMouseDrag(event) {
         // Send paths every 100ms
         if (!timer_is_active) {
 
-            setInterval(function () {
+            send_paths_timer = setInterval(function () {
                 if ((activeTool != "line" && activeTool != "rectangle" && activeTool != "triangle" && activeTool != "circle" && activeTool != "crop") || path_to_send.path.start) {
                     socket.emit('draw:progress', room, uid, JSON.stringify(path_to_send));
                 }
