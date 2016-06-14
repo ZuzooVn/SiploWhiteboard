@@ -377,6 +377,10 @@ body {
     opacity: 0.5;
 }
 
+.buttonicon-point {
+    background-image: url('../../static/img/point-icon.png');
+}
+
 .buttonicon-embed {
     background-position: 0px -18px
 }

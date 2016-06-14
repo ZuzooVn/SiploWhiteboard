@@ -338,7 +338,9 @@ function onMouseDown(event) {
     }
 
     // send the position of cursor to other party of the class
-    socket.emit('cursor:position', room, uid, event.point);
+    if (activeTool == "point") {
+        socket.emit('cursor:position', room, uid, event.point);
+    }
 }
 
 var item_move_delta;
@@ -524,10 +526,9 @@ function onMouseDrag(event) {
     }
 
     // send the position of cursor to other party of the class
-    socket.emit('cursor:position', room, uid, event.point);
-
-
-
+    if (activeTool == "point") {
+        socket.emit('cursor:position', room, uid, event.point);
+    }
 }
 
 
@@ -647,6 +648,10 @@ function onMouseUp(event) {
         }
         item_move_delta = null;
         item_move_timer_is_active = false;
+    }
+
+    if(activeTool == "point"){
+        socket.emit('point:end', room, uid);
     }
 
 }
@@ -1031,6 +1036,16 @@ $('#redoTool').on('click', function () {
     }
 });
 
+$('#pointTool').on('click', function () {
+    $('.tool-box .tool').css({
+        border: "none"
+    }); // remove the backgrounds from other buttons
+    $('.shape-box>li> a').css({
+        background: "none"
+    }); // remove the shapes tool css to show it as in-active
+    activeTool = "point";
+});
+
 $('#documentTool').on('click', function () {
     //$('#documentViewer').hide();
     //$('#documentViewer').css('z-index',-1);
@@ -1291,6 +1306,15 @@ socket.on('cursor:position', function (artist, position) {
         view.draw();
     }
 });
+
+socket.on('point:end', function (artist, position) {
+    if (artist != uid) {
+        $('#dummy-cursor').css({"display": "none"});
+        view.draw();
+    }
+});
+
+
 
 // --------------------------------- 
 // SOCKET.IO EVENT FUNCTIONS

@@ -241,6 +241,11 @@ io.sockets.on('connection', function (socket) {
   socket.on('cursor:position', function(room, uid, position) {
     io.sockets.in(room).emit('cursor:position', uid, position);
   });
+
+  // Send cursor up event
+  socket.on('point:end', function(room, uid) {
+    io.sockets.in(room).emit('point:end', uid);
+  });
 });
 
 // Subscribe a client to a room
