@@ -151,6 +151,7 @@ $('#colorToggle').on('click', function () {
     $('.shape-box>li> a').css({
         background: "none"
     }); // remove the shapes tool css to show it as in-active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     $('#colorToggle').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
@@ -164,6 +165,7 @@ $('#clearImage').click(function () {
     $('.shape-box>li> a').css({
         background: "none"
     }); // remove the shapes tool css to show it as in-active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     $('#clearImage').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
@@ -285,13 +287,6 @@ function onMouseDown(event) {
         }
         else if (activeTool == "line" || activeTool == "rectangle" || activeTool == "triangle" || activeTool == "circle" || activeTool == "crop" ) {
             shapeStartPoint = point;
-            //path.add(2);
-            //path.insert(0, 3);
-            //var rectangle = new Rectangle(new Point(50, 50), new Point(150, 100));
-            //var cornerSize = new Size(20, 20);
-            //var path = new Path.RoundRectangle(rectangle, cornerSize);
-            //path.fillColor = 'black';
-
         }
 
         view.draw();
@@ -339,7 +334,7 @@ function onMouseDown(event) {
 
     // send the position of cursor to other party of the class
     if (activeTool == "point") {
-        socket.emit('cursor:position', room, uid, event.point);
+        socket.emit('pointing:start', room, uid, event.point);
     }
 }
 
@@ -527,7 +522,7 @@ function onMouseDrag(event) {
 
     // send the position of cursor to other party of the class
     if (activeTool == "point") {
-        socket.emit('cursor:position', room, uid, event.point);
+        socket.emit('pointing:start', room, uid, event.point);
     }
 }
 
@@ -651,7 +646,7 @@ function onMouseUp(event) {
     }
 
     if(activeTool == "point"){
-        socket.emit('point:end', room, uid);
+        socket.emit('pointing:end', room, uid);
     }
 
 }
@@ -811,6 +806,7 @@ $('#importExport').on('click', function () {
     $('.shape-box>li> a').css({
         background: "none"
     }); // remove the shapes tool css to show it as in-active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     $('#importExport').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
@@ -830,6 +826,7 @@ $('#clearCanvas').on('click', function () {
     $('.shape-box>li> a').css({
         background: "none"
     }); // remove the shapes tool css to show it as in-active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     $('#clearCanvas').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
@@ -852,6 +849,7 @@ $('#drawTool').on('click', function () {
     $('.shape-box>li> a').css({
         background: "none"
     }); // remove the shapes tool css to show it as in-active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     $('#drawTool').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
@@ -867,6 +865,7 @@ $('#pencilTool').on('click', function () {
     $('.shape-box>li> a').css({
         background: "none"
     }); // remove the shapes tool css to show it as in-active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     $('#pencilTool').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
@@ -881,6 +880,7 @@ $('#eraserTool').on('click', function () {
     $('.shape-box>li> a').css({
         background: "none"
     }); // remove the shapes tool css to show it as in-active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     $('#eraserTool').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
@@ -897,6 +897,7 @@ $('#selectTool').on('click', function () {
     $('.shape-box>li> a').css({
         background: "none"
     }); // remove the shapes tool css to show it as in-active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     $('#selectTool').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
@@ -911,6 +912,7 @@ $('#uploadImage').on('click', function () {
     $('.shape-box>li> a').css({
         background: "none"
     }); // remove the shapes tool css to show it as in-active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     $('#uploadImage').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
@@ -927,6 +929,7 @@ $('#lineTool').on('click', function () {
     $('#lineTool > a').css({
         background: "orange"
     }); // set the selected tool css to show it as active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     activeTool = "line";
     $('#myCanvas').css('cursor', 'pointer');
     paper.project.activeLayer.selected = false;
@@ -942,6 +945,7 @@ $('#rectangleTool').on('click', function () {
     $('#rectangleTool > a').css({
         background: "orange"
     }); // set the shapes tool css to show it as active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     activeTool = "rectangle";
     $('#myCanvas').css('cursor', 'pointer');
 });
@@ -956,6 +960,7 @@ $('#triangleTool').on('click', function () {
     $('#triangleTool > a').css({
         background: "orange"
     }); // set the shapes tool css to show it as active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     activeTool = "triangle";
     $('#myCanvas').css('cursor', 'pointer');
 });
@@ -970,6 +975,7 @@ $('#circleTool').on('click', function () {
     $('#circleTool > a').css({
         background: "orange"
     }); // set the shapes tool css to show it as active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     activeTool = "circle";
     $('#myCanvas').css('cursor', 'pointer');
 });
@@ -982,6 +988,7 @@ $('#cropTool').on('click', function () {
     $('.shape-box>li> a').css({
         background: "none"
     }); // remove the shapes tool css to show it as in-active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     if(imageToCrop){
         $('#cropTool').css({
             border: "1px solid orange"
@@ -1000,6 +1007,7 @@ $('#undoTool').on('click', function () {
     $('.shape-box>li> a').css({
         background: "none"
     }); // remove the shapes tool css to show it as in-active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     if (paper.project.activeLayer.hasChildren()) {
         $('#undoTool > a').css({
             background: "orange"
@@ -1022,6 +1030,7 @@ $('#redoTool').on('click', function () {
     $('.shape-box>li> a').css({
         background: "none"
     }); // remove the shapes tool css to show it as in-active
+    $('#pointTool').css({"border": "none"}); //remove css from point tool
     if (redoStack.length > 0) {
         $('#redoTool > a').css({
             background: "orange"
@@ -1043,7 +1052,9 @@ $('#pointTool').on('click', function () {
     $('.shape-box>li> a').css({
         background: "none"
     }); // remove the shapes tool css to show it as in-active
+    $('#pointTool').css({"border": "solid 1px orange"});
     activeTool = "point";
+    $('#myCanvas').css('cursor', 'pointer');
 });
 
 $('#documentTool').on('click', function () {
@@ -1300,14 +1311,15 @@ socket.on('image:resize', function (artist, imageName, scalingFactor) {
     }
 });
 
-socket.on('cursor:position', function (artist, position) {
+socket.on('pointing:start', function (artist, position) {
     if (artist != uid) {
-        $('#dummy-cursor').css({"top":position[2] + 'px', "left":position[1] + 'px', "display": "block"});
+        // reduced few pixels to adjust the cursor position perfectly
+        $('#dummy-cursor').css({"top":(position[2] - 2) + 'px', "left":(position[1] - 10) + 'px', "display": "block"});
         view.draw();
     }
 });
 
-socket.on('point:end', function (artist, position) {
+socket.on('pointing:end', function (artist, position) {
     if (artist != uid) {
         $('#dummy-cursor').css({"display": "none"});
         view.draw();

@@ -237,14 +237,14 @@ io.sockets.on('connection', function (socket) {
     io.sockets.in(room).emit('image:resize', uid, image, scalingFactor);
   });
 
-  // Send cursor position to other party of the class
-  socket.on('cursor:position', function(room, uid, position) {
-    io.sockets.in(room).emit('cursor:position', uid, position);
+  // Start using pointer tool. show writer's cursor to other party of the class
+  socket.on('pointing:start', function(room, uid, position) {
+    io.sockets.in(room).emit('pointing:start', uid, position);
   });
 
-  // Send cursor up event
-  socket.on('point:end', function(room, uid) {
-    io.sockets.in(room).emit('point:end', uid);
+  // End using pointer tool. hide writer's cursor from other party of the class
+  socket.on('pointing:end', function(room, uid) {
+    io.sockets.in(room).emit('pointing:end', uid);
   });
 });
 
