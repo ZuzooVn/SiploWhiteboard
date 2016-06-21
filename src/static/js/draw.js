@@ -3,8 +3,18 @@
 tool.minDistance = 1;
 tool.maxDistance = 45;
 
-var room = window.location.pathname.split("/")[2];
+room = window.location.pathname.split("/")[2];
 var redoStack = new Array(); // stack to store undo items
+
+
+function removeStylingFromTools() {
+    $('.tool-box .tool').css({
+        border: "none"
+    }); // remove the backgrounds from other buttons
+    $('.compound-box>li> a').css({
+        background: "none"
+    }); // remove the css from compound boxes to show it as in-active
+}
 
 function pickColor(color) {
     $('#color').val(color);
@@ -69,15 +79,11 @@ function scrolled(x, y, delta) {
      */
 }
 
-
 $('#activeColorSwatch').css('background-color', $('.colorSwatch.active').css('background-color'));
-
-// Initialise Socket.io
-var socket = io.connect('/');
 
 // Random User ID
 // Used when sending data
-var uid = (function () {
+uid = (function () {
     var S4 = function () {
         return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
     };
@@ -145,13 +151,7 @@ update_active_color();
 
 
 $('#colorToggle').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
+    removeStylingFromTools();
     $('#colorToggle').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
@@ -159,13 +159,7 @@ $('#colorToggle').on('click', function () {
 });
 
 $('#clearImage').click(function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
+    removeStylingFromTools();
     $('#clearImage').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
@@ -800,13 +794,7 @@ $('#embedlink').on('click', function () {
     $('#embed').fadeToggle();
 });
 $('#importExport').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
+    removeStylingFromTools();
     $('#importExport').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
@@ -816,17 +804,9 @@ $('#importExport').on('click', function () {
         redoStack.length = 0;
     }
 });
-/*$('#usericon').on('click', function () {
-    $('#mycolorpicker').fadeToggle();
-});*/
+
 $('#clearCanvas').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
+    removeStylingFromTools();
     $('#clearCanvas').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
@@ -843,15 +823,9 @@ $('#exportPNG').on('click', function () {
 });
 
 $('#drawTool').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
-    $('#drawTool').css({
-        border: "1px solid orange"
+    removeStylingFromTools();
+    $('#drawTool > a').css({
+        background: "orange"
     }); // set the selected tool css to show it as active
     activeTool = "draw";
     $('#myCanvas').css('cursor', 'pointer');
@@ -859,30 +833,18 @@ $('#drawTool').on('click', function () {
 });
 
 $('#pencilTool').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
-    $('#pencilTool').css({
-        border: "1px solid orange"
+    removeStylingFromTools();
+    $('#pencilTool > a').css({
+        background: "orange"
     }); // set the selected tool css to show it as active
     activeTool = "pencil";
     $('#myCanvas').css('cursor', 'pointer');
     paper.project.activeLayer.selected = false;
 });
 $('#eraserTool').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
-    $('#eraserTool').css({
-        border: "1px solid orange"
+    removeStylingFromTools();
+    $('#eraserTool > a').css({
+        background: "orange"
     }); // set the selected tool css to show it as active
     activeTool = "eraser";
     $('#myCanvas').css('cursor', 'url(/wb_assets/static/img/cursor_eraser.png),pointer');
@@ -891,13 +853,7 @@ $('#eraserTool').on('click', function () {
 });
 
 $('#selectTool').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
+    removeStylingFromTools();
     $('#selectTool').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
@@ -906,13 +862,7 @@ $('#selectTool').on('click', function () {
 });
 
 $('#uploadImage').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
+    removeStylingFromTools();
     $('#uploadImage').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
@@ -920,75 +870,42 @@ $('#uploadImage').on('click', function () {
 });
 
 $('#lineTool').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
-    $('#lineTool > a').css({
-        background: "orange"
-    }); // set the selected tool css to show it as active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
+    removeStylingFromTools();
     activeTool = "line";
     $('#myCanvas').css('cursor', 'pointer');
     paper.project.activeLayer.selected = false;
 });
 
 $('#rectangleTool').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
+    removeStylingFromTools();
     $('#rectangleTool > a').css({
         background: "orange"
     }); // set the shapes tool css to show it as active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
     activeTool = "rectangle";
     $('#myCanvas').css('cursor', 'pointer');
 });
 
 $('#triangleTool').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
+   removeStylingFromTools();
     $('#triangleTool > a').css({
         background: "orange"
     }); // set the shapes tool css to show it as active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
     activeTool = "triangle";
     $('#myCanvas').css('cursor', 'pointer');
 });
 
 $('#circleTool').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
+    removeStylingFromTools();
     $('#circleTool > a').css({
         background: "orange"
     }); // set the shapes tool css to show it as active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
     activeTool = "circle";
     $('#myCanvas').css('cursor', 'pointer');
 });
 
 
 $('#cropTool').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
+    removeStylingFromTools();
     if(imageToCrop){
         $('#cropTool').css({
             border: "1px solid orange"
@@ -1001,13 +918,7 @@ $('#cropTool').on('click', function () {
 });
 
 $('#undoTool').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
+    removeStylingFromTools();
     if (paper.project.activeLayer.hasChildren()) {
         $('#undoTool > a').css({
             background: "orange"
@@ -1024,13 +935,7 @@ $('#undoTool').on('click', function () {
 });
 
 $('#redoTool').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
-    $('#pointTool').css({"border": "none"}); //remove css from point tool
+    removeStylingFromTools();
     if (redoStack.length > 0) {
         $('#redoTool > a').css({
             background: "orange"
@@ -1046,20 +951,18 @@ $('#redoTool').on('click', function () {
 });
 
 $('#pointTool').on('click', function () {
-    $('.tool-box .tool').css({
-        border: "none"
-    }); // remove the backgrounds from other buttons
-    $('.shape-box>li> a').css({
-        background: "none"
-    }); // remove the shapes tool css to show it as in-active
-    $('#pointTool').css({"border": "solid 1px orange"});
-    activeTool = "point";
+    removeStylingFromTools();
+    $('#pointTool > a').css({
+        background: "orange"
+    }); // set the selected tool css to show it as active    activeTool = "point";
     $('#myCanvas').css('cursor', 'pointer');
 });
 
 $('#documentTool').on('click', function () {
-    //$('#documentViewer').hide();
-    //$('#documentViewer').css('z-index',-1);
+    removeStylingFromTools();
+    $('#documentTool').css({
+        background: "orange"
+    }); // set the selected tool css to show it as active
     var documentViewer = $('#documentViewer');
     var body = $('body');
     if (documentViewer.css('visibility') == 'hidden') {
@@ -1323,6 +1226,22 @@ socket.on('pointing:end', function (artist, position) {
     if (artist != uid) {
         $('#dummy-cursor').css({"display": "none"});
         view.draw();
+    }
+});
+
+socket.on('pdf:load', function (artist, file) {
+    if (artist != uid) {
+        var documentViewer = $('#documentViewer');
+        var body = $('body');
+        if (documentViewer.css('visibility') == 'hidden') {
+            documentViewer.css('visibility', 'visible');
+            body.css('background-color', '#404040');
+        }
+        else {
+            documentViewer.css('visibility', 'hidden');
+            body.css('background-color', '');
+        }
+        PDFViewerApplication.open('/files/'+file);
     }
 });
 

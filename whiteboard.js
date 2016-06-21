@@ -246,6 +246,11 @@ io.sockets.on('connection', function (socket) {
   socket.on('pointing:end', function(room, uid) {
     io.sockets.in(room).emit('pointing:end', uid);
   });
+
+  // Load PDF file from server
+  socket.on('pdf:load', function(room, uid, file) {
+    io.sockets.in(room).emit('pdf:load', uid, file);
+  });
 });
 
 // Subscribe a client to a room
