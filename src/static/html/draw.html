@@ -88,7 +88,7 @@
         <!-- Shapes -->
         <div class="col-md-1 col-sm-1 col-xs-1 tool">
             <div class="dropup">
-                <button class="btn dropdown-toggle buttonicon buttonicon-shapes" type="button" data-toggle="dropdown"></button>
+                <button class="btn dropdown-toggle buttonicon buttonicon-shapes" type="button" data-toggle="dropdown" title="Shapes"></button>
                 <ul class="dropdown-menu shape-box">
                     <li id="lineTool" >
                         <a>
@@ -151,14 +151,14 @@
         </div>
         <!--Import or export-->
         <div class="col-md-1 col-sm-1 col-xs-1 tool" id="importExport">
-            <a class="grouped-right" data-l10n-id="draw.toolbar.import_export.title">
+            <a class="grouped-right" data-l10n-id="draw.toolbar.import_export.title" title="Export As a Image">
                 <span class="buttonicon buttonicon-import_export"></span>
             </a>
         </div>
         <!--Pdf Viewer-->
         <div class="col-md-1 col-sm-1 col-xs-1 tool">
             <a id="documentTool" class="grouped-right"
-               data-l10n-id="draw.toolbar.import_export.title">
+               data-l10n-id="draw.toolbar.import_export.title" title="PDF Viewer">
                 <span class="buttonicon buttonicon-pdf"></span>
             </a>
         </div>
@@ -175,39 +175,8 @@
             </a>
         </div>
     </div>
-        <!--documentviewer-->
-    <!--<ul class="menu_right">-->
-        <!-- settings -->
-        <!--<li data-key="settings">-->
-        <!--<a id="settingslink" class="grouped-left" data-l10n-id="draw.toolbar.settings.title">-->
-        <!--<span class="grouped-left buttonicon buttonicon-settings"></span>-->
-        <!--</a>-->
-        <!--</li>-->
-        <!-- import export -->
-        <!--<li data-key="import_export">-->
-            <!--<a id="importExport" class="grouped-middle"-->
-               <!--data-l10n-id="draw.toolbar.import_export.title">-->
-                <!--<span class="buttonicon buttonicon-import_export"></span>-->
-            <!--</a>-->
-        <!--</li>-->
-        <!-- share & embed -->
-        <!--<li data-key="embed">-->
-        <!--<a id="embedlink" class="grouped-right" data-l10n-id="draw.toolbar.embed.title">-->
-        <!--<span class="buttonicon buttonicon-embed"></span>-->
-        <!--</a>-->
-        <!--</li>-->
-
-        <!-- user stuff -->
-        <!--<li class="separator"></li>-->
-        <!--<li id="usericon" data-key="showusers">-->
-        <!--<a data-l10n-id="draw.toolbar.showusers.title">-->
-        <!--<span class="buttonicon buttonicon-showusers"></span>-->
-        <!--<span id="online_count">1</span>-->
-        <!--</a>-->
-        <!--</li>-->
-
-    <!--</ul>-->
 </div>
+
 <div id="settings" class="popup">
     <h1 data-l10n-id="draw.settings.padSettings"></h1>
 
@@ -217,6 +186,7 @@
         <button id="clearCanvas">Okay, Clear it!</button>
     </div>
 </div>
+
 <div id="embed" class="popup">
     <h1 data-l10n-id="draw.share">Share & Embed</h1>
 
@@ -246,6 +216,7 @@
 <div id="lostConnection" class="hidden">
     <p>Lost connection to the server! Please refresh this page.</p>
 </div>
+
 <div id="loading" class="hidden" style="display:block;">
     <p>Loading existing sketch... Click and hold to access the colour wheel</p>
 </div>
@@ -253,6 +224,7 @@
 <input type="file" id="imageInput" accept="image/*"/>
 
 <div id="activeColorSwatch"></div>
+
 <div id="canvasContainer">
     <canvas id="myCanvas" resize="true"></canvas>
     <div id="documentViewer">
