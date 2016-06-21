@@ -41,13 +41,13 @@ body {
     margin: 0 15px;
 }
 
-.tool-box .shape-box{
+.tool-box .compound-box{
     width: 65px;
     min-width: 60px;
     left: -70%;
 }
 
-.shape-box>li>a:hover{
+.compound-box>li>a:hover{
     background: orange!important;
 }
 
@@ -342,8 +342,31 @@ body {
     opacity: 0.5;
 }
 
-.buttonicon-pdf {
-    background-image: url('../../static/img/pdf.png');
+.buttonicon-load-pdf {
+    background-image: url('../../static/img/file-add-icon.png');
+}
+
+.buttonicon-remove-pdf {
+    background-image: url('../../static/img/file-remove-icon.png');
+}
+
+.buttonicon-edit-pdf {
+    background-image: url('../../static/img/file-edit-icon.png');
+}
+
+.buttonicon-basic-tools {
+    background-image: url('../../static/img/brush-pencil-icon.png');
+    background-color: white;
+    height: 25px;
+}
+
+.buttonicon-basic-tools:active {
+    background-image: url('../../static/img/brush-pencil-icon.png');
+    background-color: white;
+}
+
+.buttonicon-basic-tools:active:focus {
+    outline: none;
 }
 
 .buttonicon-shapes {
@@ -357,6 +380,20 @@ body {
 }
 
 .buttonicon-shapes:active:focus {
+    outline: none;
+}
+
+.buttonicon-pdf-tools {
+    background-image: url('../../static/img/pdf.png');
+    background-color: white;
+}
+
+.buttonicon-pdf-tools:active {
+    background-image: url('../../static/img/pdf.png');
+    background-color: white;
+}
+
+.buttonicon-pdf-tools:active:focus {
     outline: none;
 }
 

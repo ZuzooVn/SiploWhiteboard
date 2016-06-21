@@ -73,23 +73,41 @@
 <!--Draw content start-->
 <div class="container tool-box">
     <div class="row">
-        <!-- paint brush -->
-        <div class="col-md-1 col-sm-1 col-xs-1 tool" id="drawTool">
-            <a class="grouped-left" data-l10n-id="draw.toolbar.draw.title" title="Brush Tool">
-                <span class="buttonicon buttonicon-draw"></span>
-            </a>
+
+        <!-- paint brush/ pencil / eraser / hand tool -->
+        <div class="col-md-1 col-sm-1 col-xs-1 tool">
+            <div class="dropup">
+                <button class="btn dropdown-toggle buttonicon buttonicon-basic-tools" type="button" data-toggle="dropdown" title="Basic Tools"></button>
+                <ul class="dropdown-menu compound-box">
+                    <li id="drawTool">
+                        <a class="grouped-left" data-l10n-id="draw.toolbar.draw.title" title="Brush Tool">
+                            <span class="buttonicon buttonicon-draw"></span>
+                        </a>
+                    </li>
+                    <li id="pencilTool" >
+                        <a class="grouped-middle" data-l10n-id="draw.toolbar.pencil.title" title="Pencil Tool">
+                            <span class="buttonicon buttonicon-pencil"></span>
+                        </a>
+                    </li>
+                    <li id="eraserTool" >
+                        <a class="grouped-middle" data-l10n-id="draw.toolbar.pencil.title" title="Eraser Tool">
+                            <span class="buttonicon buttonicon-eraser"></span>
+                        </a>
+                    </li>
+                    <li id="pointTool">
+                        <a class="grouped-left" data-l10n-id="draw.toolbar.draw.title" title="Point Tool">
+                            <span class="buttonicon buttonicon-point"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <!-- pencil -->
-        <div class="col-md-1 col-sm-1 col-xs-1 tool"  id="pencilTool">
-            <a class="grouped-middle" data-l10n-id="draw.toolbar.pencil.title" title="Pencil Tool">
-                <span class="buttonicon buttonicon-pencil"></span>
-            </a>
-        </div>
+
         <!-- Shapes -->
         <div class="col-md-1 col-sm-1 col-xs-1 tool">
             <div class="dropup">
                 <button class="btn dropdown-toggle buttonicon buttonicon-shapes" type="button" data-toggle="dropdown" title="Shapes"></button>
-                <ul class="dropdown-menu shape-box">
+                <ul class="dropdown-menu compound-box">
                     <li id="lineTool" >
                         <a>
                             <span class="buttonicon buttonicon-line"></span>
@@ -113,65 +131,87 @@
                 </ul>
             </div>
         </div>
-        <!--Eraser-->
-        <div class="col-md-1 col-sm-1 col-xs-1 tool" id="eraserTool">
-            <a class="grouped-middle" data-l10n-id="draw.toolbar.pencil.title" title="Eraser Tool">
-                <span class="buttonicon buttonicon-eraser"></span>
-            </a>
+
+        <!--Pdf Viewer-->
+        <div class="col-md-1 col-sm-1 col-xs-1 tool">
+            <div class="dropup">
+                <button class="btn dropdown-toggle buttonicon buttonicon-pdf-tools" type="button" data-toggle="dropdown" title="PDF File Operations"></button>
+                <ul class="dropdown-menu compound-box">
+                    <li id="documentTool" >
+                        <a class="grouped-right"
+                           data-l10n-id="draw.toolbar.import_export.title" title="Load PDF">
+                            <span class="buttonicon buttonicon-load-pdf"></span>
+                        </a>
+                    </li>
+                    <li id="documentTool" >
+                        <a class="grouped-right"
+                           data-l10n-id="draw.toolbar.import_export.title" title="Remove PDF">
+                            <span class="buttonicon buttonicon-remove-pdf"></span>
+                        </a>
+                    </li>
+                    <li id="documentTool" >
+                        <a class="grouped-right"
+                           data-l10n-id="draw.toolbar.import_export.title" title="Edit PDF">
+                            <span class="buttonicon buttonicon-edit-pdf"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
+
         <!-- Select Tool -->
         <div class="col-md-1 col-sm-1 col-xs-1 tool" id="selectTool">
             <a class="grouped-middle" data-l10n-id="draw.toolbar.select.title" title="Select Tool">
                 <span class="buttonicon buttonicon-select"></span>
             </a>
         </div>
+
         <!-- color Selector Toggle -->
         <div class="col-md-1 col-sm-1 col-xs-1 tool" id="colorToggle">
             <a class="grouped-right" data-l10n-id="draw.toolbar.colorToggle.title" title="Color">
                 <span class="buttonicon buttonicon-color" style=""></span>
             </a>
         </div>
+
         <!--Clear Drawing-->
         <div class="col-md-1 col-sm-1 col-xs-1 tool" id="clearImage">
             <a class="grouped-left clearCanvasPrompt"  data-l10n-id="draw.toolbar.clearImage" title="Clear Drawing">
                 <span class="buttonicon buttonicon-clearImage"></span>
             </a>
         </div>
+
         <!-- Upload -->
         <div class="col-md-1 col-sm-1 col-xs-1 tool" id="uploadImage">
             <a class="grouped-middle" data-l10n-id="draw.toolbar.upload.title" title="Upload an Image">
                 <span class="buttonicon buttonicon-upload"></span>
             </a>
         </div>
+
         <!--Crop-->
         <div class="col-md-1 col-sm-1 col-xs-1 tool" id="cropTool">
             <a class="grouped-right" data-l10n-id="draw.toolbar.cropTool.title" title="Crop Image">
                 <span class="buttonicon buttonicon-crop"></span>
             </a>
         </div>
+
         <!--Import or export-->
         <div class="col-md-1 col-sm-1 col-xs-1 tool" id="importExport">
             <a class="grouped-right" data-l10n-id="draw.toolbar.import_export.title" title="Export As a Image">
                 <span class="buttonicon buttonicon-import_export"></span>
             </a>
         </div>
-        <!--Pdf Viewer-->
+
+        <!--Undo-->
         <div class="col-md-1 col-sm-1 col-xs-1 tool">
-            <a id="documentTool" class="grouped-right"
-               data-l10n-id="draw.toolbar.import_export.title" title="PDF Viewer">
-                <span class="buttonicon buttonicon-pdf"></span>
-            </a>
-        </div>
-        <!--Undo--><!--Redo-->
-        <div class="col-md-1 col-sm-1 col-xs-1 tool redo-undo-box">
             <a id="undoTool" class="grouped-right" data-l10n-id="draw.toolbar.undoTool.title" title="Undo">
                 <span class="buttonicon buttonicon-undo"></span>
             </a>
+        </div>
+
+        <!--Redo-->
+        <div class="col-md-1 col-sm-1 col-xs-1 tool">
             <a id="redoTool" class="grouped-right" data-l10n-id="draw.toolbar.redoTool.title" title="Redo">
                 <span class="buttonicon buttonicon-redo"></span>
-            </a>
-            <a class="grouped-left" data-l10n-id="draw.toolbar.draw.title" title="Point Tool" id="pointTool">
-                <span class="buttonicon buttonicon-point"></span>
             </a>
         </div>
     </div>
@@ -616,7 +656,7 @@
 </div>
 
 <!--http://stackoverflow.com/questions/25874001/how-to-put-scrollbar-only-for-modal-body-in-bootstrap-modal-dialog-->
-<div id = 'fileBrowserModal' class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id = "fileBrowserModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" style="overflow-y: scroll; max-height:85%;  margin-top: 50px; margin-bottom:50px;">
         <div class="modal-content">
             <div class="modal-header">

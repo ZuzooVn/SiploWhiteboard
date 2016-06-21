@@ -2,6 +2,13 @@
  * Created by buddhikajay on 5/25/16.
  */
 
+// following are the global scope variables to be used by both js and paper-script files
+var room;
+var uid;
+
+// Initialise Socket.io
+var socket = io.connect('/');
+
 $(function() {
     $('#container').jstree({
         'core' : {
@@ -30,6 +37,7 @@ $(function(){
                 //PDFViewerApplication.open('/web/compressed.tracemonkey-pldi-09.pdf');
                 $('#fileBrowserModal').modal('hide');
                 PDFViewerApplication.open('/files/'+data.instance.get_selected(true)[0].text);
+                socket.emit('pdf:load', room, uid, data.instance.get_selected(true)[0].text);
             });
         }
         else {
