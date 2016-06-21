@@ -1,6 +1,6 @@
 [![][SiploImage]][Siplo]
 
-Copyright © 2015-2016 [Siplo].
+Copyright © 2015-2016 [Siplo.lk].
 
 Siplo Whiteboard
 ================
@@ -30,6 +30,6 @@ Enabling Loging
 3. add <.siplo.lk> for session.cookie_domain in etc/php5/cli/php.ini to enable the cookies for sub domains 
 
 
-[Siplo]: https://siplo.lk
+[Siplo.lk]: https://siplo.lk
 [SiploImage]: https://www.siplo.lk/bundles/siplouser/images/Logo03.png
 [etherdraw]: https://github.com/JohnMcLear/draw
