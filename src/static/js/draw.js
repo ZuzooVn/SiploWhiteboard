@@ -958,9 +958,9 @@ $('#pointTool').on('click', function () {
     $('#myCanvas').css('cursor', 'pointer');
 });
 
-$('#documentTool').on('click', function () {
+$('#documentLoadTool').on('click', function () {
     removeStylingFromTools();
-    $('#documentTool').css({
+    $('#documentLoadTool > a').css({
         background: "orange"
     }); // set the selected tool css to show it as active
     var documentViewer = $('#documentViewer');
@@ -971,7 +971,16 @@ $('#documentTool').on('click', function () {
         //this background color for body tag will make conflicts with whiteboard
         body.css('background-color', '#404040');
     }
-    else {
+});
+
+$('#documentRemoveTool').on('click', function () {
+    removeStylingFromTools();
+    $('#documentRemoveTool > a').css({
+        background: "orange"
+    }); // set the selected tool css to show it as active
+    var documentViewer = $('#documentViewer');
+    var body = $('body');
+    if (documentViewer.css('visibility') == 'visible') {
         documentViewer.css('visibility', 'hidden');
         body.css('background-color', '');
     }
