@@ -1,4 +1,4 @@
-[![][SiploImage]][Siplo]
+![][SiploImage]
 
 Copyright © 2015-2016 [Siplo.lk].
 
