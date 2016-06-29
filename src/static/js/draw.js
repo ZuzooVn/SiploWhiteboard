@@ -956,6 +956,8 @@ $('#pointTool').on('click', function () {
         background: "orange"
     }); // set the selected tool css to show it as active    activeTool = "point";
     $('#myCanvas').css('cursor', 'pointer');
+    activeTool = "point";
+    //console.log();
 });
 
 $('#documentLoadTool').on('click', function () {
