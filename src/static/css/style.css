@@ -351,6 +351,7 @@ body {
 }
 
 .buttonicon-edit-pdf {
+    margin-left: -3px;
     background-image: url('../../static/img/file-edit-icon.png');
 }
 
