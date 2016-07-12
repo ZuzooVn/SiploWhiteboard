@@ -5,7 +5,13 @@ tool.maxDistance = 45;
 
 room = window.location.pathname.split("/")[2];
 var redoStack = new Array(); // stack to store undo items
-
+var canvasClearedCount = 0; // keep track of number of times the canvas cleared, so we can override the correct previous page at db
+var maximumPreviousPageCount = 5;
+var currentPageNumber = 0; // when a previous page is loaded, this value should be the previous-page number.
+/*
+* 0 - latest page
+* 1,2,3,4,5 - previous page
+*/
 
 function removeStylingFromTools() {
     $('.tool-box .tool').css({
@@ -56,7 +62,7 @@ $(document).ready(function () {
     $('#canvasContainer').css("background-image", 'url(' + drawingPNG + ')');
 
     if (paper.project.activeLayer.hasChildren())  // notifying user that he can undo now
-        $('.buttonicon-undo').css({opacity: 1});
+        $('.buttonicon-undo').addClass('disabled');
 
 });
 
@@ -158,16 +164,49 @@ $('#colorToggle').on('click', function () {
     $('#mycolorpicker').fadeToggle();
 });
 
-$('#clearImage').click(function () {
+/*Load New Page*/
+$('#load-new-pg').click(function () {
     removeStylingFromTools();
-    $('#clearImage').css({
-        border: "1px solid orange"
-    }); // set the selected tool css to show it as active
-    var p = confirm("Are you sure you want to clear the drawing?");
-    if (p) {
+    $('#load-new-pg > a').css({
+        background: "orange"
+    });
+    redoStack.length = 0;
+    if(currentPageNumber == 0 && paper.project.activeLayer.hasChildren()){ // currently on the latest page of the book. so open a new page
+        //var p = confirm("Are you sure you want to clear the drawing?");
+        canvasClearedCount++;
         clearCanvas();
-        socket.emit('canvas:clear', room);
+        socket.emit('canvas:clear', room, canvasClearedCount);
     }
+    else
+        alert("Pleas go back to last page to add a new page");
+});
+
+/*Load Next Page*/
+$('#load-next-pg').click(function () {
+    removeStylingFromTools();
+    $('#load-next-pg > a').css({
+        background: "orange"
+    });
+    redoStack.length = 0;
+    var requestedPageNumber = (currentPageNumber == canvasClearedCount && currentPageNumber > 0) ? 0 : (currentPageNumber >= 1) ? currentPageNumber+1 : -1;
+    if(requestedPageNumber != -1)
+        socket.emit('load:previousPage', room, requestedPageNumber, currentPageNumber);
+    else
+        alert("You have reached the last page of the book");
+});
+
+/*Loading Previous Page*/
+$('#load-previous-pg').click(function () {
+    removeStylingFromTools();
+    $('#load-previous-pg > a').css({
+        background: "orange"
+    });
+    redoStack.length = 0;
+    var requestedPageNumber = (currentPageNumber == 0 && canvasClearedCount > 0) ? canvasClearedCount : (canvasClearedCount > 0 && currentPageNumber > 1) ? currentPageNumber-1 : -1;
+    if(requestedPageNumber != -1)
+        socket.emit('load:previousPage', room, requestedPageNumber, currentPageNumber);
+    else
+        alert("You have reached the first page of the book");
 });
 
 $('.toggleBackground').click(function () {
@@ -175,7 +214,7 @@ $('.toggleBackground').click(function () {
 });
 
 
-// --------------------------------- 
+// ---------------------------------
 // DRAWING EVENTS
 
 
@@ -206,7 +245,7 @@ function onMouseDown(event) {
 
     //remove cropping tool availability. itz only available just after image is uploaded
     if(activeTool != "crop" && imageToCrop){
-        $('.buttonicon-crop').css({opacity: 0.5});
+        $('.buttonicon-crop').addClass('disabled');
         imageToCrop = null;
     }
 
@@ -523,10 +562,10 @@ function onMouseDrag(event) {
 
 function onMouseUp(event) {
     if (paper.project.activeLayer.hasChildren())  // notifying user that he can undo now
-        $('.buttonicon-undo').css({opacity: 1});
+        $('.buttonicon-undo').removeClass('disabled');
 
     if (activeTool != 'undo' && activeTool != 'redo' && redoStack.length > 0) {  // clearing redo stack after user restarts drawing
-        $('.buttonicon-redo').css({opacity: 0.5}); // notifying user that he can't redo now
+        $('.buttonicon-redo').addClass('disabled'); // notifying user that he can't redo now
         redoStack.length = 0;
     }
 
@@ -569,19 +608,19 @@ function onMouseUp(event) {
         group.remove();  // remove the group after rasterizing
         rasterizedItem.remove(); // remove the rasterized item after creating image from it
         imageToCrop = null;
-        $('.buttonicon-crop').css({opacity: 0.5});
+        $('.buttonicon-crop').addClass('disabled');
         $('#cropTool').css({
             border: "none"
         });
         activeTool = "none";
         path_to_send.name = rasterizedImage.name;
+        path_to_send.data = project.exportJSON();
         path_to_send.path = {
             start: shapeStartPoint,
             end: shapeEndPoint
         };
         path.closed = true;
         view.draw();
-
         //socket.emit('draw:progress', room, uid, JSON.stringify(path_to_send));
         socket.emit('draw:end', room, uid, JSON.stringify(path_to_send));
 
@@ -800,25 +839,18 @@ $('#importExport').on('click', function () {
     }); // set the selected tool css to show it as active
     $('#importexport').fadeToggle();
     if (redoStack.length > 0) {  // clearing redo stack after user restarts drawing
-        $('.buttonicon-redo').css({opacity: 0.5}); // notifying user that he can't redo now
+        $('.buttonicon-redo').addClass('disabled'); // notifying user that he can't redo now
         redoStack.length = 0;
     }
 });
 
-$('#clearCanvas').on('click', function () {
-    removeStylingFromTools();
-    $('#clearCanvas').css({
-        border: "1px solid orange"
-    }); // set the selected tool css to show it as active
-    clearCanvas();
-    socket.emit('canvas:clear', room);
-});
 $('#exportSVG').on('click', function () {
     //this.href = document.getElementById('myCanvas').toDataURL('image/svg');
     exportSVG();
 });
 $('#exportPNG').on('click', function () {
-    this.href = document.getElementById('myCanvas').toDataURL();
+    this.href = document.getElementById('myCanvas').toDataURL('image/jpeg');
+    //this.href = document.getElementById('myCanvas').toDataURL();
     //exportPNG();
 });
 
@@ -873,6 +905,9 @@ $('#lineTool').on('click', function () {
     removeStylingFromTools();
     activeTool = "line";
     $('#myCanvas').css('cursor', 'pointer');
+    $('#lineTool > a').css({
+        background: "orange"
+    }); // set the shapes tool css to show it as active
     paper.project.activeLayer.selected = false;
 });
 
@@ -923,13 +958,13 @@ $('#undoTool').on('click', function () {
         $('#undoTool > a').css({
             background: "orange"
         }); // set the selecttool css to show it as active
-        $('.buttonicon-redo').css({opacity: 1});
+        $('.buttonicon-redo').removeClass('disabled');
         activeTool = "undo";
         redoStack.push(paper.project.activeLayer.lastChild);
         socket.emit('undo', room, uid);
         paper.project.activeLayer.lastChild.remove();
         if (!paper.project.activeLayer.hasChildren())
-            $('.buttonicon-undo').css({opacity: 0.5});
+            $('.buttonicon-undo').addClass('disabled');
         view.draw();
     }
 });
@@ -940,12 +975,12 @@ $('#redoTool').on('click', function () {
         $('#redoTool > a').css({
             background: "orange"
         }); // set the selecttool css to show it as active
-        $('.buttonicon-undo').css({opacity: 1});
+        $('.buttonicon-undo').removeClass('disabled');
         activeTool = "redo";
         socket.emit('redo', room, uid);
         paper.project.activeLayer.addChild(redoStack.pop());
         if (redoStack.length == 0)
-            $('.buttonicon-redo').css({opacity: 0.5});
+            $('.buttonicon-redo').addClass('disabled');
         view.draw();
     }
 });
@@ -1004,8 +1039,8 @@ function clearCanvas() {
     if (paper.project.activeLayer && paper.project.activeLayer.hasChildren()) {
         paper.project.activeLayer.removeChildren();
     }
-    $('.buttonicon-undo').css({opacity: 0.5});
-    $('.buttonicon-redo').css({opacity: 0.5});
+    $('.buttonicon-undo').addClass('disabled');
+    $('.buttonicon-redo').addClass('disabled');
     view.draw();
 }
 
@@ -1052,7 +1087,7 @@ function encodeAsImgAndLink(svg) {
 // for a POST.
 function exportPNG() {
     var canvas = document.getElementById('myCanvas');
-    var html = "<img src='" + canvas.toDataURL('image/png') + "' />"
+    var html = "<img src='" + canvas.toDataURL('image/jpeg') + "' />"
     if ($.browser.msie) {
         window.winpng = window.open('/static/html/export.html');
         window.winpng.document.write(html);
@@ -1074,7 +1109,7 @@ $('#imageInput').bind('change', function (e) {
         uploadImage(file);
     }
     if (redoStack.length > 0) {  // clearing redo stack after user restarts drawing
-        $('.buttonicon-redo').css({opacity: 0.5}); // notifying user that he can't redo now
+        $('.buttonicon-redo').addClass('disabled'); // notifying user that he can't redo now
         redoStack.length = 0;
     }
 });
@@ -1092,13 +1127,30 @@ function uploadImage(file) {
         raster.position = view.center;
         raster.name = uid + ":" + (++paper_object_count);
         imageToCrop = raster;
-        $('.buttonicon-crop').css({opacity: 1});
-        $('.buttonicon-undo').css({opacity: 1});
+        $('.buttonicon-crop').removeClass('disabled');
+        $('.buttonicon-undo').removeClass('disabled');
         socket.emit('image:add', room, uid, JSON.stringify(bin), raster.position, raster.name);
     });
 }
 
 
+function setPageToolsCSS(currentPageNumber){
+    if(currentPageNumber != 0){ // currently editing a previous page
+        $('#load-new-pg').addClass('disabled');
+    } else {
+        $('#load-new-pg').removeClass('disabled');
+    }
+    if((currentPageNumber == 0 && canvasClearedCount > 0) || (canvasClearedCount > 0 && currentPageNumber > 1)){
+        $('#load-previous-pg').removeClass('disabled');
+    }
+    else
+        $('#load-previous-pg').addClass('disabled');
+    if((currentPageNumber == canvasClearedCount && currentPageNumber > 0) || (currentPageNumber >= 1)){
+        $('#load-next-pg').removeClass('disabled');
+    }
+    else
+        $('#load-next-pg').addClass('disabled');
+}
 // ---------------------------------
 // SOCKET.IO EVENTS
 socket.on('settings', function (settings) {
@@ -1132,11 +1184,11 @@ socket.on('user:disconnect', function (user_count) {
     update_user_count(user_count);
 });
 
-socket.on('project:load', function (json) {
-    console.log("project:load");
+socket.on('project:load', function (json, pageCount) {
     paper.project.activeLayer.remove();
     paper.project.importJSON(json.project);
-
+    canvasClearedCount = pageCount;
+    setPageToolsCSS(0);
     // Make color selector draggable
     $('#mycolorpicker').pep({});
     // Make sure the range event doesn't propogate to pep
@@ -1154,7 +1206,10 @@ socket.on('project:load:error', function () {
     $('#lostConnection').show();
 });
 
-socket.on('canvas:clear', function () {
+socket.on('canvas:clear', function (clearedCount) {
+    canvasClearedCount = clearedCount;
+    redoStack.length = 0;
+    setPageToolsCSS(0);
     clearCanvas();
 });
 
@@ -1169,6 +1224,25 @@ socket.on('loading:end', function () {
     // cake
     $('#canvasContainer').css("background-image", 'none');
 
+});
+
+socket.on('load:previousPage', function (json, previousPageNumber) {
+    currentPageNumber = previousPageNumber;
+    redoStack.length = 0;
+    setPageToolsCSS(previousPageNumber);
+    paper.project.activeLayer.remove();
+    paper.project.importJSON(json.project);
+
+    // Make color selector draggable
+    $('#mycolorpicker').pep({});
+    // Make sure the range event doesn't propogate to pep
+    $('#opacityRangeVal').on('touchstart MSPointerDown mousedown', function (ev) {
+        ev.stopPropagation();
+    }).on('change', function (ev) {
+        update_active_color();
+    });
+
+    view.draw();
 });
 
 socket.on('item:remove', function (artist, name) {

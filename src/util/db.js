@@ -12,27 +12,21 @@ db.init(function(err){
   }
 });
 
-// Write to teh database
+// Write to database
 exports.storeProject = function(room) {
   var project = projects.projects[room].project;
   var json = project.exportJSON();
-
   db.set(room, {project: json});
-  //console.log("Writing project to database. pr:"+project+" room: "+room+" json:"+json);
-
-
 };
 
-// Try to load room from database
+// Loading a class for the first time
 exports.load = function(room, socket) {
-  console.log("load from db");
   if (projects.projects[room] && projects.projects[room].project) {
     var project = projects.projects[room].project;
     db.get(room, function(err, value) {
-      if (value && project && project.activeLayer) {
+        db.set(room+"PageCount", {count: 0});  // initialize the page count to zero
+        if (value && project && project.activeLayer) {
         socket.emit('loading:start');
-        // Clear default layer as importing JSON adds a new layer.
-        // We want the project to always only have one layer.
         project.activeLayer.remove();
         project.importJSON(value.project);
         socket.emit('project:load', value);
@@ -44,5 +38,76 @@ exports.load = function(room, socket) {
     loadError(socket);
   }
 };
+
+// Write clearing page to db, so we can load it later as a previous page
+exports.storeAsPreviousPage = function(room, canvasClearedCount) {
+    if (projects.projects[room] && projects.projects[room].project) {
+        var project = projects.projects[room].project;
+        var json = project.exportJSON();
+        db.get(room+"PageCount", function(err, value) {
+            if (value && value.count < canvasClearedCount && project && project.activeLayer) {
+                db.set(room+"PageCount", {count: canvasClearedCount});  // update the page count
+            }
+        });
+
+        db.set(room+canvasClearedCount, {project: json});
+    }
+};
+
+// load previous page from db
+exports.loadPreviousPage = function(room, requestedPageNumber, currentPageNumber, io) {
+  if (projects.projects[room] && projects.projects[room].project) {
+    var project = projects.projects[room].project;
+    var json = project.exportJSON();
+    db.set(room+currentPageNumber, {project: json});
+    db.get(room+requestedPageNumber, function(err, value) {
+      if (value && project && project.activeLayer) {
+          project.activeLayer.remove();
+          project.importJSON(value.project);
+          io.sockets.in(room).emit('load:previousPage', value, requestedPageNumber);
+      }
+    });
+  }
+};
+
+// This method is called when a class is loaded from memory or db
+exports.loadFromMemoryOrDB = function(room, socket, clientSettings) {
+    var project = projects.projects[room].project;
+    if (!project) { // Additional backup check, just in case
+        db.load(room, socket);
+        return;
+    }
+    socket.emit('loading:start');
+    var stateInMemory = project.exportJSON();  // state of the project in memory
+    project.activeLayer.remove();
+    db.get(room+"PageCount", function(err, pageCount) {
+        db.get(room+"0", function(err, stateInDB) {
+            if (stateInDB != null) {// state of the project in db
+                project.importJSON(stateInDB.project);
+                socket.emit('project:load', stateInDB, pageCount.count);
+            }
+            else {
+                project.importJSON(stateInMemory);
+                socket.emit('project:load', {project: stateInMemory}, pageCount.count);
+            }
+        });
+    });
+
+    socket.emit('settings', clientSettings);
+    socket.emit('loading:end');
+};
+
+// Recover from image cropping
+exports.recover = function(room, data) {
+    var project = projects.projects[room].project;
+    db.set(room, {project: data});
+    db.get(room, function(err, value) {
+        if (value) {
+            project.activeLayer.remove();
+            project.importJSON(value.project);
+        }
+    });
+};
+
 
 exports.db = db;

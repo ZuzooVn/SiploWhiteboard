@@ -182,13 +182,13 @@ io.sockets.on('connection', function (socket) {
   });
 
   // User clears canvas
-  socket.on('canvas:clear', function(room) {
+  socket.on('canvas:clear', function(room, canvasClearedCount) {
     if (!projects.projects[room] || !projects.projects[room].project) {
       loadError(socket);
       return;
     }
-    draw.clearCanvas(room);
-    io.in(room).emit('canvas:clear');
+    draw.clearCanvas(room, canvasClearedCount);
+    io.in(room).emit('canvas:clear', canvasClearedCount); // emit back the cleared count so both teacher and student will be in sync
   });
 
   // User removes an item
@@ -251,6 +251,12 @@ io.sockets.on('connection', function (socket) {
   socket.on('pdf:load', function(room, uid, file) {
     io.sockets.in(room).emit('pdf:load', uid, file);
   });
+
+  // Load a previous page
+  socket.on('load:previousPage', function(room, requestedPageNumber, currentPageNumber) {
+    draw.cleanRedoStack(room);
+    db.loadPreviousPage(room, requestedPageNumber, currentPageNumber, io);
+  });
 });
 
 // Subscribe a client to a room
@@ -282,7 +288,7 @@ function subscribe(socket, data) {
     projects.projects[room].external_paths = {};
     db.load(room, socket);
   } else { // Project exists in memory, no need to load from database
-    loadFromMemory(room, socket);
+    db.loadFromMemoryOrDB(room, socket, clientSettings);
   }
 
   // Broadcast to room the new user count -- currently broken
@@ -293,16 +299,23 @@ function subscribe(socket, data) {
 
 // Send current project to new client
 function loadFromMemory(room, socket) {
-  var project = projects.projects[room].project;
+  /*var project = projects.projects[room].project;
   if (!project) { // Additional backup check, just in case
     db.load(room, socket);
     return;
   }
   socket.emit('loading:start');
-  var value = project.exportJSON();
-  socket.emit('project:load', {project: value});
+  var stateInMemory = project.exportJSON();  // state of the project in memory
+  var stateInDB;
+  if ((stateInDB = db.getStateOfProjectInDB(room)) != null) {// state of the project in db
+    console.log("value from db to server" + JSON.stringify(stateInDB));
+    socket.emit('project:load', {project: stateInDB});
+  }
+  else
+    socket.emit('project:load', {project: stateInMemory});
+
   socket.emit('settings', clientSettings);
-  socket.emit('loading:end');
+  socket.emit('loading:end');*/
 }
 
 function loadError(socket) {
