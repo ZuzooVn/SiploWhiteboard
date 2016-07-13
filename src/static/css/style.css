@@ -285,6 +285,11 @@ body {
     height: 50px
 }
 
+.disabled{
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
 .buttonicon {
     width: 24px;
     height: 24px;
@@ -320,9 +325,33 @@ body {
 .buttonicon-color {
     background-image: url('../../static/img/color.png');
 }
-.buttonicon-clearImage {
-    background-image: url('../../static/img/close.png');
+
+.buttonicon-page-tools {
+    background-image: url('../../static/img/page-process-icon.png');
+    background-color: white;
 }
+
+.buttonicon-page-tools:active {
+    background-image: url('../../static/img/page-process-icon.png');
+    background-color: white;
+}
+
+.buttonicon-page-tools:active:focus {
+    outline: none;
+}
+
+.buttonicon-new-page{
+    background-image: url('../../static/img/new-page-icon.png');
+}
+
+.buttonicon-previous-page{
+    background-image: url('../../static/img/page-previous-icon.png');
+}
+
+.buttonicon-next-page{
+    background-image: url('../../static/img/page-next-icon.png');
+}
+
 .buttonicon-settings {
     background-position: 0px -436px
 }
@@ -334,12 +363,12 @@ body {
 
 .buttonicon-undo {
     background-image: url('../../static/img/undo.png');
-    opacity: 0.5;
+    /*opacity: 0.5;*/
 }
 
 .buttonicon-redo {
     background-image: url('../../static/img/redo.png');
-    opacity: 0.5;
+    /*opacity: 0.5;*/
 }
 
 .buttonicon-load-pdf {
@@ -412,7 +441,7 @@ body {
 
 .buttonicon-crop {
     background-image: url('../../static/img/crop.png');
-    opacity: 0.5;
+    /*opacity: 0.5;*/
 }
 
 .buttonicon-point {

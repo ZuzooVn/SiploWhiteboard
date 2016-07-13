@@ -159,6 +159,30 @@
             </div>
         </div>
 
+        <!--Page Operations-->
+        <div class="col-md-1 col-sm-1 col-xs-1 tool">
+            <div class="dropup">
+                <button class="btn dropdown-toggle buttonicon buttonicon-page-tools" type="button" data-toggle="dropdown" title="Page Operations"></button>
+                <ul class="dropdown-menu compound-box">
+                    <li id="load-new-pg" >
+                        <a title="New Page">
+                            <span class="buttonicon buttonicon-new-page"></span>
+                        </a>
+                    </li>
+                    <li id="load-previous-pg" class="disabled">
+                        <a title="Go To Previous Page">
+                            <span class="buttonicon buttonicon-previous-page"></span>
+                        </a>
+                    </li>
+                    <li id="load-next-pg" class="disabled">
+                        <a title="Go To Next Page">
+                            <span class="buttonicon buttonicon-next-page"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
         <!-- Select Tool -->
         <div class="col-md-1 col-sm-1 col-xs-1 tool" id="selectTool">
             <a class="grouped-middle" data-l10n-id="draw.toolbar.select.title" title="Select Tool">
@@ -173,13 +197,6 @@
             </a>
         </div>
 
-        <!--Clear Drawing-->
-        <div class="col-md-1 col-sm-1 col-xs-1 tool" id="clearImage">
-            <a class="grouped-left clearCanvasPrompt"  data-l10n-id="draw.toolbar.clearImage" title="Clear Drawing">
-                <span class="buttonicon buttonicon-clearImage"></span>
-            </a>
-        </div>
-
         <!-- Upload -->
         <div class="col-md-1 col-sm-1 col-xs-1 tool" id="uploadImage">
             <a class="grouped-middle" data-l10n-id="draw.toolbar.upload.title" title="Upload an Image">
@@ -190,7 +207,7 @@
         <!--Crop-->
         <div class="col-md-1 col-sm-1 col-xs-1 tool" id="cropTool">
             <a class="grouped-right" data-l10n-id="draw.toolbar.cropTool.title" title="Crop Image">
-                <span class="buttonicon buttonicon-crop"></span>
+                <span class="buttonicon buttonicon-crop disabled"></span>
             </a>
         </div>
 
@@ -204,43 +221,17 @@
         <!--Undo-->
         <div class="col-md-1 col-sm-1 col-xs-1 tool">
             <a id="undoTool" class="grouped-right" data-l10n-id="draw.toolbar.undoTool.title" title="Undo">
-                <span class="buttonicon buttonicon-undo"></span>
+                <span class="buttonicon buttonicon-undo disabled"></span>
             </a>
         </div>
 
         <!--Redo-->
         <div class="col-md-1 col-sm-1 col-xs-1 tool">
             <a id="redoTool" class="grouped-right" data-l10n-id="draw.toolbar.redoTool.title" title="Redo">
-                <span class="buttonicon buttonicon-redo"></span>
+                <span class="buttonicon buttonicon-redo disabled"></span>
             </a>
         </div>
     </div>
-</div>
-
-<div id="settings" class="popup">
-    <h1 data-l10n-id="draw.settings.padSettings"></h1>
-
-    <div class="column">
-        <h2 data-l10n-id="draw.settings.ClearCanvas">Clear Canvas</h2>
-        <a>Warning - This will clear the canvas</a>
-        <button id="clearCanvas">Okay, Clear it!</button>
-    </div>
-</div>
-
-<div id="embed" class="popup">
-    <h1 data-l10n-id="draw.share">Share & Embed</h1>
-
-    <div id="linkcode">
-        <h2 data-l10n-id="draw.share.link">Share</h2>
-        <input id="linkinput" type="text" value="">
-    </div>
-    <br>
-
-    <div id="embedcode">
-        <h2 data-l10n-id="draw.share.emebdcode">Embed</h2>
-        <input id="embedinput" type="text" value="">
-    </div>
-
 </div>
 
 <div id="importexport" class="popup">
@@ -249,7 +240,7 @@
     <div class="column">
         <h2 data-l10n-id="draw.importExport.export"></h2>
         <div><a id="exportSVG" download="siplo.svg" target="_blank" class="exportlink">Export SVG</a></div>
-        <div><a id="exportPNG" download="siplo.png" target="_self" class="exportlink">Export PNG</a></div>
+        <div><a id="exportPNG" download="siplo.jpg" target="_self" class="exportlink">Export PNG</a></div>
     </div>
 </div>
 
