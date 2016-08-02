@@ -22,6 +22,8 @@ $(function() {
     });
 });
 
+/* Select PDF file from file directory*/
+
 $(function(){
     $('#container').on("changed.jstree", function (e, data) {
         //console.log(data.instance.get_selected(true)[0].text);
@@ -50,5 +52,21 @@ $(function(){
     $('#browsFiles').on('click', function(){
         console.log('Can Browse Files');
         $('#fileBrowserModal').modal('show');
+    });
+});
+
+/* Go to next page of the loaded PDF file*/
+
+$(function(){
+    $('#toolbarViewerLeft .toolbarButton.pageDown').click(function(){
+        socket.emit('pdf:nextPage', room, uid);
+    });
+});
+
+/* Go to previous page of the loaded PDF file*/
+
+$(function(){
+    $('#toolbarViewerLeft .toolbarButton.pageUp').click(function(){
+        socket.emit('pdf:previousPage', room, uid);
     });
 });

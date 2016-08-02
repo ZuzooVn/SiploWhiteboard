@@ -137,15 +137,15 @@ exports.endExternalPath = function (room, points, artist) {
         }
         else if (points.tool == "crop") {
             // TODO : need to find a way to store the cropped image to db
-            /*path.clipMask = true;
+            path.clipMask = true;
             var group = new paper.Group();
             group.addChild(imageToCrop);
             group.addChild(path);
             var rasterizedImage = group.rasterize(); // ratserizing group into one object
             rasterizedImage.name = points.name; // name the cropped image to a new object
             group.remove();
-            imageToCrop = null;*/
-            db.recover(room, points.data);
+            imageToCrop = null;
+            //db.recover(room, points.data);
         }
         else {
             path.add(new drawing.Point(points.end[1], points.end[2]));

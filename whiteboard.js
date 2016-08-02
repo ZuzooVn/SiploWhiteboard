@@ -252,6 +252,16 @@ io.sockets.on('connection', function (socket) {
     io.sockets.in(room).emit('pdf:load', uid, file);
   });
 
+  // Go to next page of the loaded PDF file
+  socket.on('pdf:nextPage', function(room, uid) {
+    io.sockets.in(room).emit('pdf:nextPage', uid);
+  });
+
+  // Go to next page of the loaded PDF file
+  socket.on('pdf:previousPage', function(room, uid) {
+    io.sockets.in(room).emit('pdf:previousPage', uid);
+  });
+
   // Load a previous page
   socket.on('load:previousPage', function(room, requestedPageNumber, currentPageNumber) {
     draw.cleanRedoStack(room);
