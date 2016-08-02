@@ -849,7 +849,7 @@ $('#exportSVG').on('click', function () {
     exportSVG();
 });
 $('#exportPNG').on('click', function () {
-    this.href = document.getElementById('myCanvas').toDataURL('image/jpeg');
+    this.href = document.getElementById('myCanvas').toDataURL();
     //this.href = document.getElementById('myCanvas').toDataURL();
     //exportPNG();
 });
@@ -1087,7 +1087,7 @@ function encodeAsImgAndLink(svg) {
 // for a POST.
 function exportPNG() {
     var canvas = document.getElementById('myCanvas');
-    var html = "<img src='" + canvas.toDataURL('image/jpeg') + "' />"
+    var html = "<img src='" + canvas.toDataURL('image/png') + "' />";
     if ($.browser.msie) {
         window.winpng = window.open('/static/html/export.html');
         window.winpng.document.write(html);
@@ -1327,6 +1327,18 @@ socket.on('pdf:load', function (artist, file) {
             body.css('background-color', '');
         }
         PDFViewerApplication.open('/files/'+file);
+    }
+});
+
+socket.on('pdf:nextPage', function (artist) {
+    if (artist != uid && PDFViewerApplication.page < PDFViewerApplication.pagesCount) {
+        PDFViewerApplication.page += 1;
+    }
+});
+
+socket.on('pdf:previousPage', function (artist) {
+    if (artist != uid && PDFViewerApplication.page > 0) {
+        PDFViewerApplication.page -= 1;
     }
 });
 
