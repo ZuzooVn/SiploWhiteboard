@@ -88,7 +88,7 @@ $(function(){
 
 $(function(){
     $('#toolbarViewerLeft .toolbarButton.pageDown').click(function(){
-        socket.emit('pdf:nextPage', room, uid);
+        socket.emit('pdf:pageChange', room, uid, PDFViewerApplication.page+1);
     });
 });
 
@@ -96,7 +96,7 @@ $(function(){
 
 $(function(){
     $('#toolbarViewerLeft .toolbarButton.pageUp').click(function(){
-        socket.emit('pdf:previousPage', room, uid);
+        socket.emit('pdf:pageChange', room, uid, PDFViewerApplication.page-1);
     });
 });
 

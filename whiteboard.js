@@ -298,8 +298,8 @@ io.sockets.on('connection', function (socket) {
   });
 
   // Go to next page of the loaded PDF file
-  socket.on('pdf:nextPage', function(room, uid) {
-    io.sockets.in(room).emit('pdf:nextPage', uid);
+  socket.on('pdf:pageChange', function(room, uid, page) {
+    io.sockets.in(room).emit('pdf:pageChange', uid, page);
   });
 
   // Go to next page of the loaded PDF file

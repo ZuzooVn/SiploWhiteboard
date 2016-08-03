@@ -1384,9 +1384,9 @@ socket.on('pdf:hide', function(artist){
     }
 });
 
-socket.on('pdf:nextPage', function (artist) {
-    if (artist != uid && PDFViewerApplication.page < PDFViewerApplication.pagesCount) {
-        PDFViewerApplication.page += 1;
+socket.on('pdf:pageChange', function (artist, page) {
+    if (artist != uid && page < PDFViewerApplication.pagesCount && page>0) {
+        PDFViewerApplication.page = page;
     }
 });
 
