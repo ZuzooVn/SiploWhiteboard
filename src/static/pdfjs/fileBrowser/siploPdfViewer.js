@@ -99,3 +99,12 @@ $(function(){
         socket.emit('pdf:previousPage', room, uid);
     });
 });
+
+
+/*Presentation Mode*/
+$(function (){
+    $('#presentationMode').click(function(){
+        console.log('Entering to presentation mode');
+        socket.emit('pdf:presentationMode', room, uid);
+    });
+})

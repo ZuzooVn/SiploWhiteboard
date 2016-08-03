@@ -1018,6 +1018,23 @@ $('#documentLoadTool').on('click', function () {
     }
 });
 
+//To write on pdf document
+$('#documentEditTool').on('click',function(){
+    writeOnPdfDocument();
+    socket.emit('pdf:edit', room, uid);
+});
+
+function writeOnPdfDocument(){
+    if($('#documentViewer').css('z-index')>-1){
+        $('#documentViewer').css('z-index',-1);
+        console.log('now you can write on pdf');
+    }
+    else {
+        $('#documentViewer').css('z-index',1);
+        console.log('you can go to next page of pdf');
+    }
+}
+
 $('#documentRemoveTool').on('click', function(){
     hideDocumentViewer();
     socket.emit('pdf:hide', room, uid);
@@ -1351,6 +1368,15 @@ socket.on('pdf:load', function (artist, file) {
     }
 });
 
+//write on pdf document
+
+socket.on('pdf:edit', function(artist){
+    if(artist != uid){
+        console.log('write on pdf');
+        writeOnPdfDocument();
+    }
+});
+
 socket.on('pdf:hide', function(artist){
     if(artist != uid){
         console.log('hide pdfviewer');
@@ -1370,7 +1396,29 @@ socket.on('pdf:previousPage', function (artist) {
     }
 });
 
+socket.on('pdf:presentationMode', function (artist) {
+    if(artist != uid){
+        console.log('entering presentation mode');
+        //PDFViewerApplication.requestPresentationMode();
+        var elem = $('documentViewer'); // Make the body go full screen.
+        requestFullScreen(elem);
+        $('body').addClass("sidebar-collapse");
+    }
+});
 
+function requestFullScreen(element) {
+    // Supports most browsers and their versions.
+    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullscreen;
+
+    if (requestMethod) { // Native full screen.
+        requestMethod.call(element);
+    } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+        var wscript = new ActiveXObject("WScript.Shell");
+        if (wscript !== null) {
+            wscript.SendKeys("{F11}");
+        }
+    }
+}
 
 // --------------------------------- 
 // SOCKET.IO EVENT FUNCTIONS

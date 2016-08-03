@@ -252,6 +252,11 @@ io.sockets.on('connection', function (socket) {
     io.sockets.in(room).emit('pdf:load', uid, file);
   });
 
+  //Enable writing on pdf
+  socket.on('pdf:edit', function(room, uid) {
+    io.sockets.in(room).emit('pdf:edit', uid);
+  });
+
   //Hide PDF Viewer
   socket.on('pdf:hide', function(room, uid) {
     io.sockets.in(room).emit('pdf:hide', uid);
@@ -271,6 +276,11 @@ io.sockets.on('connection', function (socket) {
   socket.on('load:previousPage', function(room, requestedPageNumber, currentPageNumber) {
     draw.cleanRedoStack(room);
     db.loadPreviousPage(room, requestedPageNumber, currentPageNumber, io);
+  });
+
+  // Go to presentation mode
+  socket.on('pdf:presentationMode', function(room, uid) {
+    io.sockets.in(room).emit('pdf:presentationMode', uid);
   });
 });
 
