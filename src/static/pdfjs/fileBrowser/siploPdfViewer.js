@@ -1,5 +1,6 @@
 /**
  * Created by buddhikajay on 5/25/16.
+ * This file is used to customize functions of PDFJS's viewer
  */
 
 // following are the global scope variables to be used by both js and paper-script files

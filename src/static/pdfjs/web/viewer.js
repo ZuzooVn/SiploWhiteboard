@@ -16,7 +16,8 @@
 
 'use strict';
 
-var DEFAULT_URL = '/web/compressed.tracemonkey-pldi-09.pdf';
+//var DEFAULT_URL = '/web/compressed.tracemonkey-pldi-09.pdf';
+var DEFAULT_URL = '';
 
   var pdfjsWebLibs = {
     pdfjsWebPDFJS: window.pdfjsDistBuildPdf

@@ -440,8 +440,15 @@ html[dir='rtl'] #sidebarContent {
 }
 
 #viewerContainer {
-  overflow: auto;
-  -webkit-overflow-scrolling: touch;
+  /*following part was added to remove scroll bar of pdfjs viewer*/
+  height: 85%;
+  width: 100%;
+  overflow: hidden;
+
+  /*following part was commented to remove scroll bar*/
+  /*overflow: auto;*/
+  /*-webkit-overflow-scrolling: touch;*/
+
   position: absolute;
   top: 32px;
   right: 0;

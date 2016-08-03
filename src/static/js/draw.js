@@ -1008,6 +1008,7 @@ $('#documentLoadTool').on('click', function () {
         //this background color for body tag will make conflicts with whiteboard
         body.css('background-color', '#404040');
     }
+    socket.emit('pdf:load',room, uid, 'Siplo.pptx.pptx.pdf');
 });
 
 $('#documentRemoveTool').on('click', function () {
