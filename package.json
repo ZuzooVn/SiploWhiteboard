@@ -16,7 +16,7 @@
     "async": "~0.6.2",
     "canvas": "1.2.1",
     "cookies": "",
-    "express": "~3.5.1",
+    "express": "^4.14.0",
     "jsonminify": "~0.2.3",
     "kurento-client": "Kurento/kurento-client-js",
     "minimist": "^1.1.1",
