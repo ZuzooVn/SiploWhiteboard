@@ -2,11 +2,12 @@
  * Module dependencies.
  */
 
-var settings = require('./src/util/Settings.js'),
-    tests = require('./src/util/tests.js'),
-    draw = require('./src/util/draw.js'),
-    projects = require('./src/util/projects.js'),
-    db = require('./src/util/db.js'),
+var settings = require('./public/util/Settings.js'),
+    tests = require('./public/util/tests.js'),
+    draw = require('./public/util/draw.js'),
+    projects = require('./public/util/projects.js'),
+    db = require('./public/util/db.js'),
+    files = require("./public/util/files.js"),
     express = require("express"),
     paper = require('paper'),
     socket = require('socket.io'),
@@ -16,7 +17,6 @@ var settings = require('./src/util/Settings.js'),
     https = require('https'),
     redis = require('redis'),
     Cookies = require( "cookies"),
-    files = require("./src/util/files.js"),
     cookieParser = require('cookie-parser'),
     session = require('express-session'),
     errorHandler = require('errorhandler');
@@ -87,14 +87,14 @@ if ('production' == env) {
 // Index page
 app.get('/', function(req, res){
 
-  res.sendFile(__dirname + '/src/static/html/index.html');
+  res.sendFile(__dirname + '/views/index.html');
 });
 
 // Drawings
 //Use this part for authentication
 app.get('/whiteboard/*', function(req, res){
 
-  res.sendFile(__dirname + '/src/static/html/draw.html');
+  res.sendFile(__dirname + '/views/draw.html');
   //var cookies = new Cookies( req, res, "PHPSESSID" )
   //    , unsigned, signed, tampered;
   //var clientSession = new redis.createClient();
@@ -103,14 +103,14 @@ app.get('/whiteboard/*', function(req, res){
   //  if(error){
   //    console.log("error : "+error);
   //    //if the session cookie is not found. Display not authorized page
-  //    res.sendFile(__dirname + '/src/static/html/not_authorized.html');
+  //    res.sendFile(__dirname + '/views/not_authorized.html');
   //  }
   //  if(result != null){
   //    console.log("result exist");
   //    console.log(result);
   //
   //    //if the session cookie is found, go to the class room
-  //    res.sendFile(__dirname + '/src/static/html/draw.html');
+  //    res.sendFile(__dirname + '/views/draw.html');
   //  }else{
   //    console.log("session does not exist");
   //  }
@@ -122,11 +122,11 @@ app.get('/whiteboard/*', function(req, res){
 //pdf viewer page
 app.get('/pdf', function(req, res){
 
-  res.sendFile(__dirname + '/src/static/html/pdf_viewer.html');
+  res.sendFile(__dirname + '/views/pdf_viewer.html');
 });
 
 //app.get('/files', function(req, res){
-//  res.sendFile(__dirname + '/src/static/html/files_tree.html');
+//  res.sendFile(__dirname + '/views/files_tree.html');
 //});
 
 app.get('/tree', function(req, res){
@@ -146,10 +146,10 @@ app.get('/tests/frontend', function (req, res) {
 });
 
 // Static files IE Javascript and CSS
-//app.use("/static", express.static(__dirname + '/src/static'));
-app.use("/wb_assets/static", express.static(__dirname + '/src/static'));
-app.use("/build", express.static(__dirname + '/src/static/pdfjs/build'));
-app.use("/web", express.static(__dirname + '/src/static/pdfjs/web'));
+//app.use("/static", express.static(__dirname + '/public/static'));
+app.use("/wb_assets/static", express.static(__dirname + '/public/static'));
+app.use("/build", express.static(__dirname + '/public/static/pdfjs/build'));
+app.use("/web", express.static(__dirname + '/public/static/pdfjs/web'));
 app.use("/files", express.static(__dirname + '/user_files'));
 
 
