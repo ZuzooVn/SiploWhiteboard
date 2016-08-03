@@ -253,8 +253,8 @@ io.sockets.on('connection', function (socket) {
   });
 
   //Hide PDF Viewer
-  socket.on('pdf:hide', function(room, uid, file) {
-    io.sockets.in(room).emit('pdf:hide', uid, file);
+  socket.on('pdf:hide', function(room, uid) {
+    io.sockets.in(room).emit('pdf:hide', uid);
   });
 
   // Go to next page of the loaded PDF file

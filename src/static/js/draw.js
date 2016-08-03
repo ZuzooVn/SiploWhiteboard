@@ -1021,7 +1021,12 @@ $('#documentLoadTool').on('click', function () {
     }
 });
 
-$('#documentRemoveTool').on('click', function () {
+$('#documentRemoveTool').on('click', function(){
+    hideDocumentViewer();
+    socket.emit('pdf:hide', room, uid);
+});
+
+function hideDocumentViewer(){
     removeStylingFromTools();
     $('#documentRemoveTool > a').css({
         background: "orange"
@@ -1032,7 +1037,7 @@ $('#documentRemoveTool').on('click', function () {
         documentViewer.css('visibility', 'hidden');
         body.css('background-color', '');
     }
-});
+}
 
 function clearCanvas() {
     // Remove all but the active layer
@@ -1346,6 +1351,13 @@ socket.on('pdf:load', function (artist, file) {
         //    documentViewer.css('visibility', 'hidden');
         //    body.css('background-color', '');
         //}
+    }
+});
+
+socket.on('pdf:hide', function(artist){
+    if(artist != uid){
+        console.log('hide pdfviewer');
+        hideDocumentViewer();
     }
 });
 
