@@ -1328,7 +1328,10 @@ socket.on('pointing:end', function (artist, position) {
 socket.on('pdf:load', function (artist, file) {
     if (artist != uid) {
         //if 'file' is null, that means the pdf file was previousely loaded. No need to reload. Just show the viewer
-        if(file!= null | file != ''){
+        if(file == null){
+            console.log('A file has been already open');
+        }
+        else {
             DEFAULT_URL = file;
             PDFViewerApplication.open('/files/'+file);
         }
