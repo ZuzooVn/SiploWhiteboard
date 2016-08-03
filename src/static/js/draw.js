@@ -1002,13 +1002,23 @@ $('#documentLoadTool').on('click', function () {
     }); // set the selected tool css to show it as active
     var documentViewer = $('#documentViewer');
     var body = $('body');
-    if (documentViewer.css('visibility') == 'hidden') {
-        documentViewer.css('visibility', 'visible');
-        //dynamically assigning the background color and image as in viewer.css #230. Otherwise
-        //this background color for body tag will make conflicts with whiteboard
-        body.css('background-color', '#404040');
+    //if there is no pdf file selected, open the file browser to select a file
+    if(DEFAULT_URL == '' || DEFAULT_URL == null){
+        $('#fileBrowserModal').modal('show');
     }
-    socket.emit('pdf:load',room, uid, 'Siplo.pptx.pptx.pdf');
+    //make document viewer visible
+    else{
+        if (documentViewer.css('visibility') == 'hidden') {
+            documentViewer.css('visibility', 'visible');
+            //dynamically assigning the background color and image as in viewer.css #230. Otherwise
+            //this background color for body tag will make conflicts with whiteboard
+            body.css('background-color', '#404040');
+        }
+        //if there is a previousely selected document
+        //send 'null' as the file name. This would make sure that the pdf viewer will not reload the document again
+        //frontend code also defined in this file.
+        socket.emit('pdf:load', room, uid, null);
+    }
 });
 
 $('#documentRemoveTool').on('click', function () {
@@ -1317,17 +1327,22 @@ socket.on('pointing:end', function (artist, position) {
 
 socket.on('pdf:load', function (artist, file) {
     if (artist != uid) {
+        //if 'file' is null, that means the pdf file was previousely loaded. No need to reload. Just show the viewer
+        if(file!= null | file != ''){
+            DEFAULT_URL = file;
+            PDFViewerApplication.open('/files/'+file);
+        }
+
         var documentViewer = $('#documentViewer');
         var body = $('body');
         if (documentViewer.css('visibility') == 'hidden') {
             documentViewer.css('visibility', 'visible');
             body.css('background-color', '#404040');
         }
-        else {
-            documentViewer.css('visibility', 'hidden');
-            body.css('background-color', '');
-        }
-        PDFViewerApplication.open('/files/'+file);
+        //else {
+        //    documentViewer.css('visibility', 'hidden');
+        //    body.css('background-color', '');
+        //}
     }
 });
 
