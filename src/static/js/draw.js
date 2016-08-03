@@ -1014,10 +1014,7 @@ $('#documentLoadTool').on('click', function () {
             //this background color for body tag will make conflicts with whiteboard
             body.css('background-color', '#404040');
         }
-        //if there is a previousely selected document
-        //send 'null' as the file name. This would make sure that the pdf viewer will not reload the document again
-        //frontend code also defined in this file.
-        socket.emit('pdf:load', room, uid, null);
+        socket.emit('pdf:load', room, uid, DEFAULT_URL);
     }
 });
 
@@ -1332,9 +1329,9 @@ socket.on('pointing:end', function (artist, position) {
 
 socket.on('pdf:load', function (artist, file) {
     if (artist != uid) {
-        //if 'file' is null, that means the pdf file was previousely loaded. No need to reload. Just show the viewer
-        if(file == null){
-            console.log('A file has been already open');
+
+        if(file == DEFAULT_URL){
+            console.log('Same file has been already open');
         }
         else {
             DEFAULT_URL = file;
