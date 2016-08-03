@@ -19,7 +19,8 @@ var settings = require('./public/util/Settings.js'),
     Cookies = require( "cookies"),
     cookieParser = require('cookie-parser'),
     session = require('express-session'),
-    errorHandler = require('errorhandler');
+    errorHandler = require('errorhandler'),
+    swig  = require('swig');
 
 
 /** 
@@ -80,21 +81,38 @@ if ('production' == env) {
 //  app.use(express.errorHandler());
 //});
 
+//setup view engine
+app.engine('html', swig.renderFile);
 
+app.set('view engine', 'html');
+app.set('views', __dirname + '/views');
 
 
 // ROUTES
 // Index page
 app.get('/', function(req, res){
 
-  res.sendFile(__dirname + '/views/index.html');
+  //res.sendFile(__dirname + '/views/index.html');
+  res.render('index', {});
 });
 
 // Drawings
 //Use this part for authentication
 app.get('/whiteboard/*', function(req, res){
 
-  res.sendFile(__dirname + '/views/draw.html');
+  //res.sendFile(__dirname + '/views/draw.html');
+  //swig.renderFile(__dirname + '/views/draw.html', {
+  //  pagename: 'awesome people',
+  //  authors: ['Paul', 'Jim', 'Jane']
+  //});
+
+  res.render('draw',
+      {
+        //pagename: 'awesome people',
+        //authors: ['Paul', 'Jim', 'Jane']
+      }
+  );
+
   //var cookies = new Cookies( req, res, "PHPSESSID" )
   //    , unsigned, signed, tampered;
   //var clientSession = new redis.createClient();
@@ -123,6 +141,7 @@ app.get('/whiteboard/*', function(req, res){
 app.get('/pdf', function(req, res){
 
   res.sendFile(__dirname + '/views/pdf_viewer.html');
+  res.render('pdf_viewer', {});
 });
 
 //app.get('/files', function(req, res){
