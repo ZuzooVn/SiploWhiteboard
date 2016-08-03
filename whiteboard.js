@@ -16,7 +16,10 @@ var settings = require('./src/util/Settings.js'),
     https = require('https'),
     redis = require('redis'),
     Cookies = require( "cookies"),
-    files = require("./src/util/files.js");
+    files = require("./src/util/files.js"),
+    cookieParser = require('cookie-parser'),
+    session = require('express-session'),
+    errorHandler = require('errorhandler');
 
 
 /** 
@@ -45,24 +48,37 @@ var clientSettings = {
   "tool": settings.tool
 };
 
+var env = process.env.NODE_ENV || 'development';
+
 // Config Express to server static files from /
-app.configure(function(){
+//app.configure(function(){
   app.use(express.static(__dirname + '/'));
-});
+//});
 
 // Sessions
-app.use(express.cookieParser());
-app.use(express.session({secret: 'secret', key: 'express.sid'}));
+app.use(cookieParser());
+app.use(session({
+  secret: 'secret',
+  key: 'express.sid',
+  resave: true,
+  saveUninitialized: true})
+);
 
 // Development mode setting
-app.configure('development', function(){
-  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
+if ('development' == env) {
+  app.use(errorHandler({ dumpExceptions: true, showStack: true }));
+}
+//app.configure('development', function(){
+//  app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
+//});
 
 // Production mode setting
-app.configure('production', function(){
-  app.use(express.errorHandler());
-});
+if ('production' == env) {
+  app.use(errorHandler());
+}
+//app.configure('production', function(){
+//  app.use(express.errorHandler());
+//});
 
 
 
@@ -71,14 +87,14 @@ app.configure('production', function(){
 // Index page
 app.get('/', function(req, res){
 
-  res.sendfile(__dirname + '/src/static/html/index.html');
+  res.sendFile(__dirname + '/src/static/html/index.html');
 });
 
 // Drawings
 //Use this part for authentication
 app.get('/whiteboard/*', function(req, res){
 
-  res.sendfile(__dirname + '/src/static/html/draw.html');
+  res.sendFile(__dirname + '/src/static/html/draw.html');
   //var cookies = new Cookies( req, res, "PHPSESSID" )
   //    , unsigned, signed, tampered;
   //var clientSession = new redis.createClient();
@@ -87,14 +103,14 @@ app.get('/whiteboard/*', function(req, res){
   //  if(error){
   //    console.log("error : "+error);
   //    //if the session cookie is not found. Display not authorized page
-  //    res.sendfile(__dirname + '/src/static/html/not_authorized.html');
+  //    res.sendFile(__dirname + '/src/static/html/not_authorized.html');
   //  }
   //  if(result != null){
   //    console.log("result exist");
   //    console.log(result);
   //
   //    //if the session cookie is found, go to the class room
-  //    res.sendfile(__dirname + '/src/static/html/draw.html');
+  //    res.sendFile(__dirname + '/src/static/html/draw.html');
   //  }else{
   //    console.log("session does not exist");
   //  }
@@ -106,11 +122,11 @@ app.get('/whiteboard/*', function(req, res){
 //pdf viewer page
 app.get('/pdf', function(req, res){
 
-  res.sendfile(__dirname + '/src/static/html/pdf_viewer.html');
+  res.sendFile(__dirname + '/src/static/html/pdf_viewer.html');
 });
 
 //app.get('/files', function(req, res){
-//  res.sendfile(__dirname + '/src/static/html/files_tree.html');
+//  res.sendFile(__dirname + '/src/static/html/files_tree.html');
 //});
 
 app.get('/tree', function(req, res){

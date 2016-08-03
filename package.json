@@ -6,7 +6,8 @@
     "url": "http://github.com/JohnMcLear/draw.git"
   },
   "scripts": {
-    "postinstall": "bower install"
+    "postinstall": "bower install",
+    "start": "node ./bin/www"
   },
   "version": "0.1.2",
   "engines": {
@@ -16,6 +17,7 @@
     "async": "~0.6.2",
     "canvas": "1.2.1",
     "cookies": "",
+    "errorhandler": "^1.4.3",
     "express": "^4.14.0",
     "jsonminify": "~0.2.3",
     "kurento-client": "Kurento/kurento-client-js",
