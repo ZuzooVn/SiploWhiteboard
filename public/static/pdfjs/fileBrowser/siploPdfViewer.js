@@ -4,6 +4,8 @@
  * the variable DEFAULT_URL is defined in viewer.js
  */
 
+// this is a useful linl : https://www.sitepoint.com/custom-pdf-rendering/
+
 // following are the global scope variables to be used by both js and paper-script files
 var room;
 var uid;
@@ -100,6 +102,20 @@ $(function(){
     });
 });
 
+/*Zoom In*/
+$(function(){
+    $('#zoomIn').click(function(){
+        console.log('zooming in from '+PDFViewerApplication.pdfViewer.currentScaleValue);
+        socket.emit('pdf:zoom', room, uid, PDFViewerApplication.pdfViewer.currentScaleValue+0.1);
+    });
+});
+
+/*Zoom Out*/
+$(function(){
+    $('#zoomOut').click(function(){
+        socket.emit('pdf:zoom', room, uid, PDFViewerApplication.pdfViewer.currentScaleValue-0.1);
+    });
+});
 
 /*Presentation Mode*/
 $(function (){

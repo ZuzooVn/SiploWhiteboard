@@ -1390,9 +1390,11 @@ socket.on('pdf:pageChange', function (artist, page) {
     }
 });
 
-socket.on('pdf:previousPage', function (artist) {
-    if (artist != uid && PDFViewerApplication.page > 0) {
-        PDFViewerApplication.page -= 1;
+
+socket.on('pdf:zoom', function (artist, scale) {
+    if (artist != uid) {
+        console.log('change zoom level to '+scale);
+        PDFViewerApplication.pdfViewer.currentScaleValue = scale;
     }
 });
 

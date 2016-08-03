@@ -302,10 +302,11 @@ io.sockets.on('connection', function (socket) {
     io.sockets.in(room).emit('pdf:pageChange', uid, page);
   });
 
-  // Go to next page of the loaded PDF file
-  socket.on('pdf:previousPage', function(room, uid) {
-    io.sockets.in(room).emit('pdf:previousPage', uid);
+  // Zoom In/Out
+  socket.on('pdf:zoom', function(room, uid, scale) {
+    io.sockets.in(room).emit('pdf:zoom', uid, scale);
   });
+
 
   // Load a previous page
   socket.on('load:previousPage', function(room, requestedPageNumber, currentPageNumber) {
