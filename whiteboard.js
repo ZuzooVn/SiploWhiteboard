@@ -19,8 +19,7 @@ var settings = require('./public/util/Settings.js'),
     Cookies = require( "cookies"),
     cookieParser = require('cookie-parser'),
     session = require('express-session'),
-    errorHandler = require('errorhandler'),
-    swig  = require('swig');
+    errorHandler = require('errorhandler');
 
 
 /** 
@@ -82,9 +81,8 @@ if ('production' == env) {
 //});
 
 //setup view engine
-app.engine('html', swig.renderFile);
 
-app.set('view engine', 'html');
+app.set('view engine', 'pug');
 app.set('views', __dirname + '/views');
 
 
@@ -101,12 +99,8 @@ app.get('/', function(req, res){
 app.get('/whiteboard/*', function(req, res){
 
   //res.sendFile(__dirname + '/views/draw.html');
-  //swig.renderFile(__dirname + '/views/draw.html', {
-  //  pagename: 'awesome people',
-  //  authors: ['Paul', 'Jim', 'Jane']
-  //});
 
-  res.render('draw',
+  res.render('whiteboard.jade',
       {
         //pagename: 'awesome people',
         //authors: ['Paul', 'Jim', 'Jane']
