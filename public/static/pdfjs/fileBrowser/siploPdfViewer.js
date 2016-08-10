@@ -9,7 +9,7 @@
 // following are the global scope variables to be used by both js and paper-script files
 var room;
 var uid;
-
+var IsPDFOn = false; // variable used to synchronize edit pdf btn functionality on draw js
 
 // Initialise Socket.io
 var socket = io.connect('/');
@@ -19,6 +19,7 @@ $(function() {
         'core' : {
             'data' : {
                 "url" : "https://"+location.host+"/tree/",
+                //"url" : "http://"+location.host+"/tree/",
                 "data" : function (node) {
                     return { "id" : node.id };
                 }
@@ -81,7 +82,9 @@ $(function(){
             //dynamically assigning the background color and image as in viewer.css #230. Otherwise
             //this background color for body tag will make conflicts with whiteboard
             $('body').css('background-color', '#404040');
+            $('#myCanvas').css('top','32px'); // pull down the canvas so that we can still use pdfjs control buttons while editing on top of pdf
         }
+        IsPDFOn = true;
         socket.emit('pdf:load', room, uid, DEFAULT_URL);
     }); 
 });
