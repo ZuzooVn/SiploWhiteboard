@@ -1376,6 +1376,7 @@ socket.on('pdf:load', function (artist, file) {
             PDFViewerApplication.open('/files/'+file);
         }
 
+        $('#myCanvas').css({'z-index':'0','top':'32px'});// pull down the canvas so that we can still use pdfjs control buttons while editing on top of pdf
         var documentViewer = $('#documentViewer');
         var body = $('body');
         if (documentViewer.css('visibility') == 'hidden') {
@@ -1395,6 +1396,7 @@ socket.on('pdf:load', function (artist, file) {
 socket.on('pdf:edit', function(artist){
     if(artist != uid){
         console.log('write on pdf');
+        clearCanvas();
         writeOnPdfDocument();
     }
 });
@@ -1411,6 +1413,9 @@ socket.on('pdf:hide', function(json){
 
 socket.on('pdf:pageChange', function (artist, page) {
     if (artist != uid && page < PDFViewerApplication.pagesCount && page>0) {
+        if(IsPDFOn && paper.project.activeLayer.hasChildren()){
+            clearCanvas();
+        }
         PDFViewerApplication.page = page;
     }
 });
