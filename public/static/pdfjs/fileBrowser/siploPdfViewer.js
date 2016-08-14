@@ -18,8 +18,8 @@ $(function() {
     $('#container').jstree({
         'core' : {
             'data' : {
-                "url" : "https://"+location.host+"/tree/",
-                //"url" : "http://"+location.host+"/tree/",
+                //"url" : "https://"+location.host+"/tree/",
+                "url" : "http://"+location.host+"/tree/",
                 "data" : function (node) {
                     return { "id" : node.id };
                 }
@@ -85,6 +85,7 @@ $(function(){
             $('#myCanvas').css('top','32px'); // pull down the canvas so that we can still use pdfjs control buttons while editing on top of pdf
         }
         IsPDFOn = true;
+        console.log(DEFAULT_URL);
         socket.emit('pdf:load', room, uid, DEFAULT_URL);
     }); 
 });

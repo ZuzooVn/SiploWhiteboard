@@ -3,6 +3,19 @@
 tool.minDistance = 1;
 tool.maxDistance = 45;
 
+// following are the global scope variables to be used by both js and paper-script files
+var room;
+var uid;
+var IsPDFOn = false; // variable used to synchronize edit pdf btn functionality on draw js
+
+// Initialise Socket.io
+var socket = io.connect('/');
+
+function testPDF(){
+    var json = paper.project.exportJSON();
+    paper.project.activeLayer.remove();
+    paper.project.importJSON(json);
+}
 room = window.location.pathname.split("/")[2];
 var redoStack = new Array(); // stack to store undo items
 var canvasClearedCount = 0; // keep track of number of times the canvas cleared, so we can override the correct previous page at db
