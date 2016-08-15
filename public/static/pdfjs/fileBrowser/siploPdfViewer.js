@@ -4,7 +4,7 @@
  * the variable DEFAULT_URL is defined in viewer.js
  */
 
-// this is a useful linl : https://www.sitepoint.com/custom-pdf-rendering/
+// this is a useful link : https://www.sitepoint.com/custom-pdf-rendering/
 
 // following are the global scope variables to be used by both js and paper-script files
 var room;
