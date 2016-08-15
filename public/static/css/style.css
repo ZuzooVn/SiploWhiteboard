@@ -709,6 +709,16 @@ input[type=checkbox] {
     display: block;
 }
 
+#testCanvas {
+    width: 100%;
+    height: 100%;
+    display: none;
+}
+
+#testBase64 {
+    display: none;
+}
+
 .whiteBG {
     background-color: #fff;
 }
