@@ -9,7 +9,6 @@
 // following are the global scope variables to be used by both js and paper-script files
 var room;
 var uid;
-var IsPDFOn = false; // variable used to synchronize edit pdf btn functionality on draw js
 
 // Initialise Socket.io
 var socket = io.connect('/');
@@ -90,7 +89,8 @@ $(function(){
         console.log(DEFAULT_URL);
         socket.emit('pdf:load', room, uid, DEFAULT_URL);*/
 
-
+        $('body').css('background-color', '#404040');
+        $('.pdf-controllers-container').css('display', 'block');
         $('#fileBrowserModal').modal('hide');
         testPDFInSameCanvas(DEFAULT_URL);
     }); 

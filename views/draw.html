@@ -152,12 +152,12 @@
                             <span class="buttonicon buttonicon-remove-pdf"></span>
                         </a>
                     </li>
-                    <li id="documentEditTool" >
+                    <!--<li id="documentEditTool" >
                         <a class="grouped-right"
                            data-l10n-id="draw.toolbar.import_export.title" title="Edit PDF">
                             <span class="buttonicon buttonicon-edit-pdf"></span>
                         </a>
-                    </li>
+                    </li>-->
                 </ul>
             </div>
         </div>
@@ -258,14 +258,14 @@
 <input type="file" id="imageInput" accept="image/*"/>
 
 <div id="activeColorSwatch"></div>
-<div>
+<div class="pdf-controllers-container">
     <button id="prev">Previous</button>
     <button id="next">Next</button>
     &nbsp; &nbsp;
     <span>Page: <span id="page_num">4</span> / <span id="page_count">14</span></span>
 </div>
 
-<div id="canvasContainer" style="top: 30px;">
+<div id="canvasContainer" style="top: 50px;">
     <canvas id="testCanvas" width="900" height="612"></canvas>
     <canvas id="myCanvas"></canvas>
     <!--<div id="documentViewer">
