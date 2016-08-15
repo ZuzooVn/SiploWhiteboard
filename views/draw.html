@@ -30,7 +30,7 @@
          */
     </script>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="shortcut icon" href="/wb_assets/static/img/favicon.ico">
 
     <script src='/socket.io/socket.io.js'></script>
@@ -47,16 +47,132 @@
     <!--<link rel="stylesheet" href="/web/viewer.css">-->
     <!--<script src="/web/compatibility.js"></script>-->
     <!--<script src="/web/l10n.js"></script>-->
-    <!--<script src="/build/pdf.js"></script>-->
+    <script src="/build/pdf.js"></script>
     <!--<script src="/web/viewer.js"></script>-->
+    <script >
+        // URL of PDF document
+        function testPDFInSameCanvas(){
+
+            //
+            // If absolute URL from the remote server is provided, configure the CORS
+            // header on that server.
+            //
+            var url = "http://localhost:9002/files/exploiting%20web%20queries%20for%20WeSP.pdf";
+
+
+            //
+            // Disable workers to avoid yet another cross-origin issue (workers need
+            // the URL of the script to be loaded, and dynamically loading a cross-origin
+            // script does not work).
+            //
+            // PDFJS.disableWorker = true;
+
+            //
+            // In cases when the pdf.worker.js is located at the different folder than the
+            // pdf.js's one, or the pdf.js is executed via eval(), the workerSrc property
+            // shall be specified.
+            //
+            // PDFJS.workerSrc = '../../build/pdf.worker.js';
+
+            var pdfDoc = null,
+                    pageNum = 1,
+                    pageRendering = false,
+                    pageNumPending = null,
+                    scale = 2,
+                    canvas = document.getElementById('myCanvas'),
+                    ctx = canvas.getContext('2d');
+
+            /**
+             * Get page info from document, resize canvas accordingly, and render page.
+             * @param num Page number.
+             */
+            function renderPage(num) {
+                pageRendering = true;
+                // Using promise to fetch the page
+                pdfDoc.getPage(num).then(function(page) {
+                    var viewport = page.getViewport(scale);
+                    //canvas.height = viewport.height;
+                    //canvas.width = viewport.width;
+
+                    // Render PDF page into canvas context
+                    var renderContext = {
+                        canvasContext: ctx,
+                        viewport: viewport
+                    };
+                    var renderTask = page.render(renderContext);
+
+                    // Wait for rendering to finish
+                    renderTask.promise.then(function () {
+                        pageRendering = false;
+                        if (pageNumPending !== null) {
+                            // New page rendering is pending
+                            renderPage(pageNumPending);
+                            pageNumPending = null;
+                        }
+                    });
+                });
+
+                // Update page counters
+                document.getElementById('page_num').textContent = pageNum;
+            }
+
+            /**
+             * If another page rendering in progress, waits until the rendering is
+             * finised. Otherwise, executes rendering immediately.
+             */
+            function queueRenderPage(num) {
+                if (pageRendering) {
+                    pageNumPending = num;
+                } else {
+                    renderPage(num);
+                }
+            }
+
+            /**
+             * Displays previous page.
+             */
+            function onPrevPage() {
+                if (pageNum <= 1) {
+                    return;
+                }
+                pageNum--;
+                queueRenderPage(pageNum);
+            }
+            document.getElementById('prev').addEventListener('click', onPrevPage);
+
+            /**
+             * Displays next page.
+             */
+            function onNextPage() {
+                if (pageNum >= pdfDoc.numPages) {
+                    return;
+                }
+                pageNum++;
+                queueRenderPage(pageNum);
+            }
+            document.getElementById('nex').addEventListener('click', onNextPage);
+
+            /**
+             * Asynchronously downloads PDF.
+             */
+            PDFJS.getDocument(url).then(function (pdfDoc_) {
+                pdfDoc = pdfDoc_;
+                document.getElementById('page_count').textContent = pdfDoc.numPages;
+
+                // Initial/first page rendering
+                renderPage(pageNum);
+            });
+
+        }
+    </script>
     <!--end pdfjs-->
 
     <!--File Browser-->
     <!--<script src='/wb_assets/static/vendor/jquery/dist/jquery.min.js'></script>-->
-    <script src='/wb_assets/static/vendor/jstree/dist/jstree.min.js'></script>
-    <script src='/wb_assets/static/pdfjs/fileBrowser/siploPdfViewer.js'></script>
-    <link rel="stylesheet" href="/wb_assets/static/vendor/jstree/dist/themes/default/style.min.css" />
-    <link rel="stylesheet" href="/wb_assets/static/pdfjs/fileBrowser/siploPdfViewer.css" />
+    <!--<script src='/wb_assets/static/vendor/jstree/dist/jstree.min.js'></script>-->
+   <!-- <script src='/wb_assets/static/pdfjs/fileBrowser/siploPdfViewer.js'></script>-->
+    <!--<link rel="stylesheet" href="/wb_assets/static/vendor/jstree/dist/themes/default/style.min.css" />
+    <link rel="stylesheet" href="/wb_assets/static/pdfjs/fileBrowser/siploPdfViewer.css" />-->
     <!--File Browser-->
 
     <link rel="stylesheet" href="/web/viewer.css">
@@ -64,7 +180,7 @@
     <!-- This snippet is used in production (included from viewer.html) -->
     <link rel="resource" type="application/l10n" href="locale/locale.properties">
     <script src="/web/l10n.js"></script>
-    <script src="/build/pdf.js"></script>
+    <!--<script src="/build/pdf.js"></script>-->
     <script src="/web/viewer.js"></script>
 
 </head>
@@ -73,7 +189,7 @@
 <!--Draw content start-->
 <div class="container tool-box">
     <div class="row">
-
+        <button onclick="testPDFInSameCanvas()">Test</button>
         <!-- paint brush/ pencil / eraser / hand tool -->
         <div class="col-md-1 col-sm-1 col-xs-1 tool">
             <div class="dropup">
@@ -255,9 +371,16 @@
 <input type="file" id="imageInput" accept="image/*"/>
 
 <div id="activeColorSwatch"></div>
+<div>
+    <button id="prev">Previous</button>
+    <button id="nex">Next</button>
+    &nbsp; &nbsp;
+    <span>Page: <span id="page_num">4</span> / <span id="page_count">14</span></span>
+</div>
 
-<div id="canvasContainer">
-    <canvas id="myCanvas" resize="true"></canvas>
+<div id="canvasContainer" style="top: 30px;">
+    <!--<canvas id="my-Canvas"></canvas>-->
+    <canvas id="myCanvas"></canvas>
     <div id="documentViewer">
         <!--<iframe src="http://localhost:9002/pdf" style="width: 100%; height: 100%"></iframe>-->
         <div id="outerContainer">

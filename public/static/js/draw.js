@@ -3,6 +3,19 @@
 tool.minDistance = 1;
 tool.maxDistance = 45;
 
+// following are the global scope variables to be used by both js and paper-script files
+var room;
+var uid;
+var IsPDFOn = false; // variable used to synchronize edit pdf btn functionality on draw js
+
+// Initialise Socket.io
+var socket = io.connect('/');
+
+function testPDF(){
+    var json = paper.project.exportJSON();
+    paper.project.activeLayer.remove();
+    paper.project.importJSON(json);
+}
 room = window.location.pathname.split("/")[2];
 var redoStack = new Array(); // stack to store undo items
 var canvasClearedCount = 0; // keep track of number of times the canvas cleared, so we can override the correct previous page at db
@@ -1000,6 +1013,7 @@ $('#documentLoadTool').on('click', function () {
     $('#documentLoadTool > a').css({
         background: "orange"
     }); // set the selected tool css to show it as active
+    $('#myCanvas').css('z-index',0); // take the whiteboard below the pdf layer
     var documentViewer = $('#documentViewer');
     var body = $('body');
     //if there is no pdf file selected, open the file browser to select a file
@@ -1013,6 +1027,7 @@ $('#documentLoadTool').on('click', function () {
             //dynamically assigning the background color and image as in viewer.css #230. Otherwise
             //this background color for body tag will make conflicts with whiteboard
             body.css('background-color', '#404040');
+            $('#myCanvas').css('top','32px'); // pull down the canvas so that we can still use pdfjs control buttons while editing on top of pdf
         }
         socket.emit('pdf:load', room, uid, DEFAULT_URL);
     }
@@ -1020,24 +1035,43 @@ $('#documentLoadTool').on('click', function () {
 
 //To write on pdf document
 $('#documentEditTool').on('click',function(){
-    writeOnPdfDocument();
-    socket.emit('pdf:edit', room, uid);
+    if(IsPDFOn){
+        clearCanvas();
+        writeOnPdfDocument();
+        socket.emit('pdf:edit', room, uid);
+    }
+});
+
+// page down of PDF
+$('#toolbarViewerLeft .toolbarButton.pageDown').click(function(){
+    if(IsPDFOn && paper.project.activeLayer.hasChildren()){
+        clearCanvas();
+    }
+});
+
+// page down of PDF
+$('#toolbarViewerLeft .toolbarButton.pageUp').click(function(){
+    if(IsPDFOn && paper.project.activeLayer.hasChildren()){
+        clearCanvas();
+    }
 });
 
 function writeOnPdfDocument(){
-    if($('#documentViewer').css('z-index')>-1){
-        $('#documentViewer').css('z-index',-1);
+    if($('#myCanvas').css('z-index') <= 0){
+        $('#myCanvas').css('z-index',2);
         console.log('now you can write on pdf');
     }
     else {
-        $('#documentViewer').css('z-index',1);
+        $('#documentViewer').css('z-index',0);
         console.log('you can go to next page of pdf');
     }
 }
 
 $('#documentRemoveTool').on('click', function(){
-    hideDocumentViewer();
-    socket.emit('pdf:hide', room, uid);
+    if(IsPDFOn){
+        IsPDFOn = false;
+        socket.emit('pdf:hide', room, uid);
+    }
 });
 
 function hideDocumentViewer(){
@@ -1355,6 +1389,7 @@ socket.on('pdf:load', function (artist, file) {
             PDFViewerApplication.open('/files/'+file);
         }
 
+        $('#myCanvas').css({'z-index':'0','top':'32px'});// pull down the canvas so that we can still use pdfjs control buttons while editing on top of pdf
         var documentViewer = $('#documentViewer');
         var body = $('body');
         if (documentViewer.css('visibility') == 'hidden') {
@@ -1365,6 +1400,7 @@ socket.on('pdf:load', function (artist, file) {
         //    documentViewer.css('visibility', 'hidden');
         //    body.css('background-color', '');
         //}
+        IsPDFOn = true;
     }
 });
 
@@ -1373,19 +1409,26 @@ socket.on('pdf:load', function (artist, file) {
 socket.on('pdf:edit', function(artist){
     if(artist != uid){
         console.log('write on pdf');
+        clearCanvas();
         writeOnPdfDocument();
     }
 });
 
-socket.on('pdf:hide', function(artist){
-    if(artist != uid){
-        console.log('hide pdfviewer');
-        hideDocumentViewer();
-    }
+socket.on('pdf:hide', function(json){
+    // no need to check for artist since both tutor and student need to load last page
+    console.log('hide pdfviewer');
+    clearCanvas();
+    paper.project.importJSON(json.project);
+    hideDocumentViewer();
+    $('#myCanvas').css('top','0'); // pull up the canvas once the editing is done
+    IsPDFOn = false;
 });
 
 socket.on('pdf:pageChange', function (artist, page) {
     if (artist != uid && page < PDFViewerApplication.pagesCount && page>0) {
+        if(IsPDFOn && paper.project.activeLayer.hasChildren()){
+            clearCanvas();
+        }
         PDFViewerApplication.page = page;
     }
 });

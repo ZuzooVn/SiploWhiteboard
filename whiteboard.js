@@ -91,7 +91,13 @@ app.set('views', __dirname + '/views');
 app.get('/', function(req, res){
 
   //res.sendFile(__dirname + '/views/index.html');
-  res.render('index', {});
+  //res.render('index', {});
+  res.render('index.jade',
+      {
+        //pagename: 'awesome people',
+        //authors: ['Paul', 'Jim', 'Jane']
+      }
+  );
 });
 
 // Drawings
@@ -278,6 +284,7 @@ io.sockets.on('connection', function (socket) {
 
   // Load PDF file from server
   socket.on('pdf:load', function(room, uid, file) {
+    db.storeStateAtPDFLoad(room);
     io.sockets.in(room).emit('pdf:load', uid, file);
   });
 
@@ -288,7 +295,7 @@ io.sockets.on('connection', function (socket) {
 
   //Hide PDF Viewer
   socket.on('pdf:hide', function(room, uid) {
-    io.sockets.in(room).emit('pdf:hide', uid);
+    db.restoreStateAtPDFLoad(room, io);
   });
 
   // Go to next page of the loaded PDF file

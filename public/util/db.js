@@ -97,6 +97,29 @@ exports.loadFromMemoryOrDB = function(room, socket, clientSettings) {
     socket.emit('loading:end');
 };
 
+// store the whiteboard state at the point of PDF is loaded
+exports.storeStateAtPDFLoad = function(room) {
+    if (projects.projects[room] && projects.projects[room].project) {
+        var project = projects.projects[room].project;
+        var json = project.exportJSON();
+        db.set(room+"StateAtPDFLoad", {project: json});  // update the page count
+    }
+};
+
+// restore the whiteboard state at the point of PDF is loaded
+exports.restoreStateAtPDFLoad = function(room, io) {
+    if (projects.projects[room] && projects.projects[room].project) {
+        var project = projects.projects[room].project;
+        db.get(room+"StateAtPDFLoad", function(err, value) {
+            if (value && project && project.activeLayer) {
+                project.activeLayer.remove();
+                project.importJSON(value.project);
+                io.sockets.in(room).emit('pdf:hide', value);
+            }
+        });
+    }
+};
+
 // Recover from image cropping
 exports.recover = function(room, data) {
     var project = projects.projects[room].project;
