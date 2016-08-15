@@ -3,19 +3,14 @@
 tool.minDistance = 1;
 tool.maxDistance = 45;
 
-// following are the global scope variables to be used by both js and paper-script files
+/*// following are the global scope variables to be used by both js and paper-script files
 var room;
 var uid;
 var IsPDFOn = false; // variable used to synchronize edit pdf btn functionality on draw js
 
 // Initialise Socket.io
-var socket = io.connect('/');
+var socket = io.connect('/');*/
 
-function testPDF(){
-    var json = paper.project.exportJSON();
-    paper.project.activeLayer.remove();
-    paper.project.importJSON(json);
-}
 room = window.location.pathname.split("/")[2];
 var redoStack = new Array(); // stack to store undo items
 var canvasClearedCount = 0; // keep track of number of times the canvas cleared, so we can override the correct previous page at db
@@ -25,6 +20,14 @@ var currentPageNumber = 0; // when a previous page is loaded, this value should 
 * 0 - latest page
 * 1,2,3,4,5 - previous page
 */
+
+$('#testBase64').on('click', function(){
+    var base64 = document.getElementById('testCanvas').toDataURL();
+    var raster = new Raster(base64);
+    raster.position = view.center;
+    raster.name = uid + ":" + (++paper_object_count);
+
+});
 
 function removeStylingFromTools() {
     $('.tool-box .tool').css({
@@ -845,9 +848,9 @@ $('#settingslink').on('click', function () {
 $('#embedlink').on('click', function () {
     $('#embed').fadeToggle();
 });
-$('#importExport').on('click', function () {
+$('#importAsImage').on('click', function () {
     removeStylingFromTools();
-    $('#importExport').css({
+    $('#importAsImaget').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
     $('#importexport').fadeToggle();
@@ -1022,14 +1025,16 @@ $('#documentLoadTool').on('click', function () {
     }
     //make document viewer visible
     else{
-        if (documentViewer.css('visibility') == 'hidden') {
+        /*if (documentViewer.css('visibility') == 'hidden') {
             documentViewer.css('visibility', 'visible');
             //dynamically assigning the background color and image as in viewer.css #230. Otherwise
             //this background color for body tag will make conflicts with whiteboard
             body.css('background-color', '#404040');
             $('#myCanvas').css('top','32px'); // pull down the canvas so that we can still use pdfjs control buttons while editing on top of pdf
         }
-        socket.emit('pdf:load', room, uid, DEFAULT_URL);
+        socket.emit('pdf:load', room, uid, DEFAULT_URL);*/
+
+        $('#fileBrowserModal').modal('show');
     }
 });
 

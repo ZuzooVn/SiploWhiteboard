@@ -51,137 +51,24 @@
     <!--<script src="/web/viewer.js"></script>-->
     <script >
         // URL of PDF document
-        function testPDFInSameCanvas(){
-
-            //
-            // If absolute URL from the remote server is provided, configure the CORS
-            // header on that server.
-            //
-            var url = "http://localhost:9002/files/exploiting%20web%20queries%20for%20WeSP.pdf";
-
-
-            //
-            // Disable workers to avoid yet another cross-origin issue (workers need
-            // the URL of the script to be loaded, and dynamically loading a cross-origin
-            // script does not work).
-            //
-            // PDFJS.disableWorker = true;
-
-            //
-            // In cases when the pdf.worker.js is located at the different folder than the
-            // pdf.js's one, or the pdf.js is executed via eval(), the workerSrc property
-            // shall be specified.
-            //
-            // PDFJS.workerSrc = '../../build/pdf.worker.js';
-
-            var pdfDoc = null,
-                    pageNum = 1,
-                    pageRendering = false,
-                    pageNumPending = null,
-                    scale = 2,
-                    canvas = document.getElementById('myCanvas'),
-                    ctx = canvas.getContext('2d');
-
-            /**
-             * Get page info from document, resize canvas accordingly, and render page.
-             * @param num Page number.
-             */
-            function renderPage(num) {
-                pageRendering = true;
-                // Using promise to fetch the page
-                pdfDoc.getPage(num).then(function(page) {
-                    var viewport = page.getViewport(scale);
-                    //canvas.height = viewport.height;
-                    //canvas.width = viewport.width;
-
-                    // Render PDF page into canvas context
-                    var renderContext = {
-                        canvasContext: ctx,
-                        viewport: viewport
-                    };
-                    var renderTask = page.render(renderContext);
-
-                    // Wait for rendering to finish
-                    renderTask.promise.then(function () {
-                        pageRendering = false;
-                        if (pageNumPending !== null) {
-                            // New page rendering is pending
-                            renderPage(pageNumPending);
-                            pageNumPending = null;
-                        }
-                    });
-                });
-
-                // Update page counters
-                document.getElementById('page_num').textContent = pageNum;
-            }
-
-            /**
-             * If another page rendering in progress, waits until the rendering is
-             * finised. Otherwise, executes rendering immediately.
-             */
-            function queueRenderPage(num) {
-                if (pageRendering) {
-                    pageNumPending = num;
-                } else {
-                    renderPage(num);
-                }
-            }
-
-            /**
-             * Displays previous page.
-             */
-            function onPrevPage() {
-                if (pageNum <= 1) {
-                    return;
-                }
-                pageNum--;
-                queueRenderPage(pageNum);
-            }
-            document.getElementById('prev').addEventListener('click', onPrevPage);
-
-            /**
-             * Displays next page.
-             */
-            function onNextPage() {
-                if (pageNum >= pdfDoc.numPages) {
-                    return;
-                }
-                pageNum++;
-                queueRenderPage(pageNum);
-            }
-            document.getElementById('nex').addEventListener('click', onNextPage);
-
-            /**
-             * Asynchronously downloads PDF.
-             */
-            PDFJS.getDocument(url).then(function (pdfDoc_) {
-                pdfDoc = pdfDoc_;
-                document.getElementById('page_count').textContent = pdfDoc.numPages;
-
-                // Initial/first page rendering
-                renderPage(pageNum);
-            });
-
-        }
     </script>
     <!--end pdfjs-->
 
     <!--File Browser-->
     <!--<script src='/wb_assets/static/vendor/jquery/dist/jquery.min.js'></script>-->
-    <!--<script src='/wb_assets/static/vendor/jstree/dist/jstree.min.js'></script>-->
-   <!-- <script src='/wb_assets/static/pdfjs/fileBrowser/siploPdfViewer.js'></script>-->
-    <!--<link rel="stylesheet" href="/wb_assets/static/vendor/jstree/dist/themes/default/style.min.css" />
-    <link rel="stylesheet" href="/wb_assets/static/pdfjs/fileBrowser/siploPdfViewer.css" />-->
+    <script src='/wb_assets/static/vendor/jstree/dist/jstree.min.js'></script>
+    <script src='/wb_assets/static/pdfjs/fileBrowser/siploPdfViewer.js'></script>
+    <link rel="stylesheet" href="/wb_assets/static/vendor/jstree/dist/themes/default/style.min.css" />
+    <link rel="stylesheet" href="/wb_assets/static/pdfjs/fileBrowser/siploPdfViewer.css" />
     <!--File Browser-->
 
-    <link rel="stylesheet" href="/web/viewer.css">
+    <!--<link rel="stylesheet" href="/web/viewer.css">-->
     <script src="/web/compatibility.js"></script>
     <!-- This snippet is used in production (included from viewer.html) -->
     <link rel="resource" type="application/l10n" href="locale/locale.properties">
     <script src="/web/l10n.js"></script>
     <!--<script src="/build/pdf.js"></script>-->
-    <script src="/web/viewer.js"></script>
+    <!--<script src="/web/viewer.js"></script>-->
 
 </head>
 
@@ -189,7 +76,7 @@
 <!--Draw content start-->
 <div class="container tool-box">
     <div class="row">
-        <button onclick="testPDFInSameCanvas()">Test</button>
+        <button id="testBase64">Base64</button>
         <!-- paint brush/ pencil / eraser / hand tool -->
         <div class="col-md-1 col-sm-1 col-xs-1 tool">
             <div class="dropup">
@@ -328,7 +215,7 @@
         </div>
 
         <!--Import or export-->
-        <div class="col-md-1 col-sm-1 col-xs-1 tool" id="importExport">
+        <div class="col-md-1 col-sm-1 col-xs-1 tool" id="importAsImage">
             <a class="grouped-right" data-l10n-id="draw.toolbar.import_export.title" title="Export As a Image">
                 <span class="buttonicon buttonicon-import_export"></span>
             </a>
@@ -373,16 +260,16 @@
 <div id="activeColorSwatch"></div>
 <div>
     <button id="prev">Previous</button>
-    <button id="nex">Next</button>
+    <button id="next">Next</button>
     &nbsp; &nbsp;
     <span>Page: <span id="page_num">4</span> / <span id="page_count">14</span></span>
 </div>
 
 <div id="canvasContainer" style="top: 30px;">
-    <!--<canvas id="my-Canvas"></canvas>-->
+    <canvas id="testCanvas" width="900" height="612"></canvas>
     <canvas id="myCanvas"></canvas>
-    <div id="documentViewer">
-        <!--<iframe src="http://localhost:9002/pdf" style="width: 100%; height: 100%"></iframe>-->
+    <!--<div id="documentViewer">
+        &lt;!&ndash;<iframe src="http://localhost:9002/pdf" style="width: 100%; height: 100%"></iframe>&ndash;&gt;
         <div id="outerContainer">
 
             <div id="sidebarContainer">
@@ -407,7 +294,7 @@
                     <div id="attachmentsView" class="hidden">
                     </div>
                 </div>
-            </div>  <!-- sidebarContainer -->
+            </div>  &lt;!&ndash; sidebarContainer &ndash;&gt;
 
             <div id="mainContainer">
                 <div class="findbar hidden doorHanger hiddenSmallView" id="findbar">
@@ -428,7 +315,7 @@
                     <label for="findMatchCase" class="toolbarLabel" data-l10n-id="find_match_case_label">Match case</label>
                     <span id="findResultsCount" class="toolbarLabel hidden"></span>
                     <span id="findMsg" class="toolbarLabel"></span>
-                </div>  <!-- findbar -->
+                </div>  &lt;!&ndash; findbar &ndash;&gt;
 
                 <div id="secondaryToolbar" class="secondaryToolbar hidden doorHangerRight">
                     <div id="secondaryToolbarButtonContainer">
@@ -482,7 +369,7 @@
                             <span data-l10n-id="document_properties_label">Document Properties…</span>
                         </button>
                     </div>
-                </div>  <!-- secondaryToolbar -->
+                </div>  &lt;!&ndash; secondaryToolbar &ndash;&gt;
 
                 <div class="toolbar">
                     <div id="toolbarContainer">
@@ -611,7 +498,7 @@
                     <div class="clearBoth"></div>
                     <textarea id="errorMoreInfo" hidden='true' readonly="readonly"></textarea>
                 </div>
-            </div> <!-- mainContainer -->
+            </div> &lt;!&ndash; mainContainer &ndash;&gt;
 
             <div id="overlayContainer" class="hidden">
                 <div id="passwordOverlay" class="container hidden">
@@ -620,7 +507,7 @@
                             <p id="passwordText" data-l10n-id="password_label">Enter the password to open this PDF file:</p>
                         </div>
                         <div class="row">
-                            <!-- The type="password" attribute is set via script, to prevent warnings in Firefox for all http:// documents. -->
+                            &lt;!&ndash; The type="password" attribute is set via script, to prevent warnings in Firefox for all http:// documents. &ndash;&gt;
                             <input id="password" class="toolbarField">
                         </div>
                         <div class="buttonRow">
@@ -674,9 +561,9 @@
                         </div>
                     </div>
                 </div>
-            </div>  <!-- overlayContainer -->
+            </div>  &lt;!&ndash; overlayContainer &ndash;&gt;
 
-        </div> <!-- outerContainer -->
+        </div> &lt;!&ndash; outerContainer &ndash;&gt;
         <div id="printContainer"></div>
         <div id="mozPrintCallback-shim" hidden>
             <style>
@@ -746,7 +633,7 @@
                 }
             </style>
             <div class="mozPrintCallback-dialog-box">
-                <!-- TODO: Localise the following strings -->
+                &lt;!&ndash; TODO: Localise the following strings &ndash;&gt;
                 Preparing document for printing...
                 <div class="progress-row">
                     <progress value="0" max="100"></progress>
@@ -758,7 +645,7 @@
             </div>
         </div>
         <h1>test</h1>
-    </div>
+    </div>-->
     <div id="mycolorpicker">
         <div id="colorpickerMover"></div>
         <div id="colorpicker"></div>
