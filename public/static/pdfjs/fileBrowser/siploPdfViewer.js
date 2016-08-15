@@ -93,6 +93,7 @@ $(function(){
         $('.pdf-controllers-container').css('display', 'block');
         $('#fileBrowserModal').modal('hide');
         testPDFInSameCanvas(DEFAULT_URL);
+        socket.emit('pdf:load', room, uid, DEFAULT_URL);
     }); 
 });
 

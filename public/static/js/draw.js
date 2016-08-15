@@ -1078,9 +1078,10 @@ $('#documentRemoveTool').on('click', function(){
     }*/
     $('body').css('background-color', '');
     $('.pdf-controllers-container').css('display', 'none');
+    socket.emit('pdf:hide', room, uid);
 });
 
-function hideDocumentViewer(){
+/*function hideDocumentViewer(){
     removeStylingFromTools();
     $('#documentRemoveTool > a').css({
         background: "orange"
@@ -1091,7 +1092,7 @@ function hideDocumentViewer(){
         documentViewer.css('visibility', 'hidden');
         body.css('background-color', '');
     }
-}
+}*/
 
 function clearCanvas() {
     // Remove all but the active layer
