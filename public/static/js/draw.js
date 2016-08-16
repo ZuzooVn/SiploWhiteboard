@@ -1016,9 +1016,6 @@ $('#documentLoadTool').on('click', function () {
     $('#documentLoadTool > a').css({
         background: "orange"
     }); // set the selected tool css to show it as active
-    $('#myCanvas').css('z-index',0); // take the whiteboard below the pdf layer
-    var documentViewer = $('#documentViewer');
-    var body = $('body');
     //if there is no pdf file selected, open the file browser to select a file
     if(DEFAULT_URL == '' || DEFAULT_URL == null){
         $('#fileBrowserModal').modal('show');
@@ -1038,15 +1035,16 @@ $('#documentLoadTool').on('click', function () {
     }
 });
 
-//To write on pdf document
+/*//To write on pdf document
 $('#documentEditTool').on('click',function(){
     if(IsPDFOn){
         clearCanvas();
         writeOnPdfDocument();
         socket.emit('pdf:edit', room, uid);
     }
-});
+});*/
 
+/*
 // page down of PDF
 $('#toolbarViewerLeft .toolbarButton.pageDown').click(function(){
     if(IsPDFOn && paper.project.activeLayer.hasChildren()){
@@ -1071,15 +1069,19 @@ function writeOnPdfDocument(){
         console.log('you can go to next page of pdf');
     }
 }
+*/
 
 $('#documentRemoveTool').on('click', function(){
-    if(IsPDFOn){
+    /*if(IsPDFOn){
         IsPDFOn = false;
         socket.emit('pdf:hide', room, uid);
-    }
+    }*/
+    $('body').css('background-color', '');
+    $('.pdf-controllers-container').css('display', 'none');
+    socket.emit('pdf:hide', room, uid);
 });
 
-function hideDocumentViewer(){
+/*function hideDocumentViewer(){
     removeStylingFromTools();
     $('#documentRemoveTool > a').css({
         background: "orange"
@@ -1090,7 +1092,7 @@ function hideDocumentViewer(){
         documentViewer.css('visibility', 'hidden');
         body.css('background-color', '');
     }
-}
+}*/
 
 function clearCanvas() {
     // Remove all but the active layer
