@@ -153,7 +153,8 @@ function testPDFInSameCanvas(url){
     // If absolute URL from the remote server is provided, configure the CORS
     // header on that server.
     //
-    var url = "http://localhost:9002/files/"+url;
+    //var url = "http://localhost:9002/files/"+url;
+    var url = location.protocol+"//"+location.host+"/files/"+url;
 
     pdfDoc = null;
     pageNum = 1;
