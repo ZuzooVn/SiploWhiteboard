@@ -722,6 +722,9 @@ input[type=checkbox] {
 #canvasClear {
     display: none;
 }
+#imgCropped{
+    display: none;
+}
 
 /* styles for cropper*/
 .img-container img {

@@ -42,6 +42,15 @@ $('#testPDFGeneration').on('click', function(){
     });
 });
 
+$('#imgCropped').on('click', function(){
+    if(croppedImg != null){
+        var raster = new Raster(croppedImg);
+        raster.position = view.center;
+        raster.name = uid + ":" + (++paper_object_count);
+        croppedImg = null;
+    }
+});
+
 function removeStylingFromTools() {
     $('.tool-box .tool').css({
         border: "none"
@@ -256,7 +265,6 @@ var mouseHeld; // global timer for if mouse is held.
 
 var shapeStartPoint;
 var shapeEndPoint;
-var imageToCrop = null;
 var selectionRectangle = null;
 var selectionRectangleScale = 0;
 var currentRatio = 1;
@@ -270,12 +278,6 @@ function onMouseDown(event) {
     // Ignore middle or right mouse button clicks for now
     if (event.event.button == 1 || event.event.button == 2) {
         return;
-    }
-
-    //remove cropping tool availability. itz only available just after image is uploaded
-    if(activeTool != "crop" && imageToCrop){
-        $('.buttonicon-crop').addClass('disabled');
-        imageToCrop = null;
     }
 
     // remove the selectionRectangle
@@ -311,7 +313,7 @@ function onMouseDown(event) {
     //  }
     //}, 100);
 
-    if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser" || activeTool == "line" || activeTool == "rectangle" || activeTool == "triangle" || activeTool == "circle" || activeTool == "crop") {
+    if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser" || activeTool == "line" || activeTool == "rectangle" || activeTool == "triangle" || activeTool == "circle") {
         // The data we will send every 100ms on mouse drag
 
         var point = event.point;
@@ -347,7 +349,7 @@ function onMouseDown(event) {
                 tool: activeTool
             };
         }
-        else if (activeTool == "line" || activeTool == "rectangle" || activeTool == "triangle" || activeTool == "circle" || activeTool == "crop" ) {
+        else if (activeTool == "line" || activeTool == "rectangle" || activeTool == "triangle" || activeTool == "circle") {
             shapeStartPoint = point;
         }
 
@@ -364,9 +366,6 @@ function onMouseDown(event) {
                 paper.project.activeLayer.selected = false;
             }
             if(event.item.image){ // check for image selection since it needs to be handled differently from item selection
-               if(event.item.cropingRectangle)  // selected image is a cropped one so draw the selectionRectangle on cropped path
-                    selectionRectangle = new Path.Rectangle(event.item.cropingRectangle.topLeft,event.item.cropingRectangle.bottomRight);
-               else // selected image is not a cropped one so draw the selectionRectangle on bounding rectangle path
                     selectionRectangle = new Path.Rectangle(event.item.bounds.topLeft,event.item.bounds.bottomRight);
 
                 selectionRectangle.name = "selectionRectangle";
@@ -927,7 +926,8 @@ $('#uploadImage').on('click', function () {
     $('#uploadImage').css({
         border: "1px solid orange"
     }); // set the selected tool css to show it as active
-    $('#imageInput').click();
+    /*$('#imageInput').click();*/
+    $('#imgCroppingModal').modal('show');
 });
 
 $('#lineTool').on('click', function () {
@@ -968,7 +968,7 @@ $('#circleTool').on('click', function () {
 });
 
 
-$('#cropTool').on('click', function () {
+/*$('#cropTool').on('click', function () {
     removeStylingFromTools();
     if(imageToCrop){
         $('#cropTool').css({
@@ -979,7 +979,7 @@ $('#cropTool').on('click', function () {
     else
         activeTool = "none";
 
-});
+});*/
 
 $('#undoTool').on('click', function () {
     removeStylingFromTools();
@@ -1220,8 +1220,6 @@ function uploadImage(file) {
         var raster = new Raster(bin);
         raster.position = view.center;
         raster.name = uid + ":" + (++paper_object_count);
-        imageToCrop = raster;
-        $('.buttonicon-crop').removeClass('disabled');
         $('.buttonicon-undo').removeClass('disabled');
         socket.emit('image:add', room, uid, JSON.stringify(bin), raster.position, raster.name);
     });
@@ -1364,7 +1362,6 @@ socket.on('image:add', function (artist, data, position, name) {
         var raster = new Raster(image);
         raster.position = new Point(position[1], position[2]);
         raster.name = name;
-        imageToCrop = raster;
         view.draw();
     }
 });
@@ -1519,21 +1516,6 @@ var external_paths = {};
 
 // Ends a path
 var end_external_path = function (points, artist) {
-    if(points.tool == "crop"){
-        prevpath.clipMask = true;
-        var group = new Group();
-        group.addChild(imageToCrop);
-        group.addChild(prevpath);
-        var rasterizedItem = group.rasterize(); // ratserizing group into one item
-        var rasterizedImage = new Raster(rasterizedItem.toDataURL()); // creating raster from rasterized item
-        rasterizedImage.name = points.name; // name the raster to a new item of canvas
-        rasterizedImage.position = imageToCrop.position;
-        rasterizedImage.sendToBack();
-        group.remove();  // remove the group after rasterizing
-        rasterizedItem.remove(); // remove the rasterized item after creating image from it
-        imageToCrop = null;
-        view.draw();
-    }
     prevpath = null;
     var path = external_paths[artist];
     if (path) {
@@ -1567,7 +1549,7 @@ var progress_external_path = function (points, artist) {
 
 
     }
-    else if (points.tool == "rectangle" || points.tool == "crop") {
+    else if (points.tool == "rectangle") {
         if (prevpath) {
             prevpath.remove();
         }
@@ -1579,7 +1561,7 @@ var progress_external_path = function (points, artist) {
             path = external_paths[artist];
         }
         var rectangle = new Path.Rectangle(new Point(points.path.start[1], points.path.start[2]), new Point(points.path.end[1], points.path.end[2]));
-        rectangle.strokeColor = (points.tool == "crop") ? "#33D7FF" : color;  // light blue for cropping and selected color for rectangle
+        rectangle.strokeColor = color;
         rectangle.strokeWidth = 2;
         rectangle.name = points.name;
         path = rectangle;

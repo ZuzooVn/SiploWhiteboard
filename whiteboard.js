@@ -334,7 +334,9 @@ io.sockets.on('connection', function (socket) {
 
   //Hide PDF Viewer
   socket.on('pdf:hide', function(room, uid) {
-    db.restoreStateAtPDFLoad(room, io);
+    db.restoreStateAtPDFLoad(room, function(project){
+      io.sockets.in(room).emit('pdf:hide', project);
+    });
   });
 
   // Go to next page of the loaded PDF file
@@ -351,7 +353,9 @@ io.sockets.on('connection', function (socket) {
   // Load a previous page
   socket.on('load:previousPage', function(room, requestedPageNumber, currentPageNumber) {
     draw.cleanRedoStack(room);
-    db.loadPreviousPage(room, requestedPageNumber, currentPageNumber, io);
+    db.loadPreviousPage(room, requestedPageNumber, currentPageNumber, function(project){
+      io.sockets.in(room).emit('load:previousPage', project, requestedPageNumber);
+    });
   });
 
   // Go to presentation mode

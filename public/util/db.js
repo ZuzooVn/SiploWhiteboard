@@ -56,7 +56,7 @@ exports.storeAsPreviousPage = function(room, canvasClearedCount) {
 };
 
 // load previous page from db
-exports.loadPreviousPage = function(room, requestedPageNumber, currentPageNumber, io) {
+exports.loadPreviousPage = function(room, requestedPageNumber, currentPageNumber, callback) {
   if (projects.projects[room] && projects.projects[room].project) {
     var project = projects.projects[room].project;
     var json = project.exportJSON();
@@ -65,7 +65,7 @@ exports.loadPreviousPage = function(room, requestedPageNumber, currentPageNumber
       if (value && project && project.activeLayer) {
           project.activeLayer.remove();
           project.importJSON(value.project);
-          io.sockets.in(room).emit('load:previousPage', value, requestedPageNumber);
+          callback(value);
       }
     });
   }
@@ -108,14 +108,14 @@ exports.storeStateAtPDFLoad = function(room) {
 };
 
 // restore the whiteboard state at the point of PDF is loaded
-exports.restoreStateAtPDFLoad = function(room, io) {
+exports.restoreStateAtPDFLoad = function(room, callback) {
     if (projects.projects[room] && projects.projects[room].project) {
         var project = projects.projects[room].project;
         db.get(room+"StateAtPDFLoad", function(err, value) {
             if (value && project && project.activeLayer) {
                 project.activeLayer.remove();
                 project.importJSON(value.project);
-                io.sockets.in(room).emit('pdf:hide', value);
+                callback(value);
             }
         });
     }

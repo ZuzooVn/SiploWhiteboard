@@ -49,9 +49,6 @@
     <!--<script src="/web/l10n.js"></script>-->
     <script src="/build/pdf.js"></script>
     <!--<script src="/web/viewer.js"></script>-->
-    <script >
-        // URL of PDF document
-    </script>
     <!--end pdfjs-->
 
     <!--File Browser-->
@@ -71,26 +68,9 @@
     <!--<script src="/web/viewer.js"></script>-->
 
     <!--Cropper-->
-   <!-- <link rel="stylesheet" href="https://raw.githubusercontent.com/fengyuanchen/cropper/master/dist/cropper.css">
-    <script type="text/javascript" src="https://fengyuanchen.github.io/cropperjs/js/main.js"></script>
-    <script >
-        var cropBoxData;
-        var canvasData;
-        $('.img-container > img').cropper({
-            autoCropArea: 0.5,
-            viewMode: 1,
-            dragMode: 'move',
-            restore: false,
-            guides: false,
-            highlight: false,
-            cropBoxMovable: false,
-            cropBoxResizable: false,
-            built: function () {
-                $image.cropper('setCanvasData', canvasData);
-                $image.cropper('setCropBoxData', cropBoxData);
-            }
-        });
-    </script>-->
+    <link rel="stylesheet" href="/wb_assets/static/cropper/cropper.css">
+    <script type="text/javascript" src="/wb_assets/static/cropper/cropper.js"></script>
+    <script type="text/javascript" src="/wb_assets/static/cropper/siploImageCropper.js"></script>
 
 </head>
 
@@ -98,12 +78,11 @@
 <!--Draw content start-->
 <div class="container tool-box">
     <div class="row">
-        <!-- Trigger the cropper modal with a button -->
-        <!--<button type="button" class="btn btn-info" data-toggle="modal" data-target="#imgCroppingModal">Open Modal</button>-->
         <!--Buttons used to trigger events in draw.js from siploPdfViewer.js-->
-        <button id="testPDFGeneration" class="btn btn-info">Generate PDF</button>
+        <!--<button id="testPDFGeneration" class="btn btn-info">Generate PDF</button>-->
         <button id="testBase64"></button>
         <button id="canvasClear"></button>
+        <button id="imgCropped"></button>
         <!-- paint brush/ pencil / eraser / hand tool -->
         <div class="col-md-1 col-sm-1 col-xs-1 tool">
             <div class="dropup">
@@ -235,11 +214,11 @@
         </div>
 
         <!--Crop-->
-        <div class="col-md-1 col-sm-1 col-xs-1 tool" id="cropTool">
+        <!--<div class="col-md-1 col-sm-1 col-xs-1 tool" id="cropTool">
             <a class="grouped-right" data-l10n-id="draw.toolbar.cropTool.title" title="Crop Image">
                 <span class="buttonicon buttonicon-crop disabled"></span>
             </a>
-        </div>
+        </div>-->
 
         <!--Import or export-->
         <div class="col-md-1 col-sm-1 col-xs-1 tool" id="importAsImage">
@@ -282,7 +261,7 @@
     <p>Loading existing sketch... Click and hold to access the colour wheel</p>
 </div>
 
-<input type="file" id="imageInput" accept="image/*"/>
+<!--<input type="file" id="imageInput" accept="image/*"/>-->
 
 <div id="activeColorSwatch"></div>
 <div class="pdf-controllers-container">
@@ -706,19 +685,21 @@
 <img src="/wb_assets/static/img/point-icon.png" width="24" height="24" id="dummy-cursor">
 
 <!-- Image Cropping Modal -->
-<!--<div id="imgCroppingModal" class="modal fade" role="dialog">
+<div id="imgCroppingModal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-lg">
 
-        &lt;!&ndash; Modal content&ndash;&gt;
+        <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Modal Header</h4>
+                <h4 class="modal-title"></h4>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="height: auto">
                 <div class="img-container">
-                    <img src="https://fengyuanchen.github.io/cropper/img/picture.jpg" alt="" class="">
+                    <img id="croppingImg" src="https://fengyuanchen.github.io/cropper/img/picture.jpg" alt="" class="">
                 </div>
+                <button type="button" class="btn btn-default" onclick="getCroppedImage()">Crop</button>
+                <input type="file" onchange="updateCropperCanvas(this)" id="croppingImgUpload" accept="image/*"/>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -726,6 +707,6 @@
         </div>
 
     </div>
-</div>-->
+</div>
 </body>
 </html>
