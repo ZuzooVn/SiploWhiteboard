@@ -26,7 +26,20 @@ $('#testBase64').on('click', function(){
     var raster = new Raster(base64);
     raster.position = view.center;
     raster.name = uid + ":" + (++paper_object_count);
+});
 
+$('#testPDFGeneration').on('click', function(){
+    $.ajax({
+        type: "GET",
+        url: '/tests/pdf-generation?room='+room,
+        dataType: "json",
+        success: function (data, status, object) {
+            console.log("success");
+        },
+        error: function (data, status, object) {
+            console.log("ajax error");
+        }
+    });
 });
 
 function removeStylingFromTools() {
@@ -1016,23 +1029,24 @@ $('#documentLoadTool').on('click', function () {
     $('#documentLoadTool > a').css({
         background: "orange"
     }); // set the selected tool css to show it as active
-    //if there is no pdf file selected, open the file browser to select a file
+    $('#fileBrowserModal').modal('show');
+    /*//if there is no pdf file selected, open the file browser to select a file
     if(DEFAULT_URL == '' || DEFAULT_URL == null){
         $('#fileBrowserModal').modal('show');
     }
     //make document viewer visible
     else{
-        /*if (documentViewer.css('visibility') == 'hidden') {
+        /!*if (documentViewer.css('visibility') == 'hidden') {
             documentViewer.css('visibility', 'visible');
             //dynamically assigning the background color and image as in viewer.css #230. Otherwise
             //this background color for body tag will make conflicts with whiteboard
             body.css('background-color', '#404040');
             $('#myCanvas').css('top','32px'); // pull down the canvas so that we can still use pdfjs control buttons while editing on top of pdf
         }
-        socket.emit('pdf:load', room, uid, DEFAULT_URL);*/
+        socket.emit('pdf:load', room, uid, DEFAULT_URL);*!/
 
         $('#fileBrowserModal').modal('show');
-    }
+    }*/
 });
 
 /*//To write on pdf document
@@ -1093,6 +1107,15 @@ $('#documentRemoveTool').on('click', function(){
         body.css('background-color', '');
     }
 }*/
+
+$('#canvasClear').on('click', function(){
+   // save the current pdf page state
+    if(pageNum > 1){
+        var base64 = document.getElementById('myCanvas').toDataURL();
+        socket.emit('pdf:savePage', room, pageNum, base64);
+    }
+   clearCanvas();
+});
 
 function clearCanvas() {
     // Remove all but the active layer
@@ -1270,7 +1293,7 @@ socket.on('project:load', function (json, pageCount) {
     });
 
     view.draw();
-    $.get("../img/wheel.png");
+    //$.get("../img/wheel.png");
 });
 
 socket.on('project:load:error', function () {
@@ -1393,10 +1416,14 @@ socket.on('pdf:load', function (artist, file) {
         }
         else {
             DEFAULT_URL = file;
-            PDFViewerApplication.open('/files/'+file);
+            //PDFViewerApplication.open('/files/'+file);
+            $('body').css('background-color', '#404040');
+            $('.pdf-controllers-container').css('display', 'block');
+            clearCanvas();
+            testPDFInSameCanvas(file);
         }
 
-        $('#myCanvas').css({'z-index':'0','top':'32px'});// pull down the canvas so that we can still use pdfjs control buttons while editing on top of pdf
+        /*$('#myCanvas').css({'z-index':'0','top':'32px'});// pull down the canvas so that we can still use pdfjs control buttons while editing on top of pdf
         var documentViewer = $('#documentViewer');
         var body = $('body');
         if (documentViewer.css('visibility') == 'hidden') {
@@ -1407,7 +1434,7 @@ socket.on('pdf:load', function (artist, file) {
         //    documentViewer.css('visibility', 'hidden');
         //    body.css('background-color', '');
         //}
-        IsPDFOn = true;
+        IsPDFOn = true;*/
     }
 });
 
@@ -1423,20 +1450,26 @@ socket.on('pdf:edit', function(artist){
 
 socket.on('pdf:hide', function(json){
     // no need to check for artist since both tutor and student need to load last page
-    console.log('hide pdfviewer');
+    /*console.log('hide pdfviewer');
     clearCanvas();
     paper.project.importJSON(json.project);
     hideDocumentViewer();
     $('#myCanvas').css('top','0'); // pull up the canvas once the editing is done
-    IsPDFOn = false;
+    IsPDFOn = false;*/
+    $('body').css('background-color', '');
+    $('.pdf-controllers-container').css('display', 'none');
+    clearCanvas();
+    paper.project.importJSON(json.project);
 });
 
 socket.on('pdf:pageChange', function (artist, page) {
-    if (artist != uid && page < PDFViewerApplication.pagesCount && page>0) {
-        if(IsPDFOn && paper.project.activeLayer.hasChildren()){
+    if (artist != uid) {
+        /*if(IsPDFOn && paper.project.activeLayer.hasChildren()){
             clearCanvas();
         }
-        PDFViewerApplication.page = page;
+        PDFViewerApplication.page = page;*/
+        clearCanvas();
+        renderPage(page);
     }
 });
 

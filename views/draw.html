@@ -70,13 +70,40 @@
     <!--<script src="/build/pdf.js"></script>-->
     <!--<script src="/web/viewer.js"></script>-->
 
+    <!--Cropper-->
+   <!-- <link rel="stylesheet" href="https://raw.githubusercontent.com/fengyuanchen/cropper/master/dist/cropper.css">
+    <script type="text/javascript" src="https://fengyuanchen.github.io/cropperjs/js/main.js"></script>
+    <script >
+        var cropBoxData;
+        var canvasData;
+        $('.img-container > img').cropper({
+            autoCropArea: 0.5,
+            viewMode: 1,
+            dragMode: 'move',
+            restore: false,
+            guides: false,
+            highlight: false,
+            cropBoxMovable: false,
+            cropBoxResizable: false,
+            built: function () {
+                $image.cropper('setCanvasData', canvasData);
+                $image.cropper('setCropBoxData', cropBoxData);
+            }
+        });
+    </script>-->
+
 </head>
 
 <body style="overflow: hidden">
 <!--Draw content start-->
 <div class="container tool-box">
     <div class="row">
-        <button id="testBase64">Base64</button>
+        <!-- Trigger the cropper modal with a button -->
+        <!--<button type="button" class="btn btn-info" data-toggle="modal" data-target="#imgCroppingModal">Open Modal</button>-->
+        <!--Buttons used to trigger events in draw.js from siploPdfViewer.js-->
+        <button id="testPDFGeneration" class="btn btn-info">Generate PDF</button>
+        <button id="testBase64"></button>
+        <button id="canvasClear"></button>
         <!-- paint brush/ pencil / eraser / hand tool -->
         <div class="col-md-1 col-sm-1 col-xs-1 tool">
             <div class="dropup">
@@ -266,7 +293,7 @@
 </div>
 
 <div id="canvasContainer" style="top: 50px;">
-    <canvas id="testCanvas" width="900" height="612"></canvas>
+    <canvas id="testCanvas"></canvas>
     <canvas id="myCanvas"></canvas>
     <!--<div id="documentViewer">
         &lt;!&ndash;<iframe src="http://localhost:9002/pdf" style="width: 100%; height: 100%"></iframe>&ndash;&gt;
@@ -677,5 +704,28 @@
 
 <!--dummy cursor-->
 <img src="/wb_assets/static/img/point-icon.png" width="24" height="24" id="dummy-cursor">
+
+<!-- Image Cropping Modal -->
+<!--<div id="imgCroppingModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+
+        &lt;!&ndash; Modal content&ndash;&gt;
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Modal Header</h4>
+            </div>
+            <div class="modal-body">
+                <div class="img-container">
+                    <img src="https://fengyuanchen.github.io/cropper/img/picture.jpg" alt="" class="">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+
+    </div>
+</div>-->
 </body>
 </html>

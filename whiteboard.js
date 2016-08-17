@@ -19,7 +19,8 @@ var settings = require('./public/util/Settings.js'),
     Cookies = require( "cookies"),
     cookieParser = require('cookie-parser'),
     session = require('express-session'),
-    errorHandler = require('errorhandler');
+    errorHandler = require('errorhandler'),
+    Canvas = require('canvas');
 
 
 /** 
@@ -162,6 +163,44 @@ app.get('/tests/frontend/specs_list.js', function(req, res){
 // Used for front-end tests
 app.get('/tests/frontend', function (req, res) {
   res.redirect('/tests/frontend/');
+});
+
+// Testing PDF generation
+app.get('/tests/pdf-generation', function (req, res) {
+  var room = req.query.room;
+  var Image = Canvas.Image;
+  var canvas = new Canvas(1366, 612, 'pdf');
+  var ctx = canvas.getContext('2d');
+
+  var x, y;
+
+  function reset () {
+    x = 0;
+    y = 0;
+  }
+  function img (src) {
+    var img = new Image();
+    img.src = src;
+    ctx.drawImage(img, 0, 0, img.width, img.height);
+  }
+
+  db.getPDFPageCount(room,function(count){
+    var receivedPageCount = 0;
+    for(var x = 1; x <= count; x++){
+      db.getPDFPage(room,x, function(page){
+        receivedPageCount++;
+        reset();
+        img(page);
+        ctx.addPage();
+        if(receivedPageCount == count){
+          fs.writeFile('out.pdf', canvas.toBuffer(), function (err) {
+            if (err) throw err;
+            console.log('created out.pdf')
+          });
+        }
+      });
+    }
+  });
 });
 
 // Static files IE Javascript and CSS
@@ -318,6 +357,11 @@ io.sockets.on('connection', function (socket) {
   // Go to presentation mode
   socket.on('pdf:presentationMode', function(room, uid) {
     io.sockets.in(room).emit('pdf:presentationMode', uid);
+  });
+
+  // Save PDF page
+  socket.on('pdf:savePage', function(room, pageNum, page) {
+    db.savePDFPage(room, pageNum, page);
   });
 });
 

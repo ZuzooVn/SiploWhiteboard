@@ -719,6 +719,23 @@ input[type=checkbox] {
     display: none;
 }
 
+#canvasClear {
+    display: none;
+}
+
+/* styles for cropper*/
+.img-container img {
+    max-width: 100%
+}
+.cropOption {
+    text-align: center;
+    padding: 10px;
+}
+.cropOption span {
+    margin: 0 5px
+}
+/*******************/
+
 .pdf-controllers-container{
     display: none;
     padding: 10px;
