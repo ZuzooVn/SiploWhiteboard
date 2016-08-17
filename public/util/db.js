@@ -25,6 +25,7 @@ exports.load = function(room, socket) {
     var project = projects.projects[room].project;
     db.get(room, function(err, value) {
         db.set(room+"PageCount", {count: 0});  // initialize the page count to zero
+        db.set(room+"PDFPageCount", {count: 0});  // initialize the pdf page count to zero
         if (value && project && project.activeLayer) {
         socket.emit('loading:start');
         project.activeLayer.remove();
@@ -118,6 +119,38 @@ exports.restoreStateAtPDFLoad = function(room, io) {
             }
         });
     }
+};
+
+// store the pdf page
+exports.savePDFPage = function(room,pageNum,page) {
+    if (projects.projects[room] && projects.projects[room].project) {
+        db.get(room+"PDFPageCount", function(err, value) {
+            if (value && value.count < pageNum-1) {
+                db.set(room+"PDFPageCount", {count: pageNum-1});  // update the pdf page count
+            }
+        });
+        db.set(room+"PDFPage"+Number(pageNum-1), page);
+    }
+};
+
+// get pdf page count
+exports.getPDFPageCount = function(room, callback) {
+    db.get(room+"PDFPageCount", function(err, value) {
+        if (value) {
+            callback(value.count);
+        } else
+            callback(0);
+    });
+};
+
+// get pdf page
+exports.getPDFPage = function(room, pageNum,callback) {
+    db.get(room+"PDFPage"+pageNum, function(err, page) {
+        if (page) {
+            callback(page);
+        } else
+            callback(null);
+    });
 };
 
 // Recover from image cropping

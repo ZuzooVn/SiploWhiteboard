@@ -13,6 +13,15 @@ var uid;
 // Initialise Socket.io
 var socket = io.connect('/');
 
+// variables for pdf rendering
+var pdfDoc,
+    pageNum,
+    pageRendering,
+    pageNumPending,
+    scale,
+    canvas,
+    ctx;
+
 var DEFAULT_URL = ''; // added from Viewer.js
 
 $(function() {
@@ -97,7 +106,8 @@ $(function(){
     }); 
 });
 
-/* Go to next page of the loaded PDF file*/
+/*
+/!* Go to next page of the loaded PDF file*!/
 
 $(function(){
     $('#toolbarViewerLeft .toolbarButton.pageDown').click(function(){
@@ -105,13 +115,14 @@ $(function(){
     });
 });
 
-/* Go to previous page of the loaded PDF file*/
+/!* Go to previous page of the loaded PDF file*!/
 
 $(function(){
     $('#toolbarViewerLeft .toolbarButton.pageUp').click(function(){
         socket.emit('pdf:pageChange', room, uid, PDFViewerApplication.page-1);
     });
 });
+*/
 
 /*Zoom In*/
 $(function(){
@@ -144,7 +155,13 @@ function testPDFInSameCanvas(url){
     //
     var url = "http://localhost:9002/files/"+url;
 
-
+    pdfDoc = null;
+    pageNum = 1;
+    pageRendering = false;
+    pageNumPending = null;
+    scale = 1.5;
+    canvas = document.getElementById('testCanvas');
+    ctx = canvas.getContext('2d');
     //
     // Disable workers to avoid yet another cross-origin issue (workers need
     // the URL of the script to be loaded, and dynamically loading a cross-origin
@@ -159,84 +176,6 @@ function testPDFInSameCanvas(url){
     //
     // PDFJS.workerSrc = '../../build/pdf.worker.js';
 
-    var pdfDoc = null,
-        pageNum = 1,
-        pageRendering = false,
-        pageNumPending = null,
-        scale = 1.5,
-        canvas = document.getElementById('testCanvas'),
-        ctx = canvas.getContext('2d');
-
-    /**
-     * Get page info from document, resize canvas accordingly, and render page.
-     * @param num Page number.
-     */
-    function renderPage(num) {
-        pageRendering = true;
-        // Using promise to fetch the page
-        pdfDoc.getPage(num).then(function(page) {
-            var viewport = page.getViewport(scale);
-            //canvas.height = viewport.height;
-            //canvas.width = viewport.width;
-
-            // Render PDF page into canvas context
-            var renderContext = {
-                canvasContext: ctx,
-                viewport: viewport
-            };
-            var renderTask = page.render(renderContext);
-
-            // Wait for rendering to finish
-            renderTask.promise.then(function () {
-                $('#testBase64').trigger('click');
-                pageRendering = false;
-                if (pageNumPending !== null) {
-                    // New page rendering is pending
-                    renderPage(pageNumPending);
-                    pageNumPending = null;
-                }
-            });
-        });
-
-        // Update page counters
-        document.getElementById('page_num').textContent = pageNum;
-    }
-
-    /**
-     * If another page rendering in progress, waits until the rendering is
-     * finised. Otherwise, executes rendering immediately.
-     */
-    function queueRenderPage(num) {
-        if (pageRendering) {
-            pageNumPending = num;
-        } else {
-            renderPage(num);
-        }
-    }
-
-    /**
-     * Displays previous page.
-     */
-    function onPrevPage() {
-        if (pageNum <= 1) {
-            return;
-        }
-        pageNum--;
-        queueRenderPage(pageNum);
-    }
-    document.getElementById('prev').addEventListener('click', onPrevPage);
-
-    /**
-     * Displays next page.
-     */
-    function onNextPage() {
-        if (pageNum >= pdfDoc.numPages) {
-            return;
-        }
-        pageNum++;
-        queueRenderPage(pageNum);
-    }
-    document.getElementById('next').addEventListener('click', onNextPage);
 
     /**
      * Asynchronously downloads PDF.
@@ -249,4 +188,85 @@ function testPDFInSameCanvas(url){
         renderPage(pageNum);
     });
 
+    document.getElementById('prev').addEventListener('click', onPrevPage);
+    document.getElementById('next').addEventListener('click', onNextPage);
+
+}
+
+/**
+ * Get page info from document, resize canvas accordingly, and render page.
+ * @param num Page number.
+ */
+function renderPage(num) {
+    //console.log('rendering '+ pageNum);
+    pageRendering = true;
+    // Using promise to fetch the page
+    pdfDoc.getPage(num).then(function(page) {
+        var viewport = page.getViewport(scale);
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        // Render PDF page into canvas context
+        var renderContext = {
+            canvasContext: ctx,
+            viewport: viewport
+        };
+        var renderTask = page.render(renderContext);
+
+        // Wait for rendering to finish
+        renderTask.promise.then(function () {
+            $('#canvasClear').trigger('click');
+            $('#testBase64').trigger('click');
+            pageRendering = false;
+            if (pageNumPending !== null) {
+                // New page rendering is pending
+                renderPage(pageNumPending);
+                pageNumPending = null;
+            }
+        });
+    });
+
+    // Update page counters
+    document.getElementById('page_num').textContent = num;
+    //console.log('displaying page number '+ pageNum);
+}
+
+/**
+ * If another page rendering in progress, waits until the rendering is
+ * finised. Otherwise, executes rendering immediately.
+ */
+function queueRenderPage(num) {
+    if (pageRendering) {
+        pageNumPending = num;
+    } else {
+        renderPage(num);
+    }
+}
+
+/**
+ * Displays previous page.
+ */
+function onPrevPage() {
+    //console.log('@ prev');
+    if (pageNum <= 1) {
+        return;
+    }
+    pageNum--;
+    queueRenderPage(pageNum);
+    socket.emit('pdf:pageChange', room, uid, pageNum);
+}
+
+
+/**
+ * Displays next page.
+ */
+function onNextPage() {
+    //console.log('current page number '+pageNum);
+    if (pageNum >= pdfDoc.numPages) {
+        return;
+    }
+    pageNum++;
+    //console.log('page number incremented to'+pageNum);
+    queueRenderPage(pageNum);
+    socket.emit('pdf:pageChange', room, uid, pageNum);
 }
