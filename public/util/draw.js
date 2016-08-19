@@ -3,7 +3,6 @@ var projects = require('./projects.js');
 var db = require('./db.js');
 
 var redoStack = {}; // json object to store redo stacks
-var imageToCrop = null; // TODO : add a json to support parallel classrooms
 
 projects = projects.projects;
 
@@ -27,7 +26,7 @@ exports.progressExternalPath = function (room, points, artist) {
         path.add(new drawing.Line(new drawing.Point(points.path.start[1], points.path.start[2]), new drawing.Point(points.path.end[1], points.path.end[2])));
         project.view.draw();
     }
-    else if (points.tool == "rectangle" || points.tool == "crop") {
+    else if (points.tool == "rectangle") {
         if (!path) {
             projects[room].external_paths[artist] = new drawing.Path();
             path = projects[room].external_paths[artist];
@@ -135,18 +134,6 @@ exports.endExternalPath = function (room, points, artist) {
             // TODO :  need to debug here
             path.add(new drawing.Path.Circle(new drawing.Point((points.path.start[1] + points.path.end[1]) / 2, (points.path.start[2] + points.path.end[2]) / 2), (new drawing.Point(points.path.start[1], points.path.start[2]) - new drawing.Point(points.path.end[1], points.path.end[2])).length / 2));
         }
-        else if (points.tool == "crop") {
-            // TODO : need to find a way to store the cropped image to db
-            path.clipMask = true;
-            var group = new paper.Group();
-            group.addChild(imageToCrop);
-            group.addChild(path);
-            var rasterizedImage = group.rasterize(); // ratserizing group into one object
-            rasterizedImage.name = points.name; // name the cropped image to a new object
-            group.remove();
-            imageToCrop = null;
-            //db.recover(room, points.data);
-        }
         else {
             path.add(new drawing.Point(points.end[1], points.end[2]));
         }
@@ -235,7 +222,6 @@ exports.addImage = function (room, artist, data, position, name) {
         var raster = new drawing.Raster(image);
         raster.position = new drawing.Point(position[1], position[2]);
         raster.name = name;
-        imageToCrop = raster;
         db.storeProject(room);
     }
 }

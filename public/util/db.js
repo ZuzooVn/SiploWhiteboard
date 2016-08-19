@@ -153,17 +153,6 @@ exports.getPDFPage = function(room, pageNum,callback) {
     });
 };
 
-// Recover from image cropping
-exports.recover = function(room, data) {
-    var project = projects.projects[room].project;
-    db.set(room, {project: data});
-    db.get(room, function(err, value) {
-        if (value) {
-            project.activeLayer.remove();
-            project.importJSON(value.project);
-        }
-    });
-};
 
 
 exports.db = db;

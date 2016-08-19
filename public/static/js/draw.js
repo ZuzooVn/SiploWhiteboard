@@ -47,6 +47,7 @@ $('#imgCropped').on('click', function(){
         var raster = new Raster(croppedImg);
         raster.position = view.center;
         raster.name = uid + ":" + (++paper_object_count);
+        socket.emit('image:add', room, uid, JSON.stringify(croppedImg), raster.position, raster.name);
         croppedImg = null;
     }
 });
@@ -413,7 +414,7 @@ function onMouseDrag(event) {
         return;
     }
 
-    if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser" || activeTool == "line" || activeTool == "rectangle" || activeTool == "triangle" || activeTool == "circle"  || activeTool == "crop") {
+    if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser" || activeTool == "line" || activeTool == "rectangle" || activeTool == "triangle" || activeTool == "circle") {
         var step = event.delta / 2;
         step.angle += 90;
         if (activeTool == "draw") {
@@ -447,18 +448,6 @@ function onMouseDrag(event) {
             path = new Path.Rectangle(shapeStartPoint, shapeEndPoint);
             path.name = uid + ":" + (paper_object_count);
             path.strokeColor = active_color_rgb;
-            path.strokeWidth = 2;
-            path_to_send.path = {
-                start: shapeStartPoint,
-                end: shapeEndPoint
-            };
-        }
-        else if (activeTool == "crop") {
-            paper.project.activeLayer.lastChild.remove();
-            shapeEndPoint = event.point;
-            path = new Path.Rectangle(shapeStartPoint, shapeEndPoint);
-            path.name = uid + ":" + (paper_object_count);
-            path.strokeColor = '#33D7FF'; // light blue color cropping rectangle
             path.strokeWidth = 2;
             path_to_send.path = {
                 start: shapeStartPoint,
@@ -509,7 +498,7 @@ function onMouseDrag(event) {
         if (!timer_is_active) {
 
             send_paths_timer = setInterval(function () {
-                if ((activeTool != "line" && activeTool != "rectangle" && activeTool != "triangle" && activeTool != "circle" && activeTool != "crop") || path_to_send.path.start) {
+                if ((activeTool != "line" && activeTool != "rectangle" && activeTool != "triangle" && activeTool != "circle") || path_to_send.path.start) {
                     socket.emit('draw:progress', room, uid, JSON.stringify(path_to_send));
                 }
                 else {
@@ -621,42 +610,6 @@ function onMouseUp(event) {
         path_to_send.path = new Array();
         timer_is_active = false;
     }
-    else if(activeTool == "crop"){
-        shapeEndPoint = event.point;
-        path.clipMask = true;
-        var group = new Group(); //cropping the image with clip-mask rectangle
-        group.addChild(imageToCrop);
-        group.addChild(path);
-        var rasterizedItem = group.rasterize(); // ratserizing group into one item
-        var rasterizedImage = new Raster(rasterizedItem.toDataURL()); // creating raster from rasterized item
-        rasterizedImage.name = uid + ":" + (++paper_object_count); // name the raster to new object on canvas
-        rasterizedImage.position = imageToCrop.position;
-        rasterizedImage.cropingRectangle = {topLeft: path.bounds.topLeft, bottomRight: path.bounds.bottomRight}; // keep track of cropped path to use at image selection later
-        rasterizedImage.sendToBack();  // send the cropped image back to bottom layer of canvas so cropped areas of image will not make issues when selecting items near cropped image
-        group.remove();  // remove the group after rasterizing
-        rasterizedItem.remove(); // remove the rasterized item after creating image from it
-        imageToCrop = null;
-        $('.buttonicon-crop').addClass('disabled');
-        $('#cropTool').css({
-            border: "none"
-        });
-        activeTool = "none";
-        path_to_send.name = rasterizedImage.name;
-        path_to_send.data = project.exportJSON();
-        path_to_send.path = {
-            start: shapeStartPoint,
-            end: shapeEndPoint
-        };
-        path.closed = true;
-        view.draw();
-        //socket.emit('draw:progress', room, uid, JSON.stringify(path_to_send));
-        socket.emit('draw:end', room, uid, JSON.stringify(path_to_send));
-
-        // Stop new path data being added & sent
-        clearInterval(send_paths_timer);
-        path_to_send.path = new Array();
-        timer_is_active = false;
-    }
     else if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser") {
         // Close the users path
         path.add(event.point);
@@ -689,8 +642,6 @@ function onMouseUp(event) {
                 else
                     itemNames.push(item._name);
             }
-            if(selectToolMode == "IMAGE_DRAG")
-                selectionRectangle.selectedImage.cropingRectangle = {topLeft: selectionRectangle.bounds.topLeft, bottomRight: selectionRectangle.bounds.bottomRight};
 
             (item_move_delta) ? socket.emit('item:move:end', room, uid, itemNames, item_move_delta) : socket.emit('item:move:end', room, uid, itemNames, new Point(0, 0));
         }
@@ -700,7 +651,6 @@ function onMouseUp(event) {
             } else {
                 socket.emit('image:resize', room, uid, selectionRectangle.selectedImage.name, (1 + currentRatio*0.01));
             }
-            selectionRectangle.selectedImage.cropingRectangle = {topLeft: selectionRectangle.bounds.topLeft, bottomRight: selectionRectangle.bounds.bottomRight};
         }
         item_move_delta = null;
         item_move_timer_is_active = false;
@@ -966,20 +916,6 @@ $('#circleTool').on('click', function () {
     activeTool = "circle";
     $('#myCanvas').css('cursor', 'pointer');
 });
-
-
-/*$('#cropTool').on('click', function () {
-    removeStylingFromTools();
-    if(imageToCrop){
-        $('#cropTool').css({
-            border: "1px solid orange"
-        }); // set the selected tool css to show it as active
-        activeTool = "crop";
-    }
-    else
-        activeTool = "none";
-
-});*/
 
 $('#undoTool').on('click', function () {
     removeStylingFromTools();
