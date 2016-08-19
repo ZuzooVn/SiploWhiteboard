@@ -4,7 +4,7 @@
  * the variable DEFAULT_URL is defined in viewer.js
  */
 
-// this is a useful linl : https://www.sitepoint.com/custom-pdf-rendering/
+// this is a useful link : https://www.sitepoint.com/custom-pdf-rendering/
 
 // following are the global scope variables to be used by both js and paper-script files
 var room;
@@ -29,7 +29,7 @@ $(function() {
         'core' : {
             'data' : {
                 //"url" : "https://"+location.host+"/tree/",
-                "url" : "http://"+location.host+"/tree/",
+                "url" : location.protocol+"//"+location.host+"/tree/",
                 "data" : function (node) {
                     return { "id" : node.id };
                 }
@@ -153,7 +153,8 @@ function testPDFInSameCanvas(url){
     // If absolute URL from the remote server is provided, configure the CORS
     // header on that server.
     //
-    var url = "http://localhost:9002/files/"+url;
+    //var url = "http://localhost:9002/files/"+url;
+    var url = location.protocol+"//"+location.host+"/files/"+url;
 
     pdfDoc = null;
     pageNum = 1;
