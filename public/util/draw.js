@@ -169,6 +169,28 @@ exports.clearCanvas = function (room, canvasClearedCount) {
     }
 }
 
+exports.clear = function (room) {
+    var project = projects[room].project;
+    redoStack[room].length = 0;
+    if (project && project.activeLayer && project.activeLayer.hasChildren()) {
+        // Remove all but the active layer
+        if (project.layers.length > 1) {
+            var activeLayerID = project.activeLayer._id;
+            for (var i = 0; i < project.layers.length; i++) {
+                if (project.layers[i]._id != activeLayerID) {
+                    project.layers[i].remove();
+                    i--;
+                }
+            }
+        }
+        // Remove all of the children from the active layer
+        if (project && project.activeLayer && project.activeLayer.hasChildren()) {
+            project.activeLayer.removeChildren();
+        }
+        db.storeProject(room);
+    }
+}
+
 exports.cleanRedoStack = function(room){
     redoStack[room].length = 0;
 }

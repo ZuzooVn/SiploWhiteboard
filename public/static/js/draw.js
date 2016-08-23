@@ -871,6 +871,16 @@ $('#selectTool').on('click', function () {
     $('#myCanvas').css('cursor', 'default');
 });
 
+$('#clearTool').on('click', function () {
+    removeStylingFromTools();
+    $('#clearTool').css({
+        border: "1px solid orange"
+    }); // set the selected tool css to show it as active
+    activeTool = "none";
+    clear();
+    socket.emit('clear', room, uid);
+});
+
 $('#uploadImage').on('click', function () {
     removeStylingFromTools();
     $('#uploadImage').css({
@@ -1074,6 +1084,27 @@ function clearCanvas() {
     view.draw();
 }
 
+function clear() {
+    // Remove all but the active layer
+    if (project.layers.length > 1) {
+        var activeLayerID = project.activeLayer._id;
+        for (var i = 0; i < project.layers.length; i++) {
+            if (project.layers[i]._id != activeLayerID) {
+                project.layers[i].remove();
+                i--;
+            }
+        }
+    }
+
+    // Remove all of the children from the active layer
+    if (paper.project.activeLayer && paper.project.activeLayer.hasChildren()) {
+        paper.project.activeLayer.removeChildren();
+    }
+    $('.buttonicon-undo').addClass('disabled');
+    $('.buttonicon-redo').addClass('disabled');
+    view.draw();
+}
+
 function exportSVG() {
     var svg = paper.project.exportSVG();
     encodeAsImgAndLink(svg);
@@ -1239,6 +1270,12 @@ socket.on('canvas:clear', function (clearedCount) {
     redoStack.length = 0;
     setPageToolsCSS(0);
     clearCanvas();
+});
+
+socket.on('clear', function (artist) {
+    if(artist != uid){
+        clear();
+    }
 });
 
 socket.on('loading:start', function () {

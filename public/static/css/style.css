@@ -319,6 +319,10 @@ body {
     background-image: url('../../static/img/select.png');
 }
 
+.buttonicon-clear {
+    background-image: url('../../static/img/close.png');
+}
+
 .buttonicon-upload {
     background-image: url('../../static/img/upload.png');
 }

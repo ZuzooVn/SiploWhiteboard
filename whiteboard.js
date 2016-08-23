@@ -265,6 +265,16 @@ io.sockets.on('connection', function (socket) {
     io.in(room).emit('canvas:clear', canvasClearedCount); // emit back the cleared count so both teacher and student will be in sync
   });
 
+  // User clear
+  socket.on('clear', function(room, uid) {
+    if (!projects.projects[room] || !projects.projects[room].project) {
+      loadError(socket);
+      return;
+    }
+    draw.clear(room);
+    io.in(room).emit('clear', uid); // emit back the cleared count so both teacher and student will be in sync
+  });
+
   // User removes an item
   socket.on('item:remove', function(room, uid, itemName) {
     draw.removeItem(room, uid, itemName);
