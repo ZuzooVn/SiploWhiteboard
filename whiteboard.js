@@ -241,13 +241,13 @@ io.sockets.on('connection', function (socket) {
 
   // EVENT: User stops drawing something
   // Having room as a parameter is not good for secure rooms
-  socket.on('draw:end', function (room, uid, co_ordinates) {
+  socket.on('draw:end', function (room, uid, co_ordinates, pageNum) {
     if (!projects.projects[room] || !projects.projects[room].project) {
       loadError(socket);
       return;
     }
     io.in(room).emit('draw:end', uid, co_ordinates);
-    draw.endExternalPath(room, JSON.parse(co_ordinates), uid);
+    draw.endExternalPath(room, JSON.parse(co_ordinates), uid, pageNum);
   });
 
   // User joins a room
@@ -256,28 +256,28 @@ io.sockets.on('connection', function (socket) {
   });
 
   // User clears canvas
-  socket.on('canvas:clear', function(room, canvasClearedCount) {
+  socket.on('load:newPage', function(room, pageNum, canvasClearedCount) {
     if (!projects.projects[room] || !projects.projects[room].project) {
       loadError(socket);
       return;
     }
-    draw.clearCanvas(room, canvasClearedCount);
-    io.in(room).emit('canvas:clear', canvasClearedCount); // emit back the cleared count so both teacher and student will be in sync
+    draw.setupNewPage(room, pageNum);
+    io.in(room).emit('load:newPage', pageNum, canvasClearedCount); // emit back the cleared count so both teacher and student will be in sync
   });
 
   // User clear
-  socket.on('clear', function(room, uid) {
+  socket.on('clear', function(room, uid, pageNum) {
     if (!projects.projects[room] || !projects.projects[room].project) {
       loadError(socket);
       return;
     }
-    draw.clear(room);
+    draw.clear(room, pageNum);
     io.in(room).emit('clear', uid); // emit back the cleared count so both teacher and student will be in sync
   });
 
   // User removes an item
-  socket.on('item:remove', function(room, uid, itemName) {
-    draw.removeItem(room, uid, itemName);
+  socket.on('item:remove', function(room, uid, itemName, pageNum) {
+    draw.removeItem(room, uid, itemName, pageNum);
     io.sockets.in(room).emit('item:remove', uid, itemName);
   });
 
@@ -290,34 +290,34 @@ io.sockets.on('connection', function (socket) {
   });
 
   // User moves one or more items on their canvas - end
-  socket.on('item:move:end', function(room, uid, itemNames, delta) {
-    draw.moveItemsEnd(room, uid, itemNames, delta);
+  socket.on('item:move:end', function(room, uid, itemNames, delta, pageNum) {
+    draw.moveItemsEnd(room, uid, itemNames, delta, pageNum);
     if (itemNames) {
       io.sockets.in(room).emit('item:move', uid, itemNames, delta);
     }
   });
 
   // User adds a raster image
-  socket.on('image:add', function(room, uid, data, position, name) {
-    draw.addImage(room, uid, data, position, name);
+  socket.on('image:add', function(room, uid, data, position, name, pageNum) {
+    draw.addImage(room, uid, data, position, name, pageNum);
     io.sockets.in(room).emit('image:add', uid, data, position, name);
   });
 
   // User performs UNDO
-  socket.on('undo', function(room, uid) {
-    draw.undoItem(room);
+  socket.on('undo', function(room, uid, pageNum) {
+    draw.undoItem(room, pageNum);
     io.sockets.in(room).emit('undo', uid);
   });
 
   // User performs REDO
-  socket.on('redo', function(room, uid) {
-    draw.redoItem(room);
+  socket.on('redo', function(room, uid, pageNum) {
+    draw.redoItem(room, pageNum);
     io.sockets.in(room).emit('redo', uid);
   });
 
   // User performs Resizing image
-  socket.on('image:resize', function(room, uid, image, scalingFactor) {
-    draw.resizeImage(room,image,scalingFactor);
+  socket.on('image:resize', function(room, uid, image, scalingFactor, pageNum) {
+    draw.resizeImage(room,image,scalingFactor, pageNum);
     io.sockets.in(room).emit('image:resize', uid, image, scalingFactor);
   });
 
@@ -361,10 +361,10 @@ io.sockets.on('connection', function (socket) {
 
 
   // Load a previous page
-  socket.on('load:previousPage', function(room, requestedPageNumber, currentPageNumber) {
+  socket.on('load:previousPage', function(room, pageNum) {
     draw.cleanRedoStack(room);
-    db.loadPreviousPage(room, requestedPageNumber, currentPageNumber, function(project){
-      io.sockets.in(room).emit('load:previousPage', project, requestedPageNumber);
+    db.loadPreviousPage(room, pageNum, function(project){
+      io.sockets.in(room).emit('load:previousPage', project, pageNum);
     });
   });
 

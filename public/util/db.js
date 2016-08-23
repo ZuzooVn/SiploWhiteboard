@@ -13,10 +13,10 @@ db.init(function(err){
 });
 
 // Write to database
-exports.storeProject = function(room) {
+exports.storeProject = function(room, pageNum) {
   var project = projects.projects[room].project;
   var json = project.exportJSON();
-  db.set(room, {project: json});
+  db.set(room+pageNum, {project: json});
 };
 
 // Loading a class for the first time
@@ -40,28 +40,18 @@ exports.load = function(room, socket) {
   }
 };
 
-// Write clearing page to db, so we can load it later as a previous page
-exports.storeAsPreviousPage = function(room, canvasClearedCount) {
+// update page count
+exports.updatePageCount = function(room, pageNum) {
     if (projects.projects[room] && projects.projects[room].project) {
-        var project = projects.projects[room].project;
-        var json = project.exportJSON();
-        db.get(room+"PageCount", function(err, value) {
-            if (value && value.count < canvasClearedCount && project && project.activeLayer) {
-                db.set(room+"PageCount", {count: canvasClearedCount});  // update the page count
-            }
-        });
-
-        db.set(room+canvasClearedCount, {project: json});
+        db.set(room+"PageCount", {count: pageNum});
     }
 };
 
 // load previous page from db
-exports.loadPreviousPage = function(room, requestedPageNumber, currentPageNumber, callback) {
+exports.loadPreviousPage = function(room, pageNum, callback) {
   if (projects.projects[room] && projects.projects[room].project) {
     var project = projects.projects[room].project;
-    var json = project.exportJSON();
-    db.set(room+currentPageNumber, {project: json});
-    db.get(room+requestedPageNumber, function(err, value) {
+    db.get(room+pageNum, function(err, value) {
       if (value && project && project.activeLayer) {
           project.activeLayer.remove();
           project.importJSON(value.project);
@@ -82,7 +72,7 @@ exports.loadFromMemoryOrDB = function(room, socket, clientSettings) {
     var stateInMemory = project.exportJSON();  // state of the project in memory
     project.activeLayer.remove();
     db.get(room+"PageCount", function(err, pageCount) {
-        db.get(room+"0", function(err, stateInDB) {
+        db.get(room+(pageCount.count+1), function(err, stateInDB) {
             if (stateInDB != null) {// state of the project in db
                 project.importJSON(stateInDB.project);
                 socket.emit('project:load', stateInDB, pageCount.count);

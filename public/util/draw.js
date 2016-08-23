@@ -108,7 +108,7 @@ exports.progressExternalPath = function (room, points, artist) {
 };
 
 // finished drawing an object. save the object to db
-exports.endExternalPath = function (room, points, artist) {
+exports.endExternalPath = function (room, points, artist, pageNum) {
     var project = projects[room].project;
     project.activate();
     var path = projects[room].external_paths[artist];
@@ -143,12 +143,11 @@ exports.endExternalPath = function (room, points, artist) {
         // Remove the old data
         projects[room].external_paths[artist] = false;
     }
-    db.storeProject(room);
+    db.storeProject(room, pageNum);
 };
 
-exports.clearCanvas = function (room, canvasClearedCount) {
+exports.setupNewPage = function (room, pageNum) {
     var project = projects[room].project;
-    db.storeAsPreviousPage(room, canvasClearedCount);
     redoStack[room].length = 0;
     if (project && project.activeLayer && project.activeLayer.hasChildren()) {
         // Remove all but the active layer
@@ -165,11 +164,11 @@ exports.clearCanvas = function (room, canvasClearedCount) {
         if (project && project.activeLayer && project.activeLayer.hasChildren()) {
             project.activeLayer.removeChildren();
         }
-        db.storeProject(room);
     }
-}
+    db.updatePageCount(room, pageNum);
+};
 
-exports.clear = function (room) {
+exports.clear = function (room, pageNum) {
     var project = projects[room].project;
     redoStack[room].length = 0;
     if (project && project.activeLayer && project.activeLayer.hasChildren()) {
@@ -187,22 +186,22 @@ exports.clear = function (room) {
         if (project && project.activeLayer && project.activeLayer.hasChildren()) {
             project.activeLayer.removeChildren();
         }
-        db.storeProject(room);
+        db.storeProject(room, pageNum);
     }
-}
+};
 
 exports.cleanRedoStack = function(room){
     redoStack[room].length = 0;
-}
+};
 
 // Remove an item from the canvas
-exports.removeItem = function (room, artist, itemName) {
+exports.removeItem = function (room, artist, itemName, pageNum) {
     var project = projects[room].project;
     if (project && project.activeLayer && project.activeLayer._namedChildren[itemName] && project.activeLayer._namedChildren[itemName][0]) {
         project.activeLayer._namedChildren[itemName][0].remove();
-        db.storeProject(room);
+        db.storeProject(room, pageNum);
     }
-}
+};
 
 // Move one or more existing items on the canvas
 exports.moveItemsProgress = function (room, artist, itemNames, delta) {
@@ -217,11 +216,11 @@ exports.moveItemsProgress = function (room, artist, itemNames, delta) {
             }
         }
     }
-}
+};
 
 // Move one or more existing items on the canvas
 // and write to DB
-exports.moveItemsEnd = function (room, artist, itemNames, delta) {
+exports.moveItemsEnd = function (room, artist, itemNames, delta, pageNum) {
     var project = projects[room].project;
     if (project && project.activeLayer) {
         for (x in itemNames) {
@@ -232,63 +231,63 @@ exports.moveItemsEnd = function (room, artist, itemNames, delta) {
                 project.activeLayer._namedChildren[itemName][0].position.y += delta[2];
             }
         }
-        db.storeProject(room);
+        db.storeProject(room, pageNum);
     }
-}
+};
 
 // Add image to canvas
-exports.addImage = function (room, artist, data, position, name) {
+exports.addImage = function (room, artist, data, position, name, pageNum) {
     var project = projects[room].project;
     if (project && project.activeLayer) {
         var image = JSON.parse(data);
         var raster = new drawing.Raster(image);
         raster.position = new drawing.Point(position[1], position[2]);
         raster.name = name;
-        db.storeProject(room);
+        db.storeProject(room, pageNum);
     }
-}
+};
 
 // check if a redo stack is already declared for a classroom
 exports.hasDeclaredRedoStack = function (room) {
     return redoStack.hasOwnProperty(room);
-}
+};
 
 // init a redo stack for a classroom
 exports.initRedoStack = function (room) {
     redoStack[room] = new Array();
-}
+};
 
 // TODO : call this method when class is done
 // remove the redo stack declared for classroom
 exports.removeRedoStack = function (room) {
    delete  redoStack[room];
-}
+};
 
 // Undo an item from the canvas
-exports.undoItem = function (room) {
+exports.undoItem = function (room, pageNum) {
     var project = projects[room].project;
     if (project && project.activeLayer && project.activeLayer.hasChildren()) {
         redoStack[room].push(project.activeLayer.lastChild);
         project.activeLayer.lastChild.remove();
-        db.storeProject(room);
+        db.storeProject(room, pageNum);
     }
-}
+};
 
 // Redo an item from the canvas
-exports.redoItem = function (room) {
+exports.redoItem = function (room, pageNum) {
     var project = projects[room].project;
     if (project && project.activeLayer && redoStack[room].length > 0) {
         project.activeLayer.addChild(redoStack[room].pop());
-        db.storeProject(room);
+        db.storeProject(room, pageNum);
     }
-}
+};
 
 // Resize an image
-exports.resizeImage = function (room,imageName, scalingFactor) {
+exports.resizeImage = function (room,imageName, scalingFactor, pageNum) {
     var project = projects[room].project;
     if (project && project.activeLayer && project.activeLayer._namedChildren[imageName] && project.activeLayer._namedChildren[imageName][0]) {
         var namedChildren = project.activeLayer._namedChildren;
         namedChildren[imageName][0].scale(scalingFactor);
-        db.storeProject(room);
+        db.storeProject(room, pageNum);
     }
-}
+};

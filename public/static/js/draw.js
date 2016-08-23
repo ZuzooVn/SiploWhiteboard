@@ -14,8 +14,7 @@ var socket = io.connect('/');*/
 room = window.location.pathname.split("/")[2];
 var redoStack = new Array(); // stack to store undo items
 var canvasClearedCount = 0; // keep track of number of times the canvas cleared, so we can override the correct previous page at db
-var maximumPreviousPageCount = 5;
-var currentPageNumber = 0; // when a previous page is loaded, this value should be the previous-page number.
+var currentPageNumber = 1; // when a previous page is loaded, this value should be the previous-page number.
 /*
 * 0 - latest page
 * 1,2,3,4,5 - previous page
@@ -47,7 +46,7 @@ $('#imgCropped').on('click', function(){
         var raster = new Raster(croppedImg);
         raster.position = view.center;
         raster.name = uid + ":" + (++paper_object_count);
-        socket.emit('image:add', room, uid, JSON.stringify(croppedImg), raster.position, raster.name);
+        socket.emit('image:add', room, uid, JSON.stringify(croppedImg), raster.position, raster.name, currentPageNumber);
         croppedImg = null;
     }
 });
@@ -210,11 +209,11 @@ $('#load-new-pg').click(function () {
         background: "orange"
     });
     redoStack.length = 0;
-    if(currentPageNumber == 0 && paper.project.activeLayer.hasChildren()){ // currently on the latest page of the book. so open a new page
-        //var p = confirm("Are you sure you want to clear the drawing?");
+    if(currentPageNumber == (canvasClearedCount + 1) && paper.project.activeLayer.hasChildren()){ // currently on the latest page of the book. so open a new page
         canvasClearedCount++;
         clearCanvas();
-        socket.emit('canvas:clear', room, canvasClearedCount);
+        socket.emit('load:newPage', room, currentPageNumber, canvasClearedCount);
+        currentPageNumber++;
     }
     else
         alert("Pleas go back to last page to add a new page");
@@ -226,10 +225,11 @@ $('#load-next-pg').click(function () {
     $('#load-next-pg > a').css({
         background: "orange"
     });
-    redoStack.length = 0;
-    var requestedPageNumber = (currentPageNumber == canvasClearedCount && currentPageNumber > 0) ? 0 : (currentPageNumber >= 1) ? currentPageNumber+1 : -1;
-    if(requestedPageNumber != -1)
-        socket.emit('load:previousPage', room, requestedPageNumber, currentPageNumber);
+    //var requestedPageNumber = (currentPageNumber == canvasClearedCount && currentPageNumber > 0) ? 0 : (currentPageNumber >= 1) ? currentPageNumber+1 : -1;
+    if(currentPageNumber < canvasClearedCount+1) {
+        redoStack.length = 0;
+        socket.emit('load:previousPage', room, currentPageNumber+1);
+    }
     else
         alert("You have reached the last page of the book");
 });
@@ -240,10 +240,11 @@ $('#load-previous-pg').click(function () {
     $('#load-previous-pg > a').css({
         background: "orange"
     });
-    redoStack.length = 0;
-    var requestedPageNumber = (currentPageNumber == 0 && canvasClearedCount > 0) ? canvasClearedCount : (canvasClearedCount > 0 && currentPageNumber > 1) ? currentPageNumber-1 : -1;
-    if(requestedPageNumber != -1)
-        socket.emit('load:previousPage', room, requestedPageNumber, currentPageNumber);
+    //var requestedPageNumber = (currentPageNumber == 0 && canvasClearedCount > 0) ? canvasClearedCount : (canvasClearedCount > 0 && currentPageNumber > 1) ? currentPageNumber-1 : -1;
+    if(currentPageNumber > 1){
+        redoStack.length = 0;
+        socket.emit('load:previousPage', room, currentPageNumber-1);
+    }
     else
         alert("You have reached the first page of the book");
 });
@@ -519,11 +520,11 @@ function onMouseDrag(event) {
             if(currentRatio < previousRatio){
                 selectionRectangle.scale(1 - currentRatio*0.01, selectionRectangle.selectedImage.bounds.center);
                 selectionRectangle.selectedImage.scale(1 - currentRatio*0.01,selectionRectangle.selectedImage.bounds.center);
-                socket.emit('image:resize', room, uid, selectionRectangle.selectedImage.name, (1 - currentRatio*0.01));
+                socket.emit('image:resize', room, uid, selectionRectangle.selectedImage.name, (1 - currentRatio*0.01), currentPageNumber);
             } else {
                 selectionRectangle.scale(1 + 0.01*currentRatio,selectionRectangle.selectedImage.bounds.center);
                 selectionRectangle.selectedImage.scale(1 + 0.01*currentRatio,selectionRectangle.selectedImage.bounds.center);
-                socket.emit('image:resize', room, uid, selectionRectangle.selectedImage.name, (1 + currentRatio*0.01));
+                socket.emit('image:resize', room, uid, selectionRectangle.selectedImage.name, (1 + currentRatio*0.01), currentPageNumber);
             }
             previousRatio = currentRatio;
             view.draw();
@@ -603,7 +604,7 @@ function onMouseUp(event) {
         view.draw();
 
         socket.emit('draw:progress', room, uid, JSON.stringify(path_to_send));
-        socket.emit('draw:end', room, uid, JSON.stringify(path_to_send));
+        socket.emit('draw:end', room, uid, JSON.stringify(path_to_send), currentPageNumber);
 
         // Stop new path data being added & sent
         clearInterval(send_paths_timer);
@@ -622,7 +623,7 @@ function onMouseUp(event) {
         // This covers the case where paths are created in less than 100 seconds
         // it does add a duplicate segment, but that is okay for now.
         socket.emit('draw:progress', room, uid, JSON.stringify(path_to_send));
-        socket.emit('draw:end', room, uid, JSON.stringify(path_to_send));
+        socket.emit('draw:end', room, uid, JSON.stringify(path_to_send), currentPageNumber);
 
         // Stop new path data being added & sent
         clearInterval(send_paths_timer);
@@ -643,13 +644,13 @@ function onMouseUp(event) {
                     itemNames.push(item._name);
             }
 
-            (item_move_delta) ? socket.emit('item:move:end', room, uid, itemNames, item_move_delta) : socket.emit('item:move:end', room, uid, itemNames, new Point(0, 0));
+            (item_move_delta) ? socket.emit('item:move:end', room, uid, itemNames, item_move_delta, currentPageNumber) : socket.emit('item:move:end', room, uid, itemNames, new Point(0, 0), currentPageNumber);
         }
         else if(selectionRectangleScale != null && selectionRectangleScale > 0 && selectToolMode == "IMAGE_RESIZE") {
             if(currentRatio < previousRatio){
-                socket.emit('image:resize', room, uid, selectionRectangle.selectedImage.name, (1 - currentRatio*0.01));
+                socket.emit('image:resize', room, uid, selectionRectangle.selectedImage.name, (1 - currentRatio*0.01), currentPageNumber);
             } else {
-                socket.emit('image:resize', room, uid, selectionRectangle.selectedImage.name, (1 + currentRatio*0.01));
+                socket.emit('image:resize', room, uid, selectionRectangle.selectedImage.name, (1 + currentRatio*0.01), currentPageNumber);
             }
         }
         item_move_delta = null;
@@ -720,7 +721,7 @@ function onKeyUp(event) {
         if (items) {
             for (x in items) {
                 var item = items[x];
-                socket.emit('item:remove', room, uid, item.name);
+                socket.emit('item:remove', room, uid, item.name, currentPageNumber);
                 item.remove();
                 view.draw();
             }
@@ -737,10 +738,10 @@ function onKeyUp(event) {
                 var item = paper.project.selectedItems[x];
                 itemNames.push(item._name);
             }
-            socket.emit('item:move:end', room, uid, itemNames, key_move_delta);
+            socket.emit('item:move:end', room, uid, itemNames, key_move_delta, currentPageNumber);
         } else {
             // delta is null, so send 0 change
-            socket.emit('item:move:end', room, uid, itemNames, new Point(0, 0));
+            socket.emit('item:move:end', room, uid, itemNames, new Point(0, 0), currentPageNumber);
         }
         key_move_delta = null;
         key_move_timer_is_active = false;
@@ -878,7 +879,7 @@ $('#clearTool').on('click', function () {
     }); // set the selected tool css to show it as active
     activeTool = "none";
     clear();
-    socket.emit('clear', room, uid);
+    socket.emit('clear', room, uid, currentPageNumber);
 });
 
 $('#uploadImage').on('click', function () {
@@ -936,7 +937,7 @@ $('#undoTool').on('click', function () {
         $('.buttonicon-redo').removeClass('disabled');
         activeTool = "undo";
         redoStack.push(paper.project.activeLayer.lastChild);
-        socket.emit('undo', room, uid);
+        socket.emit('undo', room, uid, currentPageNumber);
         paper.project.activeLayer.lastChild.remove();
         if (!paper.project.activeLayer.hasChildren())
             $('.buttonicon-undo').addClass('disabled');
@@ -952,7 +953,7 @@ $('#redoTool').on('click', function () {
         }); // set the selecttool css to show it as active
         $('.buttonicon-undo').removeClass('disabled');
         activeTool = "redo";
-        socket.emit('redo', room, uid);
+        socket.emit('redo', room, uid, currentPageNumber);
         paper.project.activeLayer.addChild(redoStack.pop());
         if (redoStack.length == 0)
             $('.buttonicon-redo').addClass('disabled');
@@ -1188,26 +1189,24 @@ function uploadImage(file) {
         raster.position = view.center;
         raster.name = uid + ":" + (++paper_object_count);
         $('.buttonicon-undo').removeClass('disabled');
-        socket.emit('image:add', room, uid, JSON.stringify(bin), raster.position, raster.name);
+        socket.emit('image:add', room, uid, JSON.stringify(bin), raster.position, raster.name, currentPageNumber);
     });
 }
 
 
 function setPageToolsCSS(currentPageNumber){
-    if(currentPageNumber != 0){ // currently editing a previous page
+    if(currentPageNumber != canvasClearedCount+1){ // currently editing a previous page
         $('#load-new-pg').addClass('disabled');
     } else {
         $('#load-new-pg').removeClass('disabled');
     }
-    if((currentPageNumber == 0 && canvasClearedCount > 0) || (canvasClearedCount > 0 && currentPageNumber > 1)){
+    if(currentPageNumber != 1){
         $('#load-previous-pg').removeClass('disabled');
-    }
-    else
+    } else
         $('#load-previous-pg').addClass('disabled');
-    if((currentPageNumber == canvasClearedCount && currentPageNumber > 0) || (currentPageNumber >= 1)){
+    if(currentPageNumber <= canvasClearedCount){
         $('#load-next-pg').removeClass('disabled');
-    }
-    else
+    } else
         $('#load-next-pg').addClass('disabled');
 }
 // ---------------------------------
@@ -1247,7 +1246,8 @@ socket.on('project:load', function (json, pageCount) {
     paper.project.activeLayer.remove();
     paper.project.importJSON(json.project);
     canvasClearedCount = pageCount;
-    setPageToolsCSS(0);
+    currentPageNumber = pageCount+1;
+    setPageToolsCSS(currentPageNumber);
     // Make color selector draggable
     $('#mycolorpicker').pep({});
     // Make sure the range event doesn't propogate to pep
@@ -1265,7 +1265,8 @@ socket.on('project:load:error', function () {
     $('#lostConnection').show();
 });
 
-socket.on('canvas:clear', function (clearedCount) {
+socket.on('load:newPage', function (pageNum, clearedCount) {
+    currentPageNumber = pageNum + 1;
     canvasClearedCount = clearedCount;
     redoStack.length = 0;
     setPageToolsCSS(0);
@@ -1380,7 +1381,6 @@ socket.on('pointing:end', function (artist, position) {
 
 socket.on('pdf:load', function (artist, file) {
     if (artist != uid) {
-
         if(file == DEFAULT_URL){
             console.log('Same file has been already open');
         }
@@ -1440,6 +1440,7 @@ socket.on('pdf:pageChange', function (artist, page) {
         PDFViewerApplication.page = page;*/
         clearCanvas();
         renderPage(page);
+        pageNum = page;
     }
 });
 
