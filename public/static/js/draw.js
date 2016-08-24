@@ -12,7 +12,11 @@ var IsPDFOn = false; // variable used to synchronize edit pdf btn functionality 
 var socket = io.connect('/');*/
 
 room = window.location.pathname.split("/")[2];
-//role = "Tutor";
+
+role = window.location.pathname.split("/")[3];
+if(!role){
+    role = "tutor";
+}
 var redoStack = new Array(); // stack to store undo items
 var pageCount = 0; // keep track of number of times the canvas cleared, so we can override the correct previous page at db
 var currentPageNumber = 1; // when a previous page is loaded, this value should be the previous-page number.
@@ -20,6 +24,14 @@ var currentPageNumber = 1; // when a previous page is loaded, this value should 
 * 0 - latest page
 * 1,2,3,4,5 - previous page
 */
+
+// initialize toolbox
+if(role == "tutor"){
+    $("[name='my-checkbox']").bootstrapSwitch();
+    $('.tool-box').css({"display":"block"});
+    $('#toolBoxToggle').css({"display":"block"});
+    $('.tool-box').addClass('animated bounce');
+}
 
 $('#testBase64').on('click', function(){
     var base64 = document.getElementById('testCanvas').toDataURL();
@@ -53,7 +65,7 @@ $('#imgCropped').on('click', function(){
 });
 
 $('input[name="my-checkbox"]').on('switchChange.bootstrapSwitch', function(event, state) {
-    if(role == "Tutor"){
+    if(role == "tutor"){
         if(!state)
             socket.emit('enable:toolbox', room, uid);
         else
@@ -1497,7 +1509,7 @@ socket.on('pdf:presentationMode', function (artist) {
 });
 
 socket.on('enable:toolbox', function (artist) {
-    if (artist != uid && role != "Tutor") {
+    if (artist != uid && role != "tutor") {
         $('.tool-box').css({"display":"block"});
         $('.tool-box').removeClass('animated bounceOut');
         $('.tool-box').addClass('animated bounce');
@@ -1505,7 +1517,7 @@ socket.on('enable:toolbox', function (artist) {
 });
 
 socket.on('disable:toolbox', function (artist) {
-    if (artist != uid && role != "Tutor") {
+    if (artist != uid && role != "tutor") {
         //$('.tool-box').css({"display":"none"});
         $('.tool-box').removeClass('animated bounce');
         $('.tool-box').addClass('animated bounceOut');
