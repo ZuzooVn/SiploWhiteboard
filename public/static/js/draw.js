@@ -25,6 +25,9 @@ var currentPageNumber = 1; // when a previous page is loaded, this value should 
 * 1,2,3,4,5 - previous page
 */
 
+// initialize the pdf-whiteboard-toggle
+$("[name='pdf-whiteboard-checkbox']").bootstrapSwitch();
+
 // initialize toolbox
 if(role == "tutor"){
     $("[name='my-checkbox']").bootstrapSwitch();
@@ -61,6 +64,16 @@ $('#imgCropped').on('click', function(){
         raster.name = uid + ":" + (++paper_object_count);
         socket.emit('image:add', room, uid, JSON.stringify(croppedImg), raster.position, raster.name, currentPageNumber);
         croppedImg = null;
+    }
+});
+
+$('input[name="pdf-whiteboard-checkbox"]').on('switchChange.bootstrapSwitch', function(event, state) {
+    if(role == "tutor"){
+        if(!state) {
+            socket.emit('pdf:to:whiteboard', room, project.exportJSON());
+        }
+        else
+            socket.emit('whiteboard:to:pdf', room, pageNum, DEFAULT_URL);
     }
 });
 
@@ -1018,14 +1031,10 @@ $('#documentLoadTool').on('click', function () {
     }*/
 });
 
-/*//To write on pdf document
+//To write on pdf document
 $('#documentEditTool').on('click',function(){
-    if(IsPDFOn){
-        clearCanvas();
-        writeOnPdfDocument();
-        socket.emit('pdf:edit', room, uid);
-    }
-});*/
+
+});
 
 /*
 // page down of PDF
@@ -1291,7 +1300,7 @@ socket.on('project:load:pdf', function (file, pdfPage, pgCount, currentPgNum) {
     DEFAULT_URL = file;
     testPDFInSameCanvas(file, pdfPage);
     pageCount = pgCount;
-    currentPageNumber = currentPgNum;
+    currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
     setPageToolsCSS(currentPageNumber);
     // Make color selector draggable
     $('#mycolorpicker').pep({});
@@ -1426,6 +1435,7 @@ socket.on('pointing:end', function (artist, position) {
 });
 
 socket.on('pdf:load', function (artist, file) {
+    currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
     if (artist != uid) {
         if(file == DEFAULT_URL){
             console.log('Same file has been already open');
@@ -1438,19 +1448,6 @@ socket.on('pdf:load', function (artist, file) {
             clearCanvas();
             testPDFInSameCanvas(file);
         }
-
-        /*$('#myCanvas').css({'z-index':'0','top':'32px'});// pull down the canvas so that we can still use pdfjs control buttons while editing on top of pdf
-        var documentViewer = $('#documentViewer');
-        var body = $('body');
-        if (documentViewer.css('visibility') == 'hidden') {
-            documentViewer.css('visibility', 'visible');
-            body.css('background-color', '#404040');
-        }
-        //else {
-        //    documentViewer.css('visibility', 'hidden');
-        //    body.css('background-color', '');
-        //}
-        IsPDFOn = true;*/
     }
 });
 
@@ -1464,7 +1461,7 @@ socket.on('pdf:edit', function(artist){
     }
 });
 
-socket.on('pdf:hide', function(json){
+socket.on('pdf:hide', function(json, pgNum, pgCount){
     // no need to check for artist since both tutor and student need to load last page
     /*console.log('hide pdfviewer');
     clearCanvas();
@@ -1472,6 +1469,8 @@ socket.on('pdf:hide', function(json){
     hideDocumentViewer();
     $('#myCanvas').css('top','0'); // pull up the canvas once the editing is done
     IsPDFOn = false;*/
+    currentPageNumber = pgNum;
+    pageCount = pgCount;
     $('body').css('background-color', '');
     $('.pdf-controllers-container').css('display', 'none');
     clearCanvas();
@@ -1506,6 +1505,21 @@ socket.on('pdf:presentationMode', function (artist) {
         requestFullScreen(elem);
         $('body').addClass("sidebar-collapse");
     }
+});
+
+socket.on('pdf:to:whiteboard', function (json, pgNum, pgCount) {
+    currentPageNumber = pgNum;
+    pageCount = pgCount;
+    $('body').css('background-color', '');
+    paper.project.activeLayer.remove();
+    paper.project.importJSON(json.project);
+});
+
+socket.on('whiteboard:to:pdf', function (json) {
+    currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
+    $('body').css('background-color', '#404040');
+    clear();
+    paper.project.importJSON(json.project);
 });
 
 socket.on('enable:toolbox', function (artist) {

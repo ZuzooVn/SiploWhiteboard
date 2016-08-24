@@ -272,10 +272,14 @@
 
 <div id="activeColorSwatch"></div>
 <div class="pdf-controllers-container">
-    <button id="prev">Previous</button>
-    <button id="next">Next</button>
-    &nbsp; &nbsp;
-    <span>Page: <span id="page_num">4</span> / <span id="page_count">14</span></span>
+    <div>
+        <button id="prev">Previous</button>
+        <button id="next">Next</button>
+        <input type="checkbox" name="pdf-whiteboard-checkbox" checked data-on-color="success" data-off-color="danger" data-on-text="NOTE" data-off-text="PDF">
+    </div>
+    <div class="text-center">
+        <span>Page: <span id="page_num">4</span> / <span id="page_count">14</span></span>
+    </div>
 </div>
 
 <div id="canvasContainer" style="">

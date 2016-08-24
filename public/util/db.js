@@ -134,13 +134,15 @@ exports.storeStateAtPDFLoad = function(room, callback) {
 exports.restoreStateAtPDFLoad = function(room, callback) {
     if (projects.projects[room] && projects.projects[room].project) {
         var project = projects.projects[room].project;
-        db.get(room+"StateAtPDFLoad", function(err, state) {
-            db.get(room+state.page, function(err, value) {
-                if (value && project && project.activeLayer) {
-                    project.activeLayer.remove();
-                    project.importJSON(value.project);
-                    callback(value, state);
-                }
+        db.get(room+"PageCount", function(err, pageCount) {
+            db.get(room + "StateAtPDFLoad", function (err, state) {
+                db.get(room + state.page, function (err, value) {
+                    if (value && project && project.activeLayer) {
+                        project.activeLayer.remove();
+                        project.importJSON(value.project);
+                        callback(value, state, pageCount.count);
+                    }
+                });
             });
         });
     }
@@ -176,6 +178,35 @@ exports.getPDFPage = function(room, pageNum,callback) {
         } else
             callback(null);
     });
+};
+
+// set pdf content at toggle to whiteboard
+exports.setPDFContentAtToggleToWhiteboard = function(room, canvas,callback) {
+    if (projects.projects[room] && projects.projects[room].project) {
+        var project = projects.projects[room].project;
+        db.get(room + "PageCount", function (err, pageCount) {
+            db.set(room + "PDFContentAtToggleToWhiteboard", {project: canvas});
+            db.get(room + "StateAtPDFLoad", function (err, state) {
+                db.get(room + state.page, function (err, value) {
+                    if (value && project && project.activeLayer) {
+                        project.activeLayer.remove();
+                        project.importJSON(value.project);
+                        callback(value, state, pageCount.count);
+                    }
+                });
+            });
+        });
+    }
+};
+
+// get pdf content at toggle to whiteboard
+exports.getPDFContentAtToggleToWhiteboard = function(room, callback) {
+    if (projects.projects[room] && projects.projects[room].project) {
+        var project = projects.projects[room].project;
+        db.get(room+"PDFContentAtToggleToWhiteboard", function(err, value) {
+           callback(value);
+        });
+    }
 };
 
 

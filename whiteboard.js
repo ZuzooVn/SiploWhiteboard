@@ -364,9 +364,9 @@ io.sockets.on('connection', function (socket) {
 
   //Hide PDF Viewer
   socket.on('pdf:hide', function(room, uid) {
-    db.restoreStateAtPDFLoad(room, function(project, state){
+    db.restoreStateAtPDFLoad(room, function(project, state, pageCount){
       db.updateLatestState(room, state);
-      io.sockets.in(room).emit('pdf:hide', project);
+      io.sockets.in(room).emit('pdf:hide', project, state.page, pageCount);
     });
   });
 
@@ -389,6 +389,29 @@ io.sockets.on('connection', function (socket) {
   // Go to presentation mode
   socket.on('pdf:presentationMode', function(room, uid) {
     io.sockets.in(room).emit('pdf:presentationMode', uid);
+  });
+
+  // Toggle from PDF to Whiteboard
+  socket.on('pdf:to:whiteboard', function(room, canvas) {
+    db.setPDFContentAtToggleToWhiteboard(room, canvas, function(project, state, pageCount){
+      db.updateLatestState(room, state);
+      io.sockets.in(room).emit('pdf:to:whiteboard', project, state.page, pageCount);
+    });
+  });
+
+  // Toggle from Whiteboard to PDF
+  socket.on('whiteboard:to:pdf', function(room, page, file) {
+    db.storeStateAtPDFLoad(room, function(){
+      var state = {
+        "type": "PDF",
+        "page": page,
+        "file": file
+      };
+      db.updateLatestState(room, state);
+    });
+    db.getPDFContentAtToggleToWhiteboard(room, function(canvas){
+      io.sockets.in(room).emit('whiteboard:to:pdf', canvas);
+    });
   });
 
   // Save PDF page

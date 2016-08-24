@@ -761,8 +761,8 @@ input[type=checkbox] {
 .pdf-controllers-container{
     display: none;
     position: absolute;
-    top: 91%;
-    padding: 10px;
+    top: 90%;
+    padding: 5px 10px;
     background: darkorange;
     z-index: 20;
 }
