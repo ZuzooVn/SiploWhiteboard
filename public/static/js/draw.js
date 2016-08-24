@@ -13,7 +13,7 @@ var socket = io.connect('/');*/
 
 room = window.location.pathname.split("/")[2];
 var redoStack = new Array(); // stack to store undo items
-var canvasClearedCount = 0; // keep track of number of times the canvas cleared, so we can override the correct previous page at db
+var pageCount = 0; // keep track of number of times the canvas cleared, so we can override the correct previous page at db
 var currentPageNumber = 1; // when a previous page is loaded, this value should be the previous-page number.
 /*
 * 0 - latest page
@@ -209,10 +209,10 @@ $('#load-new-pg').click(function () {
         background: "orange"
     });
     redoStack.length = 0;
-    if(currentPageNumber == (canvasClearedCount + 1) && paper.project.activeLayer.hasChildren()){ // currently on the latest page of the book. so open a new page
-        canvasClearedCount++;
+    if(currentPageNumber == (pageCount + 1) && paper.project.activeLayer.hasChildren()){ // currently on the latest page of the book. so open a new page
+        pageCount++;
         clearCanvas();
-        socket.emit('load:newPage', room, currentPageNumber, canvasClearedCount);
+        socket.emit('load:newPage', room, currentPageNumber, pageCount);
         currentPageNumber++;
     }
     else
@@ -226,7 +226,7 @@ $('#load-next-pg').click(function () {
         background: "orange"
     });
     //var requestedPageNumber = (currentPageNumber == canvasClearedCount && currentPageNumber > 0) ? 0 : (currentPageNumber >= 1) ? currentPageNumber+1 : -1;
-    if(currentPageNumber < canvasClearedCount+1) {
+    if(currentPageNumber < pageCount+1) {
         redoStack.length = 0;
         socket.emit('load:previousPage', room, currentPageNumber+1);
     }
@@ -1195,7 +1195,7 @@ function uploadImage(file) {
 
 
 function setPageToolsCSS(currentPageNumber){
-    if(currentPageNumber != canvasClearedCount+1){ // currently editing a previous page
+    if(currentPageNumber != pageCount+1){ // currently editing a previous page
         $('#load-new-pg').addClass('disabled');
     } else {
         $('#load-new-pg').removeClass('disabled');
@@ -1204,7 +1204,7 @@ function setPageToolsCSS(currentPageNumber){
         $('#load-previous-pg').removeClass('disabled');
     } else
         $('#load-previous-pg').addClass('disabled');
-    if(currentPageNumber <= canvasClearedCount){
+    if(currentPageNumber <= pageCount){
         $('#load-next-pg').removeClass('disabled');
     } else
         $('#load-next-pg').addClass('disabled');
@@ -1242,11 +1242,12 @@ socket.on('user:disconnect', function (user_count) {
     update_user_count(user_count);
 });
 
-socket.on('project:load', function (json, pageCount) {
+// loading a whiteboard page from db
+socket.on('project:load', function (json, pgCount, currentPgNum) {
     paper.project.activeLayer.remove();
     paper.project.importJSON(json.project);
-    canvasClearedCount = pageCount;
-    currentPageNumber = pageCount+1;
+    pageCount = pgCount;
+    currentPageNumber = currentPgNum;
     setPageToolsCSS(currentPageNumber);
     // Make color selector draggable
     $('#mycolorpicker').pep({});
@@ -1258,8 +1259,31 @@ socket.on('project:load', function (json, pageCount) {
     });
 
     view.draw();
-    //$.get("../img/wheel.png");
 });
+
+// loading a pdf page from db
+socket.on('project:load:pdf', function (file, pdfPage, pgCount, currentPgNum) {
+    //alert(file+ " "+ pdfPage + " "+ pgCount + " "+currentPgNum);
+    $('body').css('background-color', '#404040');
+    $('.pdf-controllers-container').css('display', 'block');
+    DEFAULT_URL = file;
+    testPDFInSameCanvas(file, pdfPage);
+    pageCount = pgCount;
+    currentPageNumber = currentPgNum;
+    setPageToolsCSS(currentPageNumber);
+    // Make color selector draggable
+    $('#mycolorpicker').pep({});
+    // Make sure the range event doesn't propogate to pep
+    $('#opacityRangeVal').on('touchstart MSPointerDown mousedown', function (ev) {
+        ev.stopPropagation();
+    }).on('change', function (ev) {
+        update_active_color();
+    });
+
+    view.draw();
+});
+
+
 
 socket.on('project:load:error', function () {
     $('#lostConnection').show();
@@ -1267,9 +1291,9 @@ socket.on('project:load:error', function () {
 
 socket.on('load:newPage', function (pageNum, clearedCount) {
     currentPageNumber = pageNum + 1;
-    canvasClearedCount = clearedCount;
+    pageCount = clearedCount;
     redoStack.length = 0;
-    setPageToolsCSS(0);
+    setPageToolsCSS(currentPageNumber);
     clearCanvas();
 });
 

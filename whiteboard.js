@@ -255,14 +255,32 @@ io.sockets.on('connection', function (socket) {
     subscribe(socket, data);
   });
 
-  // User clears canvas
+  // User loads new page
   socket.on('load:newPage', function(room, pageNum, canvasClearedCount) {
     if (!projects.projects[room] || !projects.projects[room].project) {
       loadError(socket);
       return;
     }
     draw.setupNewPage(room, pageNum);
-    io.in(room).emit('load:newPage', pageNum, canvasClearedCount); // emit back the cleared count so both teacher and student will be in sync
+    var state = {
+      "type": "WHITEBOARD",
+      "page": Number(pageNum)+1
+    };
+    db.updateLatestState(room, state);
+    io.in(room).emit('load:newPage', pageNum, canvasClearedCount); // emit back the new-page event so both teacher and student will be in sync
+  });
+
+  // Load a previous page
+  socket.on('load:previousPage', function(room, pageNum) {
+    draw.cleanRedoStack(room);
+    var state = {
+      "type": "WHITEBOARD",
+      "page": Number(pageNum)
+    };
+    db.updateLatestState(room, state);
+    db.loadPreviousPage(room, pageNum, function(project){
+      io.sockets.in(room).emit('load:previousPage', project, pageNum);
+    });
   });
 
   // User clear
@@ -333,39 +351,39 @@ io.sockets.on('connection', function (socket) {
 
   // Load PDF file from server
   socket.on('pdf:load', function(room, uid, file) {
-    db.storeStateAtPDFLoad(room);
+    db.storeStateAtPDFLoad(room, function(){
+      var state = {
+        "type": "PDF",
+        "page": 1,
+        "file": file
+      };
+      db.updateLatestState(room, state);
+    });
     io.sockets.in(room).emit('pdf:load', uid, file);
-  });
-
-  //Enable writing on pdf
-  socket.on('pdf:edit', function(room, uid) {
-    io.sockets.in(room).emit('pdf:edit', uid);
   });
 
   //Hide PDF Viewer
   socket.on('pdf:hide', function(room, uid) {
-    db.restoreStateAtPDFLoad(room, function(project){
+    db.restoreStateAtPDFLoad(room, function(project, state){
+      db.updateLatestState(room, state);
       io.sockets.in(room).emit('pdf:hide', project);
     });
   });
 
-  // Go to next page of the loaded PDF file
-  socket.on('pdf:pageChange', function(room, uid, page) {
+  // Go to given page of the loaded PDF file
+  socket.on('pdf:pageChange', function(room, uid, page, file) {
+    var state = {
+      "type": "PDF",
+      "page": Number(page),
+      "file": file
+    };
+    db.updateLatestState(room, state);
     io.sockets.in(room).emit('pdf:pageChange', uid, page);
   });
 
   // Zoom In/Out
   socket.on('pdf:zoom', function(room, uid, scale) {
     io.sockets.in(room).emit('pdf:zoom', uid, scale);
-  });
-
-
-  // Load a previous page
-  socket.on('load:previousPage', function(room, pageNum) {
-    draw.cleanRedoStack(room);
-    db.loadPreviousPage(room, pageNum, function(project){
-      io.sockets.in(room).emit('load:previousPage', project, pageNum);
-    });
   });
 
   // Go to presentation mode

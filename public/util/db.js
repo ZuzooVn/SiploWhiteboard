@@ -26,11 +26,18 @@ exports.load = function(room, socket) {
     db.get(room, function(err, value) {
         db.set(room+"PageCount", {count: 0});  // initialize the page count to zero
         db.set(room+"PDFPageCount", {count: 0});  // initialize the pdf page count to zero
+
+        var state = {
+            "type": "WHITEBOARD",
+            "page": 1
+        };
+        db.set(room+"LatestState", state); // set the initial state of project
+
         if (value && project && project.activeLayer) {
         socket.emit('loading:start');
         project.activeLayer.remove();
         project.importJSON(value.project);
-        socket.emit('project:load', value);
+        socket.emit('project:load', value, 0, 1);
       }
       socket.emit('loading:end');
     });
@@ -44,6 +51,24 @@ exports.load = function(room, socket) {
 exports.updatePageCount = function(room, pageNum) {
     if (projects.projects[room] && projects.projects[room].project) {
         db.set(room+"PageCount", {count: pageNum});
+    }
+};
+
+// update latest state so that we can load the latest content to whiteboard at the event of browser-reload
+/*
+*  state = {
+*       type = whiteboard,
+*       page = pageNum
+*  }
+*  state = {
+*       type = pdf,
+*       page = pageNum,
+*       file = fileName
+*  }
+*  */
+exports.updateLatestState = function(room, state) {
+    if (projects.projects[room] && projects.projects[room].project) {
+        db.set(room+"LatestState", state);
     }
 };
 
@@ -72,14 +97,21 @@ exports.loadFromMemoryOrDB = function(room, socket, clientSettings) {
     var stateInMemory = project.exportJSON();  // state of the project in memory
     project.activeLayer.remove();
     db.get(room+"PageCount", function(err, pageCount) {
-        db.get(room+(pageCount.count+1), function(err, stateInDB) {
-            if (stateInDB != null) {// state of the project in db
-                project.importJSON(stateInDB.project);
-                socket.emit('project:load', stateInDB, pageCount.count);
-            }
-            else {
+        db.get(room+"LatestState", function(err, state) {
+            if (state != null) { // latest state of project
+                if(state.type == "WHITEBOARD"){
+                    db.get(room+state.page, function(err, stateInDB) {
+                        project.importJSON(stateInDB.project);
+                        socket.emit('project:load', stateInDB, pageCount.count, state.page);
+                    });
+                } else if (state.type == "PDF"){
+                    db.get(room+"StateAtPDFLoad", function(err, stateAtPdfLoad) {
+                        socket.emit('project:load:pdf', state.file, state.page, pageCount.count, stateAtPdfLoad.page);
+                    });
+                }
+            } else {
                 project.importJSON(stateInMemory);
-                socket.emit('project:load', {project: stateInMemory}, pageCount.count);
+                socket.emit('project:load', {project: stateInMemory}, pageCount.count, state.page);
             }
         });
     });
@@ -89,11 +121,12 @@ exports.loadFromMemoryOrDB = function(room, socket, clientSettings) {
 };
 
 // store the whiteboard state at the point of PDF is loaded
-exports.storeStateAtPDFLoad = function(room) {
+exports.storeStateAtPDFLoad = function(room, callback) {
     if (projects.projects[room] && projects.projects[room].project) {
-        var project = projects.projects[room].project;
-        var json = project.exportJSON();
-        db.set(room+"StateAtPDFLoad", {project: json});  // update the page count
+        db.get(room+"LatestState", function(err, state) {
+            db.set(room+"StateAtPDFLoad", state);
+            callback();
+        });
     }
 };
 
@@ -101,12 +134,14 @@ exports.storeStateAtPDFLoad = function(room) {
 exports.restoreStateAtPDFLoad = function(room, callback) {
     if (projects.projects[room] && projects.projects[room].project) {
         var project = projects.projects[room].project;
-        db.get(room+"StateAtPDFLoad", function(err, value) {
-            if (value && project && project.activeLayer) {
-                project.activeLayer.remove();
-                project.importJSON(value.project);
-                callback(value);
-            }
+        db.get(room+"StateAtPDFLoad", function(err, state) {
+            db.get(room+state.page, function(err, value) {
+                if (value && project && project.activeLayer) {
+                    project.activeLayer.remove();
+                    project.importJSON(value.project);
+                    callback(value, state);
+                }
+            });
         });
     }
 };

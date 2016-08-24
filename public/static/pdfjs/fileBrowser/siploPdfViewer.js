@@ -147,7 +147,7 @@ $(function (){
     });
 });
 
-function testPDFInSameCanvas(url){
+function testPDFInSameCanvas(url, pgNum){
 
     //
     // If absolute URL from the remote server is provided, configure the CORS
@@ -157,7 +157,7 @@ function testPDFInSameCanvas(url){
     var url = location.protocol+"//"+location.host+"/files/"+url;
 
     pdfDoc = null;
-    pageNum = 1;
+    pageNum = pgNum ? pgNum : 1;
     pageRendering = false;
     pageNumPending = null;
     scale = 1.5;
@@ -254,7 +254,7 @@ function onPrevPage() {
     }
     pageNum--;
     queueRenderPage(pageNum);
-    socket.emit('pdf:pageChange', room, uid, pageNum);
+    socket.emit('pdf:pageChange', room, uid, pageNum, DEFAULT_URL);
 }
 
 
@@ -269,5 +269,5 @@ function onNextPage() {
     pageNum++;
     //console.log('page number incremented to'+pageNum);
     queueRenderPage(pageNum);
-    socket.emit('pdf:pageChange', room, uid, pageNum);
+    socket.emit('pdf:pageChange', room, uid, pageNum, DEFAULT_URL);
 }
