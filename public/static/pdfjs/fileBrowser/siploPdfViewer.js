@@ -8,6 +8,7 @@
 
 // following are the global scope variables to be used by both js and paper-script files
 var room;
+var role;
 var uid;
 
 // Initialise Socket.io

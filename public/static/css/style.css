@@ -26,6 +26,7 @@ body {
     top: 93%;
     width: 100%;
     padding: 0 350px;
+    display: none;
 }
 
 .tool-box .tool{
@@ -728,6 +729,20 @@ input[type=checkbox] {
 }
 #imgCropped{
     display: none;
+}
+#toolBoxToggle{
+    position: absolute;
+    top: 0;
+    left: 80%;
+    padding: 5px 20px;
+    display: none;
+}
+#toolBoxToggle:focus{
+    outline: none;
+}
+#toolBoxToggle:active{
+    color: white;
+    background: orange;
 }
 
 /* styles for cropper*/

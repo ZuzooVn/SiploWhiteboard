@@ -12,6 +12,7 @@ var IsPDFOn = false; // variable used to synchronize edit pdf btn functionality 
 var socket = io.connect('/');*/
 
 room = window.location.pathname.split("/")[2];
+//role = "Tutor";
 var redoStack = new Array(); // stack to store undo items
 var pageCount = 0; // keep track of number of times the canvas cleared, so we can override the correct previous page at db
 var currentPageNumber = 1; // when a previous page is loaded, this value should be the previous-page number.
@@ -48,6 +49,15 @@ $('#imgCropped').on('click', function(){
         raster.name = uid + ":" + (++paper_object_count);
         socket.emit('image:add', room, uid, JSON.stringify(croppedImg), raster.position, raster.name, currentPageNumber);
         croppedImg = null;
+    }
+});
+
+$('input[name="my-checkbox"]').on('switchChange.bootstrapSwitch', function(event, state) {
+    if(role == "Tutor"){
+        if(!state)
+            socket.emit('enable:toolbox', room, uid);
+        else
+            socket.emit('disable:toolbox', room, uid);
     }
 });
 
@@ -1485,6 +1495,23 @@ socket.on('pdf:presentationMode', function (artist) {
         $('body').addClass("sidebar-collapse");
     }
 });
+
+socket.on('enable:toolbox', function (artist) {
+    if (artist != uid && role != "Tutor") {
+        $('.tool-box').css({"display":"block"});
+        $('.tool-box').removeClass('animated bounceOut');
+        $('.tool-box').addClass('animated bounce');
+    }
+});
+
+socket.on('disable:toolbox', function (artist) {
+    if (artist != uid && role != "Tutor") {
+        //$('.tool-box').css({"display":"none"});
+        $('.tool-box').removeClass('animated bounce');
+        $('.tool-box').addClass('animated bounceOut');
+    }
+});
+
 
 function requestFullScreen(element) {
     // Supports most browsers and their versions.

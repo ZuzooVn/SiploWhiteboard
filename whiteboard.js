@@ -395,6 +395,17 @@ io.sockets.on('connection', function (socket) {
   socket.on('pdf:savePage', function(room, pageNum, page) {
     db.savePDFPage(room, pageNum, page);
   });
+
+  // Enable toolbox
+  socket.on('enable:toolbox', function(room, uid) {
+    io.sockets.in(room).emit('enable:toolbox', uid);
+  });
+
+  // Disable toolbox
+  socket.on('disable:toolbox', function(room, uid) {
+    io.sockets.in(room).emit('disable:toolbox', uid);
+  });
+
 });
 
 // Subscribe a client to a room
