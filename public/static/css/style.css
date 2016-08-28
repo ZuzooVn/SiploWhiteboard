@@ -714,13 +714,13 @@ input[type=checkbox] {
     display: block;
 }
 
-#testCanvas {
+#pdfCanvas {
     width: 100%;
     height: 100%;
     display: none;
 }
 
-#testBase64 {
+#pdfRenderEventEmitter {
     display: none;
 }
 

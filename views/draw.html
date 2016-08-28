@@ -46,11 +46,7 @@
     <script>document.domain = document.domain;</script>
     <script src="/wb_assets/static/css/AdminLTE-2.3.0/bootstrap/js/bootstrap.min.js"></script>
     <!--pdfjs on whiteboard-->
-    <!--<link rel="stylesheet" href="/web/viewer.css">-->
-    <!--<script src="/web/compatibility.js"></script>-->
-    <!--<script src="/web/l10n.js"></script>-->
     <script src="/build/pdf.js"></script>
-    <!--<script src="/web/viewer.js"></script>-->
     <!--end pdfjs-->
 
     <!--File Browser-->
@@ -66,9 +62,6 @@
     <!-- This snippet is used in production (included from viewer.html) -->
     <link rel="resource" type="application/l10n" href="locale/locale.properties">
     <script src="/web/l10n.js"></script>
-    <!--<script src="/build/pdf.js"></script>-->
-    <!--<script src="/web/viewer.js"></script>-->
-
     <!--Cropper-->
     <link rel="stylesheet" href="/wb_assets/static/cropper/cropper.css">
     <script type="text/javascript" src="/wb_assets/static/cropper/cropper.js"></script>
@@ -82,7 +75,7 @@
     <div class="row">
         <!--Buttons used to trigger events in draw.js from siploPdfViewer.js-->
         <!--<button id="testPDFGeneration" class="btn btn-info">Generate PDF</button>-->
-        <button id="testBase64"></button>
+        <button id="pdfRenderEventEmitter"></button>
         <button id="canvasClear"></button>
         <button id="imgCropped"></button>
         <!-- paint brush/ pencil / eraser / hand tool -->
@@ -245,7 +238,7 @@
 
         <!--ToolBox Toggle-->
         <div class="col-md-1 col-sm-1 col-xs-1 tool" style="top:-5px;">
-            <input id="toolBoxToggle" type="checkbox" name="my-checkbox" checked data-on-color="success" data-off-color="danger">
+            <input id="toolBoxToggle" type="checkbox" name="toolbar-toggle-checkbox" checked data-on-color="success" data-off-color="danger">
         </div>
     </div>
 </div>
@@ -283,7 +276,7 @@
 </div>
 
 <div id="canvasContainer" style="">
-    <canvas id="testCanvas"></canvas>
+    <canvas id="pdfCanvas"></canvas>
     <canvas id="myCanvas"></canvas>
     <div id="mycolorpicker">
         <div id="colorpickerMover"></div>

@@ -30,14 +30,14 @@ $("[name='pdf-whiteboard-checkbox']").bootstrapSwitch();
 
 // initialize toolbox
 if(role == "tutor"){
-    $("[name='my-checkbox']").bootstrapSwitch();
+    $("[name='toolbar-toggle-checkbox']").bootstrapSwitch();
     $('.tool-box').css({"display":"block"});
     $('#toolBoxToggle').css({"display":"block"});
-    $('.tool-box').addClass('animated bounce');
+    $('.tool-box').addClass('animated zoomIn');
 }
 
-$('#testBase64').on('click', function(){
-    var base64 = document.getElementById('testCanvas').toDataURL();
+$('#pdfRenderEventEmitter').on('click', function(){
+    var base64 = document.getElementById('pdfCanvas').toDataURL();
     var raster = new Raster(base64);
     raster.position = view.center;
     raster.name = uid + ":" + (++paper_object_count);
@@ -77,7 +77,7 @@ $('input[name="pdf-whiteboard-checkbox"]').on('switchChange.bootstrapSwitch', fu
     }
 });
 
-$('input[name="my-checkbox"]').on('switchChange.bootstrapSwitch', function(event, state) {
+$('input[name="toolbar-toggle-checkbox"]').on('switchChange.bootstrapSwitch', function(event, state) {
     if(role == "tutor"){
         if(!state)
             socket.emit('enable:toolbox', room, uid);
@@ -1526,14 +1526,14 @@ socket.on('enable:toolbox', function (artist) {
     if (artist != uid && role != "tutor") {
         $('.tool-box').css({"display":"block"});
         $('.tool-box').removeClass('animated bounceOut');
-        $('.tool-box').addClass('animated bounce');
+        $('.tool-box').addClass('animated zoomIn');
     }
 });
 
 socket.on('disable:toolbox', function (artist) {
     if (artist != uid && role != "tutor") {
         //$('.tool-box').css({"display":"none"});
-        $('.tool-box').removeClass('animated bounce');
+        $('.tool-box').removeClass('animated zoomIn');
         $('.tool-box').addClass('animated bounceOut');
     }
 });

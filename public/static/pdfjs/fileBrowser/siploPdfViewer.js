@@ -162,7 +162,7 @@ function testPDFInSameCanvas(url, pgNum){
     pageRendering = false;
     pageNumPending = null;
     scale = 1.5;
-    canvas = document.getElementById('testCanvas');
+    canvas = document.getElementById('pdfCanvas');
     ctx = canvas.getContext('2d');
     //
     // Disable workers to avoid yet another cross-origin issue (workers need
@@ -218,7 +218,7 @@ function renderPage(num) {
         // Wait for rendering to finish
         renderTask.promise.then(function () {
             $('#canvasClear').trigger('click');
-            $('#testBase64').trigger('click');
+            $('#pdfRenderEventEmitter').trigger('click');
             pageRendering = false;
             if (pageNumPending !== null) {
                 // New page rendering is pending
