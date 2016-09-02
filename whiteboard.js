@@ -371,14 +371,27 @@ io.sockets.on('connection', function (socket) {
   });
 
   // Go to given page of the loaded PDF file
-  socket.on('pdf:pageChange', function(room, uid, page, file) {
+  socket.on('pdf:pageChange', function(room, uid, page, pdfPageCount, file) {
     var state = {
       "type": "PDF",
       "page": Number(page),
       "file": file
     };
     db.updateLatestState(room, state);
-    io.sockets.in(room).emit('pdf:pageChange', uid, page);
+    io.sockets.in(room).emit('pdf:pageChange', uid, page, pdfPageCount);
+  });
+
+  // Go to given page of the loaded PDF file
+  socket.on('pdf:renderFromDB', function(room, uid, page, pdfPageCount, file) {
+    var state = {
+      "type": "PDF",
+      "page": Number(page),
+      "file": file
+    };
+    db.updateLatestState(room, state);
+    db.getPDFPage(room, page, function(pdfContent){
+      io.sockets.in(room).emit('pdf:renderFromDB', uid, page, pdfPageCount, pdfContent);
+    });
   });
 
   // Zoom In/Out

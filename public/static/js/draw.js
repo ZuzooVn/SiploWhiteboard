@@ -1087,11 +1087,6 @@ $('#documentRemoveTool').on('click', function(){
 }*/
 
 $('#canvasClear').on('click', function(){
-   // save the current pdf page state
-    if(pageNum > 1){
-        var base64 = document.getElementById('myCanvas').toDataURL();
-        socket.emit('pdf:savePage', room, pageNum, base64);
-    }
    clearCanvas();
 });
 
@@ -1274,11 +1269,12 @@ socket.on('user:disconnect', function (user_count) {
 });
 
 // loading a whiteboard page from db
-socket.on('project:load', function (json, pgCount, currentPgNum) {
+socket.on('project:load', function (json, pgCount, currentPgNum, pdfPgCount) {
     paper.project.activeLayer.remove();
     paper.project.importJSON(json.project);
     pageCount = pgCount;
     currentPageNumber = currentPgNum;
+    pdfPageCount = pdfPgCount;
     setPageToolsCSS(currentPageNumber);
     // Make color selector draggable
     $('#mycolorpicker').pep({});
@@ -1293,14 +1289,17 @@ socket.on('project:load', function (json, pgCount, currentPgNum) {
 });
 
 // loading a pdf page from db
-socket.on('project:load:pdf', function (file, pdfPage, pgCount, currentPgNum) {
+socket.on('project:load:pdf', function (file, pdfPage, pgCount, currentPgNum, pdfPgCount) {
     //alert(file+ " "+ pdfPage + " "+ pgCount + " "+currentPgNum);
     $('body').css('background-color', '#404040');
-    $('.pdf-controllers-container').css('display', 'block');
+    if(role == "tutor")
+        $('.pdf-controllers-container').css('display', 'block');
     DEFAULT_URL = file;
-    testPDFInSameCanvas(file, pdfPage);
     pageCount = pgCount;
     currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
+    pdfPageCount = pdfPgCount;
+    pageNum = pdfPage;
+    setupPDFRendering(file, pdfPage);
     setPageToolsCSS(currentPageNumber);
     // Make color selector draggable
     $('#mycolorpicker').pep({});
@@ -1444,9 +1443,10 @@ socket.on('pdf:load', function (artist, file) {
             DEFAULT_URL = file;
             //PDFViewerApplication.open('/files/'+file);
             $('body').css('background-color', '#404040');
-            $('.pdf-controllers-container').css('display', 'block');
+            if(role == "tutor")
+                $('.pdf-controllers-container').css('display', 'block');
             clearCanvas();
-            testPDFInSameCanvas(file);
+            setupPDFRendering(file);
         }
     }
 });
@@ -1477,18 +1477,24 @@ socket.on('pdf:hide', function(json, pgNum, pgCount){
     paper.project.importJSON(json.project);
 });
 
-socket.on('pdf:pageChange', function (artist, page) {
+socket.on('pdf:pageChange', function (artist, page, pdfPgCount) {
     if (artist != uid) {
-        /*if(IsPDFOn && paper.project.activeLayer.hasChildren()){
-            clearCanvas();
-        }
-        PDFViewerApplication.page = page;*/
         clearCanvas();
         renderPage(page);
         pageNum = page;
+        pdfPageCount = pdfPgCount;
     }
 });
 
+socket.on('pdf:renderFromDB', function (artist, page, pdfPgCount, pdfContent) {
+    clearCanvas();
+    pageNum = page;
+    pdfPageCount = pdfPgCount;
+    var raster = new Raster(pdfContent);
+    raster.position = view.center;
+    raster.name = uid + ":" + (++paper_object_count);
+    document.getElementById('page_num').textContent = page;
+});
 
 socket.on('pdf:zoom', function (artist, scale) {
     if (artist != uid) {
@@ -1511,8 +1517,9 @@ socket.on('pdf:to:whiteboard', function (json, pgNum, pgCount) {
     currentPageNumber = pgNum;
     pageCount = pgCount;
     $('body').css('background-color', '');
-    paper.project.activeLayer.remove();
+    clear();
     paper.project.importJSON(json.project);
+    view.draw();
 });
 
 socket.on('whiteboard:to:pdf', function (json) {
@@ -1520,6 +1527,7 @@ socket.on('whiteboard:to:pdf', function (json) {
     $('body').css('background-color', '#404040');
     clear();
     paper.project.importJSON(json.project);
+    view.draw();
 });
 
 socket.on('enable:toolbox', function (artist) {

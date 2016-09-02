@@ -37,7 +37,7 @@ exports.load = function(room, socket) {
         socket.emit('loading:start');
         project.activeLayer.remove();
         project.importJSON(value.project);
-        socket.emit('project:load', value, 0, 1);
+        socket.emit('project:load', value, 0, 1, 0);
       }
       socket.emit('loading:end');
     });
@@ -97,22 +97,24 @@ exports.loadFromMemoryOrDB = function(room, socket, clientSettings) {
     var stateInMemory = project.exportJSON();  // state of the project in memory
     project.activeLayer.remove();
     db.get(room+"PageCount", function(err, pageCount) {
-        db.get(room+"LatestState", function(err, state) {
-            if (state != null) { // latest state of project
-                if(state.type == "WHITEBOARD"){
-                    db.get(room+state.page, function(err, stateInDB) {
-                        project.importJSON(stateInDB.project);
-                        socket.emit('project:load', stateInDB, pageCount.count, state.page);
-                    });
-                } else if (state.type == "PDF"){
-                    db.get(room+"StateAtPDFLoad", function(err, stateAtPdfLoad) {
-                        socket.emit('project:load:pdf', state.file, state.page, pageCount.count, stateAtPdfLoad.page);
-                    });
+        db.get(room+"PDFPageCount", function(err, pdfPageCount) {
+            db.get(room + "LatestState", function (err, state) {
+                if (state != null) { // latest state of project
+                    if (state.type == "WHITEBOARD") {
+                        db.get(room + state.page, function (err, stateInDB) {
+                            project.importJSON(stateInDB.project);
+                            socket.emit('project:load', stateInDB, pageCount.count, state.page, pdfPageCount.count);
+                        });
+                    } else if (state.type == "PDF") {
+                        db.get(room + "StateAtPDFLoad", function (err, stateAtPdfLoad) {
+                            socket.emit('project:load:pdf', state.file, state.page, pageCount.count, stateAtPdfLoad.page, pdfPageCount.count);
+                        });
+                    }
+                } else {
+                    project.importJSON(stateInMemory);
+                    socket.emit('project:load', {project: stateInMemory}, pageCount.count, state.page, pdfPageCount.count);
                 }
-            } else {
-                project.importJSON(stateInMemory);
-                socket.emit('project:load', {project: stateInMemory}, pageCount.count, state.page);
-            }
+            });
         });
     });
 
@@ -156,7 +158,7 @@ exports.savePDFPage = function(room,pageNum,page) {
                 db.set(room+"PDFPageCount", {count: pageNum-1});  // update the pdf page count
             }
         });
-        db.set(room+"PDFPage"+Number(pageNum-1), page);
+        db.set(room+"PDFPage"+Number(pageNum), page);
     }
 };
 

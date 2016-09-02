@@ -17,6 +17,7 @@ var socket = io.connect('/');
 // variables for pdf rendering
 var pdfDoc,
     pageNum,
+    pdfPageCount = 0,
     pageRendering,
     pageNumPending,
     scale,
@@ -29,7 +30,6 @@ $(function() {
     $('#container').jstree({
         'core' : {
             'data' : {
-                //"url" : "https://"+location.host+"/tree/",
                 "url" : location.protocol+"//"+location.host+"/tree/",
                 "data" : function (node) {
                     return { "id" : node.id };
@@ -100,30 +100,13 @@ $(function(){
         socket.emit('pdf:load', room, uid, DEFAULT_URL);*/
 
         $('body').css('background-color', '#404040');
-        $('.pdf-controllers-container').css('display', 'block');
+        if(role == "tutor")
+            $('.pdf-controllers-container').css('display', 'block');
         $('#fileBrowserModal').modal('hide');
-        testPDFInSameCanvas(DEFAULT_URL);
+        setupPDFRendering(DEFAULT_URL);
         socket.emit('pdf:load', room, uid, DEFAULT_URL);
     }); 
 });
-
-/*
-/!* Go to next page of the loaded PDF file*!/
-
-$(function(){
-    $('#toolbarViewerLeft .toolbarButton.pageDown').click(function(){
-        socket.emit('pdf:pageChange', room, uid, PDFViewerApplication.page+1);
-    });
-});
-
-/!* Go to previous page of the loaded PDF file*!/
-
-$(function(){
-    $('#toolbarViewerLeft .toolbarButton.pageUp').click(function(){
-        socket.emit('pdf:pageChange', room, uid, PDFViewerApplication.page-1);
-    });
-});
-*/
 
 /*Zoom In*/
 $(function(){
@@ -148,7 +131,7 @@ $(function (){
     });
 });
 
-function testPDFInSameCanvas(url, pgNum){
+function setupPDFRendering(url, pgNum){
 
     //
     // If absolute URL from the remote server is provided, configure the CORS
@@ -200,7 +183,7 @@ function testPDFInSameCanvas(url, pgNum){
  * @param num Page number.
  */
 function renderPage(num) {
-    //console.log('rendering '+ pageNum);
+        console.log(pdfPageCount);
     pageRendering = true;
     // Using promise to fetch the page
     pdfDoc.getPage(num).then(function(page) {
@@ -217,7 +200,6 @@ function renderPage(num) {
 
         // Wait for rendering to finish
         renderTask.promise.then(function () {
-            $('#canvasClear').trigger('click');
             $('#pdfRenderEventEmitter').trigger('click');
             pageRendering = false;
             if (pageNumPending !== null) {
@@ -253,9 +235,9 @@ function onPrevPage() {
     if (pageNum <= 1) {
         return;
     }
+    savePDFPage();
     pageNum--;
-    queueRenderPage(pageNum);
-    socket.emit('pdf:pageChange', room, uid, pageNum, DEFAULT_URL);
+    socket.emit('pdf:renderFromDB', room, uid, pageNum, pdfPageCount, DEFAULT_URL);
 }
 
 
@@ -267,8 +249,23 @@ function onNextPage() {
     if (pageNum >= pdfDoc.numPages) {
         return;
     }
-    pageNum++;
-    //console.log('page number incremented to'+pageNum);
-    queueRenderPage(pageNum);
-    socket.emit('pdf:pageChange', room, uid, pageNum, DEFAULT_URL);
+    savePDFPage();
+    if(pageNum > pdfPageCount) {  // render page using pdf js
+        //alert('serve from pdf js');
+        pdfPageCount++;
+        pageNum++;
+        queueRenderPage(pageNum);
+        socket.emit('pdf:pageChange', room, uid, pageNum, pdfPageCount, DEFAULT_URL);
+    } else{ // render the page using the state at back end
+        pageNum++;
+        socket.emit('pdf:renderFromDB', room, uid, pageNum, pdfPageCount, DEFAULT_URL);
+    }
+
+
+}
+
+function savePDFPage(){
+    var base64 = document.getElementById('myCanvas').toDataURL();
+    socket.emit('pdf:savePage', room, pageNum, base64);
+    $('#canvasClear').trigger('click');
 }
