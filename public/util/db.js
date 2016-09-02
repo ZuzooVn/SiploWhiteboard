@@ -37,7 +37,7 @@ exports.load = function(room, socket) {
         socket.emit('loading:start');
         project.activeLayer.remove();
         project.importJSON(value.project);
-        socket.emit('project:load', value, 0, 1, 0);
+        socket.emit('project:load', value, 0, 1, {});
       }
       socket.emit('loading:end');
     });
@@ -102,17 +102,22 @@ exports.loadFromMemoryOrDB = function(room, socket, clientSettings) {
                 if (state != null) { // latest state of project
                     if (state.type == "WHITEBOARD") {
                         db.get(room + state.page, function (err, stateInDB) {
-                            project.importJSON(stateInDB.project);
-                            socket.emit('project:load', stateInDB, pageCount.count, state.page, pdfPageCount.count);
+                            if (stateInDB && project && project.activeLayer) {
+                                project.importJSON(stateInDB.project);
+                                socket.emit('project:load', stateInDB, pageCount.count, state.page, pdfPageCount);
+                            } else if(stateInDB == null || err){
+                                project.importJSON(null);
+                                socket.emit('project:load', {project: null}, pageCount.count, state.page, pdfPageCount);
+                            }
                         });
                     } else if (state.type == "PDF") {
                         db.get(room + "StateAtPDFLoad", function (err, stateAtPdfLoad) {
-                            socket.emit('project:load:pdf', state.file, state.page, pageCount.count, stateAtPdfLoad.page, pdfPageCount.count);
+                            socket.emit('project:load:pdf', state.file, state.page, pageCount.count, stateAtPdfLoad.page, pdfPageCount);
                         });
                     }
                 } else {
                     project.importJSON(stateInMemory);
-                    socket.emit('project:load', {project: stateInMemory}, pageCount.count, state.page, pdfPageCount.count);
+                    socket.emit('project:load', {project: stateInMemory}, pageCount.count, state.page, pdfPageCount);
                 }
             });
         });
@@ -143,7 +148,12 @@ exports.restoreStateAtPDFLoad = function(room, callback) {
                         project.activeLayer.remove();
                         project.importJSON(value.project);
                         callback(value, state, pageCount.count);
+                    } else if(value == null || err){
+                        project.activeLayer.remove();
+                        project.importJSON(null);
+                        callback({project: null}, state, pageCount.count);
                     }
+
                 });
             });
         });
@@ -151,18 +161,24 @@ exports.restoreStateAtPDFLoad = function(room, callback) {
 };
 
 // store the pdf page
-exports.savePDFPage = function(room,pageNum,page) {
+exports.savePDFPage = function(room,file, pageNum,page) {
     if (projects.projects[room] && projects.projects[room].project) {
         db.get(room+"PDFPageCount", function(err, value) {
-            if (value && value.count < pageNum-1) {
-                db.set(room+"PDFPageCount", {count: pageNum-1});  // update the pdf page count
+            if (value && value.hasOwnProperty(file) && value[file]< pageNum) {
+                value[file] = pageNum;
+                db.set(room+"PDFPageCount", value);  // update the pdf page count
+            } else if (value && !value.hasOwnProperty(file)) {
+                value[file] = pageNum;
+                db.set(room+"PDFPageCount", value);  // update the pdf page count
             }
+
         });
-        db.set(room+"PDFPage"+Number(pageNum), page);
+        db.set(room+file+"PDFPage"+Number(pageNum), page);
     }
 };
 
 // get pdf page count
+// need to be refactored to get the pdf name
 exports.getPDFPageCount = function(room, callback) {
     db.get(room+"PDFPageCount", function(err, value) {
         if (value) {
@@ -173,8 +189,9 @@ exports.getPDFPageCount = function(room, callback) {
 };
 
 // get pdf page
-exports.getPDFPage = function(room, pageNum,callback) {
-    db.get(room+"PDFPage"+pageNum, function(err, page) {
+// need to be refactored to get the pdf name
+exports.getPDFPage = function(room, file, pageNum,callback) {
+    db.get(room+file+"PDFPage"+pageNum, function(err, page) {
         if (page) {
             callback(page);
         } else
@@ -194,6 +211,10 @@ exports.setPDFContentAtToggleToWhiteboard = function(room, canvas,callback) {
                         project.activeLayer.remove();
                         project.importJSON(value.project);
                         callback(value, state, pageCount.count);
+                    } else if(value == null || err){
+                        project.activeLayer.remove();
+                        project.importJSON(null);
+                        callback({project: null}, state, pageCount.count);
                     }
                 });
             });

@@ -1298,8 +1298,10 @@ socket.on('project:load:pdf', function (file, pdfPage, pgCount, currentPgNum, pd
     pageCount = pgCount;
     currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
     pdfPageCount = pdfPgCount;
-    pageNum = pdfPage;
-    setupPDFRendering(file, pdfPage);
+    setupPDFRendering(file, function(){
+        pageNum = pdfPage;
+        renderPage(pageNum);
+    });
     setPageToolsCSS(currentPageNumber);
     // Make color selector draggable
     $('#mycolorpicker').pep({});
@@ -1436,18 +1438,15 @@ socket.on('pointing:end', function (artist, position) {
 socket.on('pdf:load', function (artist, file) {
     currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
     if (artist != uid) {
-        if(file == DEFAULT_URL){
-            console.log('Same file has been already open');
-        }
-        else {
-            DEFAULT_URL = file;
-            //PDFViewerApplication.open('/files/'+file);
-            $('body').css('background-color', '#404040');
-            if(role == "tutor")
-                $('.pdf-controllers-container').css('display', 'block');
-            clearCanvas();
-            setupPDFRendering(file);
-        }
+        DEFAULT_URL = file;
+        $('body').css('background-color', '#404040');
+        if(role == "tutor")
+            $('.pdf-controllers-container').css('display', 'block');
+        clearCanvas();
+        setupPDFRendering(file, function(){
+            pdfPageCount[DEFAULT_URL] = 0;
+            renderPage(pageNum);
+        });
     }
 });
 
@@ -1462,19 +1461,14 @@ socket.on('pdf:edit', function(artist){
 });
 
 socket.on('pdf:hide', function(json, pgNum, pgCount){
-    // no need to check for artist since both tutor and student need to load last page
-    /*console.log('hide pdfviewer');
-    clearCanvas();
-    paper.project.importJSON(json.project);
-    hideDocumentViewer();
-    $('#myCanvas').css('top','0'); // pull up the canvas once the editing is done
-    IsPDFOn = false;*/
     currentPageNumber = pgNum;
     pageCount = pgCount;
+    setPageToolsCSS(currentPageNumber);
     $('body').css('background-color', '');
     $('.pdf-controllers-container').css('display', 'none');
-    clearCanvas();
+    clear();
     paper.project.importJSON(json.project);
+    view.draw();
 });
 
 socket.on('pdf:pageChange', function (artist, page, pdfPgCount) {
@@ -1494,6 +1488,25 @@ socket.on('pdf:renderFromDB', function (artist, page, pdfPgCount, pdfContent) {
     raster.position = view.center;
     raster.name = uid + ":" + (++paper_object_count);
     document.getElementById('page_num').textContent = page;
+});
+
+socket.on('pdf:setUpPDFnRenderFromDB', function (artist, page, pdfPgCount, pdfContent, file) {
+    //alert('set up n render from db recieved');
+    currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
+    DEFAULT_URL = file;
+    $('body').css('background-color', '#404040');
+    if(role == "tutor")
+        $('.pdf-controllers-container').css('display', 'block');
+    clearCanvas();
+    pdfPageCount = pdfPgCount;
+    setupPDFRendering(file, function(){
+        pageNum = page;
+        var raster = new Raster(pdfContent);
+        raster.position = view.center;
+        raster.name = uid + ":" + (++paper_object_count);
+        document.getElementById('page_num').textContent = page;
+        view.draw();
+    });
 });
 
 socket.on('pdf:zoom', function (artist, scale) {

@@ -17,7 +17,7 @@ var socket = io.connect('/');
 // variables for pdf rendering
 var pdfDoc,
     pageNum,
-    pdfPageCount = 0,
+    pdfPageCount = {},// number of pages stored @ backend of each pdf
     pageRendering,
     pageNumPending,
     scale,
@@ -103,8 +103,17 @@ $(function(){
         if(role == "tutor")
             $('.pdf-controllers-container').css('display', 'block');
         $('#fileBrowserModal').modal('hide');
-        setupPDFRendering(DEFAULT_URL);
-        socket.emit('pdf:load', room, uid, DEFAULT_URL);
+        setupPDFRendering(DEFAULT_URL, function(){
+            if(!pdfPageCount.hasOwnProperty(DEFAULT_URL)){  //  loading a new pdf
+                pdfPageCount[DEFAULT_URL] = 0;
+                renderPage(pageNum);
+                //alert('set up n render from pdf js');
+                socket.emit('pdf:load', room, uid, DEFAULT_URL);
+            } else{ // loading a previously opened pdf
+                //alert('set up n render from db');
+                socket.emit('pdf:setUpPDFnRenderFromDB', room, uid, pageNum, pdfPageCount, DEFAULT_URL);
+            }
+        });
     }); 
 });
 
@@ -131,7 +140,7 @@ $(function (){
     });
 });
 
-function setupPDFRendering(url, pgNum){
+function setupPDFRendering(url, callback){
 
     //
     // If absolute URL from the remote server is provided, configure the CORS
@@ -141,26 +150,12 @@ function setupPDFRendering(url, pgNum){
     var url = location.protocol+"//"+location.host+"/files/"+url;
 
     pdfDoc = null;
-    pageNum = pgNum ? pgNum : 1;
+    pageNum = 1;
     pageRendering = false;
     pageNumPending = null;
     scale = 1.5;
     canvas = document.getElementById('pdfCanvas');
     ctx = canvas.getContext('2d');
-    //
-    // Disable workers to avoid yet another cross-origin issue (workers need
-    // the URL of the script to be loaded, and dynamically loading a cross-origin
-    // script does not work).
-    //
-    // PDFJS.disableWorker = true;
-
-    //
-    // In cases when the pdf.worker.js is located at the different folder than the
-    // pdf.js's one, or the pdf.js is executed via eval(), the workerSrc property
-    // shall be specified.
-    //
-    // PDFJS.workerSrc = '../../build/pdf.worker.js';
-
 
     /**
      * Asynchronously downloads PDF.
@@ -168,14 +163,8 @@ function setupPDFRendering(url, pgNum){
     PDFJS.getDocument(url).then(function (pdfDoc_) {
         pdfDoc = pdfDoc_;
         document.getElementById('page_count').textContent = pdfDoc.numPages;
-
-        // Initial/first page rendering
-        renderPage(pageNum);
+        callback();
     });
-
-    document.getElementById('prev').addEventListener('click', onPrevPage);
-    document.getElementById('next').addEventListener('click', onNextPage);
-
 }
 
 /**
@@ -183,7 +172,7 @@ function setupPDFRendering(url, pgNum){
  * @param num Page number.
  */
 function renderPage(num) {
-        console.log(pdfPageCount);
+        //console.log(pdfPageCount);
     pageRendering = true;
     // Using promise to fetch the page
     pdfDoc.getPage(num).then(function(page) {
@@ -250,9 +239,9 @@ function onNextPage() {
         return;
     }
     savePDFPage();
-    if(pageNum > pdfPageCount) {  // render page using pdf js
+    if(pageNum >= pdfPageCount[DEFAULT_URL]) {  // render page using pdf js
         //alert('serve from pdf js');
-        pdfPageCount++;
+        pdfPageCount[DEFAULT_URL]++;
         pageNum++;
         queueRenderPage(pageNum);
         socket.emit('pdf:pageChange', room, uid, pageNum, pdfPageCount, DEFAULT_URL);
@@ -266,6 +255,6 @@ function onNextPage() {
 
 function savePDFPage(){
     var base64 = document.getElementById('myCanvas').toDataURL();
-    socket.emit('pdf:savePage', room, pageNum, base64);
+    socket.emit('pdf:savePage', room, DEFAULT_URL, pageNum, base64);
     $('#canvasClear').trigger('click');
 }

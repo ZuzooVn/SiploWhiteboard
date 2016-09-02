@@ -389,8 +389,23 @@ io.sockets.on('connection', function (socket) {
       "file": file
     };
     db.updateLatestState(room, state);
-    db.getPDFPage(room, page, function(pdfContent){
+    db.getPDFPage(room, file, page, function(pdfContent){
       io.sockets.in(room).emit('pdf:renderFromDB', uid, page, pdfPageCount, pdfContent);
+    });
+  });
+
+  // loading again a previously loaded page
+  socket.on('pdf:setUpPDFnRenderFromDB', function(room, uid, page, pdfPageCount, file) {
+    db.storeStateAtPDFLoad(room, function(){
+      var state = {
+        "type": "PDF",
+        "page": 1,
+        "file": file
+      };
+      db.updateLatestState(room, state);
+    });
+    db.getPDFPage(room, file, page, function(pdfContent){
+      io.sockets.in(room).emit('pdf:setUpPDFnRenderFromDB', uid, page, pdfPageCount, pdfContent, file);
     });
   });
 
@@ -428,8 +443,8 @@ io.sockets.on('connection', function (socket) {
   });
 
   // Save PDF page
-  socket.on('pdf:savePage', function(room, pageNum, page) {
-    db.savePDFPage(room, pageNum, page);
+  socket.on('pdf:savePage', function(room, file, pageNum, page) {
+    db.savePDFPage(room, file, pageNum, page);
   });
 
   // Enable toolbox
