@@ -15,6 +15,45 @@ body {
     font-family: Helvetica, Arial, sans-serif
 }
 
+#whiteboard-text-box-container{
+    position: absolute;
+    display: none;
+    background: -webkit-linear-gradient(#F7F7F7, #EEE);
+    padding: 30px 20px 20px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px #ddd;
+    z-index: 500;
+}
+
+.text-box-options-container{
+    margin-bottom: 15px;
+}
+
+.text-box-options-container > select[name="font-colrs"] >option >span{
+
+}
+#whiteboard-text-box-container>button{
+    display: block;
+    margin: 5px 0;
+    padding: 3px 20px;
+    border-radius: 5px;
+    border: none;
+}
+
+#whiteboard-text-box-container>button:focus{
+    outline: none;
+}
+
+#whiteboard-text-box-container>textarea{
+    border-radius: 10px;
+    padding-top: 5px;
+}
+
+#whiteboard-text-box-container>textarea:focus{
+    outline: none;
+}
+
 #dummy-cursor{
     position: absolute;
     display: none;
@@ -451,6 +490,10 @@ body {
 
 .buttonicon-point {
     background-image: url('../../static/img/point-icon.png');
+}
+
+.buttonicon-textBox {
+    background-image: url('../../static/img/text-box.png');
 }
 
 .buttonicon-embed {

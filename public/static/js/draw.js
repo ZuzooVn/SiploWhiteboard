@@ -24,6 +24,7 @@ var currentPageNumber = 1; // when a previous page is loaded, this value should 
 * 0 - latest page
 * 1,2,3,4,5 - previous page
 */
+var textBoxCoordinate;   // coordinate of the text box. once user complete the required content in text box, draw a pointText on this coordinate
 
 // initialize the pdf-whiteboard-toggle
 $("[name='pdf-whiteboard-checkbox']").bootstrapSwitch();
@@ -337,19 +338,6 @@ function onMouseDown(event) {
         }); // remove the shapes tool css to show it as in-active
     }
 
-    //mouseTimer = 0;
-    //mouseHeld = setInterval(function() { // is the mouse being held and not dragged?
-    //  mouseTimer++;
-    //  if (mouseTimer > 5) {
-    //    mouseTimer = 0;
-    //    $('#mycolorpicker').toggle(); // show the color picker
-    //    $('#mycolorpicker').css({
-    //      "left": event.event.pageX - 250,
-    //      "top": event.event.pageY - 100
-    //    }); // make it in the smae position
-    //  }
-    //}, 100);
-
     if (activeTool == "draw" || activeTool == "pencil" || activeTool == "eraser" || activeTool == "line" || activeTool == "rectangle" || activeTool == "triangle" || activeTool == "circle") {
         // The data we will send every 100ms on mouse drag
 
@@ -431,8 +419,13 @@ function onMouseDown(event) {
     }
 
     // send the position of cursor to other party of the class
-    if (activeTool == "point") {
+    else if (activeTool == "point") {
         socket.emit('pointing:start', room, uid, event.point);
+    }
+
+    else if(activeTool == "textBox"){
+        textBoxCoordinate = event.point;
+        $('#whiteboard-text-box-container').css({"top": event.point.y + 'px', "left": event.point.x + 'px', "display": "block"});
     }
 }
 
@@ -1006,6 +999,37 @@ $('#pointTool').on('click', function () {
     //console.log();
 });
 
+$('#textBoxTool').on('click', function () {
+    removeStylingFromTools();
+    $('#textBoxTool > a').css({
+        background: "orange"
+    }); // set the selected tool css to show it as active    activeTool = "point";
+    $('#myCanvas').css('cursor', 'text');
+    activeTool = "textBox";
+});
+
+
+$('#text-box-save').on('click', function(){
+    var text = $('#text-box').val().trim();
+    var fontColor = $('select[name="font-colors"]').val();
+    var fontSize = $('select[name="font-sizes"]').val();
+    if(text.length > 0){
+        var text = new PointText({
+         point: textBoxCoordinate,
+         content: text,
+         fillColor: fontColor,
+         fontSize: fontSize
+         });
+        text.name = uid + ":" + (++paper_object_count);
+        socket.emit('add:textbox', room, uid, text, fontColor, fontSize, textBoxCoordinate, name, currentPageNumber);
+        activeTool = "none";
+        textBoxCoordinate = null;
+        $('#text-box').val('');  // empty the text box
+        $('#whiteboard-text-box-container').css({"display": "none"}); // hide the text box container
+        $('#myCanvas').css('cursor', 'pointer');
+    }
+});
+
 $('#documentLoadTool').on('click', function () {
     removeStylingFromTools();
     $('#documentLoadTool > a').css({
@@ -1542,6 +1566,20 @@ socket.on('whiteboard:to:pdf', function (json) {
     paper.project.importJSON(json.project);
     view.draw();
 });
+
+socket.on('add:textbox', function (artist, text, fontColor, fontSize, position, name) {
+    if (artist != uid) {
+        var text = new PointText({
+            point: new Point(position[1], position[2]),
+            content: text[1].content,
+            fillColor: fontColor,
+            fontSize: fontSize
+        });
+        text.name = name;
+        view.draw();
+    }
+});
+
 
 socket.on('enable:toolbox', function (artist) {
     if (artist != uid && role != "tutor") {

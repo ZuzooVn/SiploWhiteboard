@@ -447,6 +447,12 @@ io.sockets.on('connection', function (socket) {
     db.savePDFPage(room, file, pageNum, page);
   });
 
+  // add text
+  socket.on('add:textbox', function(room, uid, text, fontColor, fontSize, position, name, pgNum) {
+    draw.addText(room, uid, text, position, fontColor, fontSize, name, pgNum);
+    io.sockets.in(room).emit('add:textbox', uid, text, fontColor, fontSize, position, name);
+  });
+
   // Enable toolbox
   socket.on('enable:toolbox', function(room, uid) {
     io.sockets.in(room).emit('enable:toolbox', uid);

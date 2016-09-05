@@ -247,6 +247,21 @@ exports.addImage = function (room, artist, data, position, name, pageNum) {
     }
 };
 
+// Add text to canvas
+exports.addText = function (room, artist, text, position, fontColor, fontSize, name, pageNum) {
+    var project = projects[room].project;
+    if (project && project.activeLayer) {
+        var text = new drawing.PointText({
+            point: new drawing.Point(position[1], position[2]),
+            content: text[1].content,
+            fillColor: fontColor,
+            fontSize: fontSize
+        });
+        text.name = name;
+        db.storeProject(room, pageNum);
+    }
+};
+
 // check if a redo stack is already declared for a classroom
 exports.hasDeclaredRedoStack = function (room) {
     return redoStack.hasOwnProperty(room);

@@ -103,6 +103,11 @@
                             <span class="buttonicon buttonicon-point"></span>
                         </a>
                     </li>
+                    <li id="textBoxTool">
+                        <a class="grouped-left" data-l10n-id="draw.toolbar.draw.title" title="Text Box">
+                            <span class="buttonicon buttonicon-textBox"></span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -308,7 +313,30 @@
 
 
 <!--dummy cursor-->
-<img src="/wb_assets/static/img/point-icon.png" width="24" height="24" id="dummy-cursor">
+<img src="/wb_assets/static/img/laser_dot.png" width="24" height="24" id="dummy-cursor">
+
+<!--TextBox Container-->
+<div id="whiteboard-text-box-container">
+    <div class="text-box-options-container">
+        <select name="font-colors">
+            <option value="black" >Black</option>
+            <option value="white" >White</option>
+            <option value="red" >Red</option>
+            <option value="green" >Green</option>
+            <option value="blue" >Blue</option>
+        </select>
+        <select name="font-sizes">
+            <option value="14">Small</option>
+            <option value="18">Medium</option>
+            <option value="22">Large</option>
+        </select>
+    </div>
+    <textarea name="" id="text-box" cols="30" rows="5">
+    </textarea>
+    <button class="btn-primary" id="text-box-save">
+        OK
+    </button>
+</div>
 
 <!-- Image Cropping Modal -->
 <div id="imgCroppingModal" class="modal fade" role="dialog">
