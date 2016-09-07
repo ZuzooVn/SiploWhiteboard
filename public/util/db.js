@@ -64,6 +64,7 @@ exports.updatePageCount = function(room, pageNum) {
 *       type = pdf,
 *       page = pageNum,
 *       file = fileName
+*       parentDirectory = parent directory of file
 *  }
 *  */
 exports.updateLatestState = function(room, state) {
@@ -112,7 +113,7 @@ exports.loadFromMemoryOrDB = function(room, socket, clientSettings) {
                         });
                     } else if (state.type == "PDF") {
                         db.get(room + "StateAtPDFLoad", function (err, stateAtPdfLoad) {
-                            socket.emit('project:load:pdf', state.file, state.page, pageCount.count, stateAtPdfLoad.page, pdfPageCount);
+                            socket.emit('project:load:pdf', state.parentDirectory, state.file, state.page, pageCount.count, stateAtPdfLoad.page, pdfPageCount);
                         });
                     }
                 } else {

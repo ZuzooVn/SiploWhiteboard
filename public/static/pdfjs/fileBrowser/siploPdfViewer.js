@@ -24,7 +24,9 @@ var pdfDoc,
     canvas,
     ctx;
 
-var DEFAULT_URL = ''; // added from Viewer.js
+var DEFAULT_URL = ''; // name of the selected pdf
+var file_path = '';  // absolute path of the selected pdf
+var parentDirectory = '';
 
 $(function() {
     $('#container').jstree({
@@ -43,25 +45,15 @@ $(function() {
 
 $(function(){
     $('#container').on("changed.jstree", function (e, data) {
-        //console.log(data.instance.get_selected(true)[0].text);
-        //console.log(data.instance.get_node(data.selected[0]).li_attr.isLeaf);
 
         //if the selected node is a leaf node -> enable the open button
         var openFileButton = $('#openFileButton')
         if(data.instance.get_node(data.selected[0]).li_attr.isLeaf){
             openFileButton.prop('disabled', false);
-            
-            //following function is defined as a separate function to 'open pdf files' below
-            
-            //openFileButton.click(function(){
-            //    console.log('openning ' + data.instance.get_selected(true)[0].text);
-            //    //PDFViewerApplication is an object defined in viewer.js
-            //    //PDFViewerApplication.open('/web/compressed.tracemonkey-pldi-09.pdf');
-            //    $('#fileBrowserModal').modal('hide');
-            //    PDFViewerApplication.open('/files/'+data.instance.get_selected(true)[0].text);
-            //    socket.emit('pdf:load', room, uid, data.instance.get_selected(true)[0].text);
-            //});
-            
+            file_path = data.instance.get_path(data.node,'/');
+            console.log(file_path);
+            console.log(data.instance.get_parent(data.node,'../'));
+            parentDirectory = "batch-12-Module-CS2036";
             DEFAULT_URL = data.instance.get_selected(true)[0].text;
             
         }
@@ -83,21 +75,6 @@ $(function(){
 $(function(){
     $('#openFileButton').click(function(){
         console.log('openning ' + DEFAULT_URL);
-        /*//PDFViewerApplication is an object defined in viewer.js
-        //PDFViewerApplication.open('/web/compressed.tracemonkey-pldi-09.pdf');
-        $('#fileBrowserModal').modal('hide');
-        PDFViewerApplication.open('/files/'+DEFAULT_URL);
-        var documentViewer = $('#documentViewer');
-        if (documentViewer.css('visibility') == 'hidden') {
-            documentViewer.css('visibility', 'visible');
-            //dynamically assigning the background color and image as in viewer.css #230. Otherwise
-            //this background color for body tag will make conflicts with whiteboard
-            $('body').css('background-color', '#404040');
-            $('#myCanvas').css('top','32px'); // pull down the canvas so that we can still use pdfjs control buttons while editing on top of pdf
-        }
-        IsPDFOn = true;
-        console.log(DEFAULT_URL);
-        socket.emit('pdf:load', room, uid, DEFAULT_URL);*/
 
         $('body').css('background-color', '#404040');
         if(role == "tutor")
@@ -108,7 +85,7 @@ $(function(){
                 pdfPageCount[DEFAULT_URL] = 0;
                 renderPage(pageNum);
                 //alert('set up n render from pdf js');
-                socket.emit('pdf:load', room, uid, DEFAULT_URL);
+                socket.emit('pdf:load', room, uid, "batch-12-Module-CS2036", DEFAULT_URL);
             } else{ // loading a previously opened pdf
                 //alert('set up n render from db');
                 socket.emit('pdf:setUpPDFnRenderFromDB', room, uid, pageNum, pdfPageCount, DEFAULT_URL);
@@ -140,14 +117,12 @@ $(function (){
     });
 });
 
-function setupPDFRendering(url, callback){
+function setupPDFRendering(file, callback){
 
-    //
     // If absolute URL from the remote server is provided, configure the CORS
     // header on that server.
-    //
-    //var url = "http://localhost:9002/files/"+url;
-    var url = location.protocol+"//"+location.host+"/files/"+url;
+    //var url = location.protocol+"//"+location.host+"/files/"+url;
+    var url = location.protocol+"//localhost:8080/api/"+parentDirectory+"/"+file;
 
     pdfDoc = null;
     pageNum = 1;
@@ -226,7 +201,7 @@ function onPrevPage() {
     }
     savePDFPage();
     pageNum--;
-    socket.emit('pdf:renderFromDB', room, uid, pageNum, pdfPageCount, DEFAULT_URL);
+    socket.emit('pdf:renderFromDB', room, uid, pageNum, pdfPageCount, parentDirectory, DEFAULT_URL);
 }
 
 
@@ -244,13 +219,11 @@ function onNextPage() {
         pdfPageCount[DEFAULT_URL]++;
         pageNum++;
         queueRenderPage(pageNum);
-        socket.emit('pdf:pageChange', room, uid, pageNum, pdfPageCount, DEFAULT_URL);
+        socket.emit('pdf:pageChange', room, uid, pageNum, pdfPageCount, parentDirectory, DEFAULT_URL);
     } else{ // render the page using the state at back end
         pageNum++;
-        socket.emit('pdf:renderFromDB', room, uid, pageNum, pdfPageCount, DEFAULT_URL);
+        socket.emit('pdf:renderFromDB', room, uid, pageNum, pdfPageCount, parentDirectory, DEFAULT_URL);
     }
-
-
 }
 
 function savePDFPage(){

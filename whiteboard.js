@@ -114,26 +114,26 @@ app.get('/whiteboard/*', function(req, res){
       }
   );
 
-  //var cookies = new Cookies( req, res, "PHPSESSID" )
-  //    , unsigned, signed, tampered;
-  //var clientSession = new redis.createClient();
-  //
-  //clientSession.get("foo:"+cookies.get("PHPSESSID"), function(error, result){
-  //  if(error){
-  //    console.log("error : "+error);
-  //    //if the session cookie is not found. Display not authorized page
-  //    res.sendFile(__dirname + '/views/not_authorized.html');
-  //  }
-  //  if(result != null){
-  //    console.log("result exist");
-  //    console.log(result);
-  //
-  //    //if the session cookie is found, go to the class room
-  //    res.sendFile(__dirname + '/views/draw.html');
-  //  }else{
-  //    console.log("session does not exist");
-  //  }
-  //});
+  /*var cookies = new Cookies( req, res, "PHPSESSID" )
+      , unsigned, signed, tampered;
+  var clientSession = new redis.createClient();
+
+  clientSession.get("edu:"+cookies.get("PHPSESSID"), function(error, result){
+    if(error){
+      console.log("error : "+error);
+      //if the session cookie is not found. Display not authorized page
+      res.sendFile(__dirname + '/views/not_authorized.html');
+    }
+    if(result != null){
+      console.log("result exist");
+      console.log(result);
+
+      //if the session cookie is found, go to the class room
+      res.sendFile(__dirname + '/views/draw.html');
+    }else{
+      console.log("session does not exist");
+    }
+  });*/
 
 
 });
@@ -150,7 +150,9 @@ app.get('/pdf', function(req, res){
 //});
 
 app.get('/tree', function(req, res){
-  files.processPath(req, res);
+  var batchCode = '12';  // later get the batch n module-code from DB
+  var moduleCode = 'CS2036';
+  files.processPath(req, res, batchCode, moduleCode);
 });
 
 // Front-end tests
@@ -208,7 +210,7 @@ app.get('/tests/pdf-generation', function (req, res) {
 app.use("/wb_assets/static", express.static(__dirname + '/public/static'));
 app.use("/build", express.static(__dirname + '/public/static/pdfjs/build'));
 app.use("/web", express.static(__dirname + '/public/static/pdfjs/web'));
-app.use("/files", express.static(__dirname + '/user_files'));
+app.use("/files", express.static(__dirname + '/user_files/asanka'));
 
 
 
@@ -350,16 +352,17 @@ io.sockets.on('connection', function (socket) {
   });
 
   // Load PDF file from server
-  socket.on('pdf:load', function(room, uid, file) {
+  socket.on('pdf:load', function(room, uid, parentDirectory, file) {
     db.storeStateAtPDFLoad(room, function(){
       var state = {
         "type": "PDF",
         "page": 1,
-        "file": file
+        "file": file,
+        "parentDirectory": parentDirectory
       };
       db.updateLatestState(room, state);
     });
-    io.sockets.in(room).emit('pdf:load', uid, file);
+    io.sockets.in(room).emit('pdf:load', uid, parentDirectory, file);
   });
 
   //Hide PDF Viewer
@@ -371,22 +374,24 @@ io.sockets.on('connection', function (socket) {
   });
 
   // Go to given page of the loaded PDF file
-  socket.on('pdf:pageChange', function(room, uid, page, pdfPageCount, file) {
+  socket.on('pdf:pageChange', function(room, uid, page, pdfPageCount, parentDirectory, file) {
     var state = {
       "type": "PDF",
       "page": Number(page),
-      "file": file
+      "file": file,
+      "parentDirectory": parentDirectory
     };
     db.updateLatestState(room, state);
     io.sockets.in(room).emit('pdf:pageChange', uid, page, pdfPageCount);
   });
 
   // Go to given page of the loaded PDF file
-  socket.on('pdf:renderFromDB', function(room, uid, page, pdfPageCount, file) {
+  socket.on('pdf:renderFromDB', function(room, uid, page, pdfPageCount, parentDirectory, file) {
     var state = {
       "type": "PDF",
       "page": Number(page),
-      "file": file
+      "file": file,
+      "parentDirectory": parentDirectory
     };
     db.updateLatestState(room, state);
     db.getPDFPage(room, file, page, function(pdfContent){
@@ -395,17 +400,18 @@ io.sockets.on('connection', function (socket) {
   });
 
   // loading again a previously loaded page
-  socket.on('pdf:setUpPDFnRenderFromDB', function(room, uid, page, pdfPageCount, file) {
+  socket.on('pdf:setUpPDFnRenderFromDB', function(room, uid, page, pdfPageCount, parentDirectory, file) {
     db.storeStateAtPDFLoad(room, function(){
       var state = {
         "type": "PDF",
         "page": 1,
-        "file": file
+        "file": file,
+        "parentDirectory": parentDirectory
       };
       db.updateLatestState(room, state);
     });
     db.getPDFPage(room, file, page, function(pdfContent){
-      io.sockets.in(room).emit('pdf:setUpPDFnRenderFromDB', uid, page, pdfPageCount, pdfContent, file);
+      io.sockets.in(room).emit('pdf:setUpPDFnRenderFromDB', uid, page, pdfPageCount, pdfContent, parentDirectory, file);
     });
   });
 
@@ -428,12 +434,13 @@ io.sockets.on('connection', function (socket) {
   });
 
   // Toggle from Whiteboard to PDF
-  socket.on('whiteboard:to:pdf', function(room, page, file) {
+  socket.on('whiteboard:to:pdf', function(room, page, parentDirectory, file) {
     db.storeStateAtPDFLoad(room, function(){
       var state = {
         "type": "PDF",
         "page": page,
-        "file": file
+        "file": file,
+        "parentDirectory": parentDirectory
       };
       db.updateLatestState(room, state);
     });

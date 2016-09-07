@@ -5,13 +5,14 @@
 var fs = require('fs'),
     path = require('path');
 
-exports.processPath = function(req, res){
+exports.processPath = function(req, res, batchCode, moduleCode){
 
     var pathToProcess;
     console.log(__dirname);
     console.log(req.query.id);
     if(req.query.id == '#'){
-        pathToProcess = path.resolve(__dirname, '..', '..', 'user_files');
+        var directory = "batch-"+batchCode+"-Module-"+moduleCode;
+        pathToProcess = path.resolve(__dirname, '..', '..', 'user_files', directory); //root directory of classroom can be identified using batch number n module-code
     }
     else {
         pathToProcess = req.query.id;

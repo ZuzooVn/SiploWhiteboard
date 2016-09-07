@@ -74,7 +74,7 @@ $('input[name="pdf-whiteboard-checkbox"]').on('switchChange.bootstrapSwitch', fu
             socket.emit('pdf:to:whiteboard', room, project.exportJSON());
         }
         else
-            socket.emit('whiteboard:to:pdf', room, pageNum, DEFAULT_URL);
+            socket.emit('whiteboard:to:pdf', room, pageNum, parentDirectory, DEFAULT_URL);
     }
 });
 
@@ -1313,12 +1313,12 @@ socket.on('project:load', function (json, pgCount, currentPgNum, pdfPgCount) {
 });
 
 // loading a pdf page from db
-socket.on('project:load:pdf', function (file, pdfPage, pgCount, currentPgNum, pdfPgCount) {
-    //alert(file+ " "+ pdfPage + " "+ pgCount + " "+currentPgNum);
+socket.on('project:load:pdf', function (parentDir, file, pdfPage, pgCount, currentPgNum, pdfPgCount) {
     $('body').css('background-color', '#404040');
     if(role == "tutor")
         $('.pdf-controllers-container').css('display', 'block');
     DEFAULT_URL = file;
+    parentDirectory = parentDir;
     pageCount = pgCount;
     currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
     pdfPageCount = pdfPgCount;
@@ -1459,10 +1459,11 @@ socket.on('pointing:end', function (artist, position) {
     }
 });
 
-socket.on('pdf:load', function (artist, file) {
+socket.on('pdf:load', function (artist, parentDir, file) {
     currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
     if (artist != uid) {
         DEFAULT_URL = file;
+        parentDirectory = parentDir;
         $('body').css('background-color', '#404040');
         if(role == "tutor")
             $('.pdf-controllers-container').css('display', 'block');
@@ -1514,10 +1515,11 @@ socket.on('pdf:renderFromDB', function (artist, page, pdfPgCount, pdfContent) {
     document.getElementById('page_num').textContent = page;
 });
 
-socket.on('pdf:setUpPDFnRenderFromDB', function (artist, page, pdfPgCount, pdfContent, file) {
+socket.on('pdf:setUpPDFnRenderFromDB', function (artist, page, pdfPgCount, pdfContent, parentDir, file) {
     //alert('set up n render from db recieved');
     currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
     DEFAULT_URL = file;
+    parentDirectory = parentDir;
     $('body').css('background-color', '#404040');
     if(role == "tutor")
         $('.pdf-controllers-container').css('display', 'block');
