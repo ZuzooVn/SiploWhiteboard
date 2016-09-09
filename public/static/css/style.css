@@ -827,6 +827,16 @@ input[type=checkbox] {
     background-color: #fff;
 }
 
+.whiteboard-page-number-container{
+    position: absolute;
+    top: 93%;
+    padding: 5px 10px;
+    background: darkorange;
+    z-index: 15;
+    color: white;
+    font-size: 20px;
+}
+
 .video_conv {
     margin-top: 0;
     float: right;

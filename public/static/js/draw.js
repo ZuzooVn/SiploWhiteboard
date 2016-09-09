@@ -1,15 +1,6 @@
-// Please refactor me, this is mostly a complete car crash with globals everywhere.
 
 tool.minDistance = 1;
 tool.maxDistance = 45;
-
-/*// following are the global scope variables to be used by both js and paper-script files
-var room;
-var uid;
-var IsPDFOn = false; // variable used to synchronize edit pdf btn functionality on draw js
-
-// Initialise Socket.io
-var socket = io.connect('/');*/
 
 room = window.location.pathname.split("/")[2];
 
@@ -902,10 +893,11 @@ $('#selectTool').on('click', function () {
 
 $('#clearTool').on('click', function () {
     removeStylingFromTools();
-    $('#clearTool').css({
-        border: "1px solid orange"
+    $('#pencilTool > a').css({
+        background: "orange"
     }); // set the selected tool css to show it as active
-    activeTool = "none";
+    activeTool = "pencil";
+    $('#myCanvas').css('cursor', 'pointer');
     clear();
     socket.emit('clear', room, uid, currentPageNumber);
 });
@@ -1259,6 +1251,11 @@ function setPageToolsCSS(currentPageNumber){
     } else
         $('#load-next-pg').addClass('disabled');
 }
+
+function updateWhiteboardPageNumber(){
+    document.getElementById('whiteboard-page-num').textContent = currentPageNumber;
+    document.getElementById('whiteboard-page-count').textContent = pageCount + 1;
+}
 // ---------------------------------
 // SOCKET.IO EVENTS
 socket.on('settings', function (settings) {
@@ -1299,6 +1296,7 @@ socket.on('project:load', function (json, pgCount, currentPgNum, pdfPgCount) {
     pageCount = pgCount;
     currentPageNumber = currentPgNum;
     pdfPageCount = pdfPgCount;
+    updateWhiteboardPageNumber();
     setPageToolsCSS(currentPageNumber);
     // Make color selector draggable
     $('#mycolorpicker').pep({});
@@ -1349,6 +1347,7 @@ socket.on('load:newPage', function (pageNum, clearedCount) {
     currentPageNumber = pageNum + 1;
     pageCount = clearedCount;
     redoStack.length = 0;
+    updateWhiteboardPageNumber();
     setPageToolsCSS(currentPageNumber);
     clearCanvas();
 });
@@ -1375,6 +1374,7 @@ socket.on('loading:end', function () {
 socket.on('load:previousPage', function (json, previousPageNumber) {
     currentPageNumber = previousPageNumber;
     redoStack.length = 0;
+    updateWhiteboardPageNumber();
     setPageToolsCSS(previousPageNumber);
     paper.project.activeLayer.remove();
     paper.project.importJSON(json.project);
@@ -1488,6 +1488,7 @@ socket.on('pdf:edit', function(artist){
 socket.on('pdf:hide', function(json, pgNum, pgCount){
     currentPageNumber = pgNum;
     pageCount = pgCount;
+    updateWhiteboardPageNumber();
     setPageToolsCSS(currentPageNumber);
     $('body').css('background-color', '');
     $('.pdf-controllers-container').css('display', 'none');
@@ -1555,6 +1556,7 @@ socket.on('pdf:presentationMode', function (artist) {
 socket.on('pdf:to:whiteboard', function (json, pgNum, pgCount) {
     currentPageNumber = pgNum;
     pageCount = pgCount;
+    updateWhiteboardPageNumber();
     $('body').css('background-color', '');
     clear();
     paper.project.importJSON(json.project);
