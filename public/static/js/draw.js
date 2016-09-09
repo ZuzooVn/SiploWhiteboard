@@ -231,53 +231,55 @@ $('#colorToggle').on('click', function () {
 
 /*Load New Page*/
 $('#load-new-pg').click(function () {
-    removeStylingFromTools();
-    $('#load-new-pg > a').css({
-        background: "orange"
-    });
-    redoStack.length = 0;
-    if(currentPageNumber == (pageCount + 1) && paper.project.activeLayer.hasChildren()){ // currently on the latest page of the book. so open a new page
-        pageCount++;
-        clearCanvas();
-        socket.emit('load:newPage', room, currentPageNumber, pageCount);
-        currentPageNumber++;
+    if(!IsPDFOn) {
+        removeStylingFromTools();
+        $('#load-new-pg > a').css({
+            background: "orange"
+        });
+        redoStack.length = 0;
+        if(currentPageNumber == (pageCount + 1) && paper.project.activeLayer.hasChildren()){ // currently on the latest page of the book. so open a new page
+            pageCount++;
+            clearCanvas();
+            socket.emit('load:newPage', room, currentPageNumber, pageCount);
+            currentPageNumber++;
+        }
+        else
+            alert("Pleas go back to last page to add a new page");
     }
-    else
-        alert("Pleas go back to last page to add a new page");
 });
 
 /*Load Next Page*/
 $('#load-next-pg').click(function () {
-    removeStylingFromTools();
-    $('#load-next-pg > a').css({
-        background: "orange"
-    });
-    //var requestedPageNumber = (currentPageNumber == canvasClearedCount && currentPageNumber > 0) ? 0 : (currentPageNumber >= 1) ? currentPageNumber+1 : -1;
-    if(currentPageNumber < pageCount+1) {
-        redoStack.length = 0;
-        socket.emit('load:previousPage', room, currentPageNumber+1);
+    if(!IsPDFOn){
+        removeStylingFromTools();
+        $('#load-next-pg > a').css({
+            background: "orange"
+        });
+        //var requestedPageNumber = (currentPageNumber == canvasClearedCount && currentPageNumber > 0) ? 0 : (currentPageNumber >= 1) ? currentPageNumber+1 : -1;
+        if(currentPageNumber < pageCount+1) {
+            redoStack.length = 0;
+            socket.emit('load:previousPage', room, currentPageNumber+1);
+        }
+        else
+            alert("You have reached the last page of the book");
     }
-    else
-        alert("You have reached the last page of the book");
 });
 
 /*Loading Previous Page*/
 $('#load-previous-pg').click(function () {
-    removeStylingFromTools();
-    $('#load-previous-pg > a').css({
-        background: "orange"
-    });
-    //var requestedPageNumber = (currentPageNumber == 0 && canvasClearedCount > 0) ? canvasClearedCount : (canvasClearedCount > 0 && currentPageNumber > 1) ? currentPageNumber-1 : -1;
-    if(currentPageNumber > 1){
-        redoStack.length = 0;
-        socket.emit('load:previousPage', room, currentPageNumber-1);
+    if(!IsPDFOn){
+        removeStylingFromTools();
+        $('#load-previous-pg > a').css({
+            background: "orange"
+        });
+        //var requestedPageNumber = (currentPageNumber == 0 && canvasClearedCount > 0) ? canvasClearedCount : (canvasClearedCount > 0 && currentPageNumber > 1) ? currentPageNumber-1 : -1;
+        if(currentPageNumber > 1){
+            redoStack.length = 0;
+            socket.emit('load:previousPage', room, currentPageNumber-1);
+        }
+        else
+            alert("You have reached the first page of the book");
     }
-    else
-        alert("You have reached the first page of the book");
-});
-
-$('.toggleBackground').click(function () {
-    $('#myCanvas').toggleClass('whiteBG');
 });
 
 
@@ -1190,6 +1192,12 @@ function setPageToolsCSS(currentPageNumber){
         $('#load-next-pg').addClass('disabled');
 }
 
+function disablePageTool(){
+    $('#load-next-pg').addClass('disabled');
+    $('#load-new-pg').addClass('disabled');
+    $('#load-previous-pg').addClass('disabled');
+}
+
 function updateWhiteboardPageNumber(){
     document.getElementById('whiteboard-page-num').textContent = currentPageNumber;
     document.getElementById('whiteboard-page-count').textContent = pageCount + 1;
@@ -1270,6 +1278,7 @@ socket.on('project:load', function (json, pgCount, currentPgNum, pdfPgCount) {
 socket.on('project:load:pdf', function (parentDir, file, pdfPage, pgCount, currentPgNum, pdfPgCount) {
     IsPDFOn = true;
     disablePDFTool();
+    disablePageTool();
     $('body').css('background-color', '#404040');
     $('.pdf-controllers-container').css('display', 'block');
     selectedPDF = file;
@@ -1281,7 +1290,6 @@ socket.on('project:load:pdf', function (parentDir, file, pdfPage, pgCount, curre
         pageNum = pdfPage;
         renderPage(pageNum);
     });
-    setPageToolsCSS(currentPageNumber);
     // Make color selector draggable
     $('#mycolorpicker').pep({});
     // Make sure the range event doesn't propogate to pep
@@ -1420,6 +1428,7 @@ socket.on('pdf:load', function (artist, parentDir, file) {
     currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
     IsPDFOn = true;
     disablePDFTool();
+    disablePageTool();
     if (artist != uid) {
         selectedPDF = file;
         parentDirectory = parentDir;
@@ -1470,6 +1479,7 @@ socket.on('pdf:setUpPDFnRenderFromDB', function (artist, page, pdfPgCount, pdfCo
     currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
     IsPDFOn = true;
     disablePDFTool();
+    disablePageTool();
     selectedPDF = file;
     parentDirectory = parentDir;
     $('body').css('background-color', '#404040');
@@ -1509,6 +1519,7 @@ socket.on('pdf:to:whiteboard', function (json, pgNum, pgCount) {
     enablePDFToWhiteboardMode();
     currentPageNumber = pgNum;
     pageCount = pgCount;
+    setPageToolsCSS(currentPageNumber);
     updateWhiteboardPageNumber();
     $('body').css('background-color', '');
     clear();
@@ -1520,6 +1531,7 @@ socket.on('whiteboard:to:pdf', function (json) {
     IsPDFOn = true;
     IsToggledToWhiteboardFromPDF = false;
     disablePDFTool();
+    disablePageTool();
     currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
     $('body').css('background-color', '#404040');
     clear();
@@ -1551,7 +1563,6 @@ socket.on('enable:toolbox', function (artist) {
 
 socket.on('disable:toolbox', function (artist) {
     if (artist != uid && role != "tutor") {
-        //$('.tool-box').css({"display":"none"});
         $('.tool-box').removeClass('animated zoomIn');
         $('.tool-box').addClass('animated bounceOut');
     }
