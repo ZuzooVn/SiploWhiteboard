@@ -150,6 +150,7 @@ app.get('/pdf', function(req, res){
 //});
 
 app.get('/tree', function(req, res){
+  console.log(req.query.room);
   var batchCode = '12';  // later get the batch n module-code from DB
   var moduleCode = 'CS2036';
   files.processPath(req, res, batchCode, moduleCode);

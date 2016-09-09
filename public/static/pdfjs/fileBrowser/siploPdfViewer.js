@@ -1,7 +1,6 @@
 /**
  * Created by buddhikajay on 5/25/16.
- * This file is used to customize functions of PDFJS's viewer
- * the variable DEFAULT_URL is defined in viewer.js
+ * This file is used to customize functions of PDFJS's
  */
 
 // this is a useful link : https://www.sitepoint.com/custom-pdf-rendering/
@@ -10,6 +9,8 @@
 var room;
 var role;
 var uid;
+var IsPDFOn = false;  // true if a PDF is opened on whiteboard
+var IsToggledToWhiteboardFromPDF = false;  // true if toggled from pdf-to-whiteboard
 
 // Initialise Socket.io
 var socket = io.connect('/');
@@ -24,15 +25,14 @@ var pdfDoc,
     canvas,
     ctx;
 
-var DEFAULT_URL = ''; // name of the selected pdf
-var file_path = '';  // absolute path of the selected pdf
+var selectedPDF = ''; // path to selected pdf file from root directory of js tree
 var parentDirectory = '';
 
 $(function() {
     $('#container').jstree({
         'core' : {
             'data' : {
-                "url" : location.protocol+"//"+location.host+"/tree/",
+                "url" : location.protocol+"//"+location.host+"/tree?room=" + window.location.pathname.split("/")[2],  //send room with the request so that we can figure out the corresponding batch no: and module code
                 "data" : function (node) {
                     return { "id" : node.id };
                 }
@@ -50,11 +50,12 @@ $(function(){
         var openFileButton = $('#openFileButton')
         if(data.instance.get_node(data.selected[0]).li_attr.isLeaf){
             openFileButton.prop('disabled', false);
-            file_path = data.instance.get_path(data.node,'/');
-            console.log(file_path);
-            console.log(data.instance.get_parent(data.node,'../'));
+            var filePath = data.instance.get_selected(true)[0].id;
+            var direcories = filePath.split("/");
+            console.log(direcories);
+            console.log(data.instance.get_path(data.node,'/'));
             parentDirectory = "batch-12-Module-CS2036";
-            DEFAULT_URL = data.instance.get_selected(true)[0].text;
+            selectedPDF = data.instance.get_path(data.node,'/');   // path to selected pdf file from root directory of js tree
             
         }
         else {
@@ -74,21 +75,16 @@ $(function(){
 //open pdf file
 $(function(){
     $('#openFileButton').click(function(){
-        console.log('openning ' + DEFAULT_URL);
-
         $('body').css('background-color', '#404040');
-        if(role == "tutor")
-            $('.pdf-controllers-container').css('display', 'block');
+        $('.pdf-controllers-container').css('display', 'block');
         $('#fileBrowserModal').modal('hide');
-        setupPDFRendering(DEFAULT_URL, function(){
-            if(!pdfPageCount.hasOwnProperty(DEFAULT_URL)){  //  loading a new pdf
-                pdfPageCount[DEFAULT_URL] = 0;
+        setupPDFRendering(selectedPDF, function(){
+            if(!pdfPageCount.hasOwnProperty(selectedPDF)){  //  loading a new pdf
+                pdfPageCount[selectedPDF] = 0;
                 renderPage(pageNum);
-                //alert('set up n render from pdf js');
-                socket.emit('pdf:load', room, uid, "batch-12-Module-CS2036", DEFAULT_URL);
+                socket.emit('pdf:load', room, uid, "batch-12-Module-CS2036", selectedPDF);
             } else{ // loading a previously opened pdf
-                //alert('set up n render from db');
-                socket.emit('pdf:setUpPDFnRenderFromDB', room, uid, pageNum, pdfPageCount, DEFAULT_URL);
+                socket.emit('pdf:setUpPDFnRenderFromDB', room, uid, pageNum, pdfPageCount, "batch-12-Module-CS2036", selectedPDF);
             }
         });
     }); 
@@ -201,7 +197,7 @@ function onPrevPage() {
     }
     savePDFPage();
     pageNum--;
-    socket.emit('pdf:renderFromDB', room, uid, pageNum, pdfPageCount, parentDirectory, DEFAULT_URL);
+    socket.emit('pdf:renderFromDB', room, uid, pageNum, pdfPageCount, parentDirectory, selectedPDF);
 }
 
 
@@ -209,25 +205,23 @@ function onPrevPage() {
  * Displays next page.
  */
 function onNextPage() {
-    //console.log('current page number '+pageNum);
     if (pageNum >= pdfDoc.numPages) {
         return;
     }
     savePDFPage();
-    if(pageNum >= pdfPageCount[DEFAULT_URL]) {  // render page using pdf js
-        //alert('serve from pdf js');
-        pdfPageCount[DEFAULT_URL]++;
+    if(pageNum >= pdfPageCount[selectedPDF]) {  // render page using pdf js
+        pdfPageCount[selectedPDF]++;
         pageNum++;
         queueRenderPage(pageNum);
-        socket.emit('pdf:pageChange', room, uid, pageNum, pdfPageCount, parentDirectory, DEFAULT_URL);
+        socket.emit('pdf:pageChange', room, uid, pageNum, pdfPageCount, parentDirectory, selectedPDF);
     } else{ // render the page using the state at back end
         pageNum++;
-        socket.emit('pdf:renderFromDB', room, uid, pageNum, pdfPageCount, parentDirectory, DEFAULT_URL);
+        socket.emit('pdf:renderFromDB', room, uid, pageNum, pdfPageCount, parentDirectory, selectedPDF);
     }
 }
 
 function savePDFPage(){
     var base64 = document.getElementById('myCanvas').toDataURL();
-    socket.emit('pdf:savePage', room, DEFAULT_URL, pageNum, base64);
+    socket.emit('pdf:savePage', room, selectedPDF, pageNum, base64);
     $('#canvasClear').trigger('click');
 }

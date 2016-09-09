@@ -65,7 +65,7 @@ $('input[name="pdf-whiteboard-checkbox"]').on('switchChange.bootstrapSwitch', fu
             socket.emit('pdf:to:whiteboard', room, project.exportJSON());
         }
         else
-            socket.emit('whiteboard:to:pdf', room, pageNum, parentDirectory, DEFAULT_URL);
+            socket.emit('whiteboard:to:pdf', room, pageNum, parentDirectory, selectedPDF);
     }
 });
 
@@ -1023,84 +1023,22 @@ $('#text-box-save').on('click', function(){
 });
 
 $('#documentLoadTool').on('click', function () {
-    removeStylingFromTools();
-    $('#documentLoadTool > a').css({
-        background: "orange"
-    }); // set the selected tool css to show it as active
-    $('#fileBrowserModal').modal('show');
-    /*//if there is no pdf file selected, open the file browser to select a file
-    if(DEFAULT_URL == '' || DEFAULT_URL == null){
+    if(!IsPDFOn && !IsToggledToWhiteboardFromPDF){
+        removeStylingFromTools();
+        $('#documentLoadTool > a').css({
+            background: "orange"
+        }); // set the selected tool css to show it as active
         $('#fileBrowserModal').modal('show');
     }
-    //make document viewer visible
-    else{
-        /!*if (documentViewer.css('visibility') == 'hidden') {
-            documentViewer.css('visibility', 'visible');
-            //dynamically assigning the background color and image as in viewer.css #230. Otherwise
-            //this background color for body tag will make conflicts with whiteboard
-            body.css('background-color', '#404040');
-            $('#myCanvas').css('top','32px'); // pull down the canvas so that we can still use pdfjs control buttons while editing on top of pdf
-        }
-        socket.emit('pdf:load', room, uid, DEFAULT_URL);*!/
-
-        $('#fileBrowserModal').modal('show');
-    }*/
 });
-
-//To write on pdf document
-$('#documentEditTool').on('click',function(){
-
-});
-
-/*
-// page down of PDF
-$('#toolbarViewerLeft .toolbarButton.pageDown').click(function(){
-    if(IsPDFOn && paper.project.activeLayer.hasChildren()){
-        clearCanvas();
-    }
-});
-
-// page down of PDF
-$('#toolbarViewerLeft .toolbarButton.pageUp').click(function(){
-    if(IsPDFOn && paper.project.activeLayer.hasChildren()){
-        clearCanvas();
-    }
-});
-
-function writeOnPdfDocument(){
-    if($('#myCanvas').css('z-index') <= 0){
-        $('#myCanvas').css('z-index',2);
-        console.log('now you can write on pdf');
-    }
-    else {
-        $('#documentViewer').css('z-index',0);
-        console.log('you can go to next page of pdf');
-    }
-}
-*/
 
 $('#documentRemoveTool').on('click', function(){
-    /*if(IsPDFOn){
-        IsPDFOn = false;
+    if(IsPDFOn && !IsToggledToWhiteboardFromPDF){
+        $('body').css('background-color', '');
+        $('.pdf-controllers-container').css('display', 'none');
         socket.emit('pdf:hide', room, uid);
-    }*/
-    $('body').css('background-color', '');
-    $('.pdf-controllers-container').css('display', 'none');
-    socket.emit('pdf:hide', room, uid);
-});
-
-/*function hideDocumentViewer(){
-    removeStylingFromTools();
-    $('#documentRemoveTool > a').css({
-        background: "orange"
-    }); // set the selected tool css to show it as active
-    var documentViewer = $('#documentViewer');
-    var body = $('body');
-    if (documentViewer.css('visibility') == 'visible') {
-        documentViewer.css('visibility', 'hidden');
-        body.css('background-color', '');
     }
-}*/
+});
 
 $('#canvasClear').on('click', function(){
    clearCanvas();
@@ -1256,6 +1194,22 @@ function updateWhiteboardPageNumber(){
     document.getElementById('whiteboard-page-num').textContent = currentPageNumber;
     document.getElementById('whiteboard-page-count').textContent = pageCount + 1;
 }
+
+function disablePDFTool(){
+    $('#documentRemoveTool').removeClass('disabled');
+    $('#documentLoadTool').addClass('disabled');
+}
+
+function enablePDFTool(){
+    $('#documentRemoveTool').addClass('disabled');
+    $('#documentLoadTool').removeClass('disabled');
+}
+
+function enablePDFToWhiteboardMode(){
+    $('#documentRemoveTool').addClass('disabled');
+    $('#documentLoadTool').addClass('disabled');
+}
+
 // ---------------------------------
 // SOCKET.IO EVENTS
 socket.on('settings', function (settings) {
@@ -1291,6 +1245,8 @@ socket.on('user:disconnect', function (user_count) {
 
 // loading a whiteboard page from db
 socket.on('project:load', function (json, pgCount, currentPgNum, pdfPgCount) {
+    IsPDFOn = false;
+    enablePDFTool();
     paper.project.activeLayer.remove();
     paper.project.importJSON(json.project);
     pageCount = pgCount;
@@ -1312,10 +1268,11 @@ socket.on('project:load', function (json, pgCount, currentPgNum, pdfPgCount) {
 
 // loading a pdf page from db
 socket.on('project:load:pdf', function (parentDir, file, pdfPage, pgCount, currentPgNum, pdfPgCount) {
+    IsPDFOn = true;
+    disablePDFTool();
     $('body').css('background-color', '#404040');
-    if(role == "tutor")
-        $('.pdf-controllers-container').css('display', 'block');
-    DEFAULT_URL = file;
+    $('.pdf-controllers-container').css('display', 'block');
+    selectedPDF = file;
     parentDirectory = parentDir;
     pageCount = pgCount;
     currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
@@ -1461,31 +1418,24 @@ socket.on('pointing:end', function (artist, position) {
 
 socket.on('pdf:load', function (artist, parentDir, file) {
     currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
+    IsPDFOn = true;
+    disablePDFTool();
     if (artist != uid) {
-        DEFAULT_URL = file;
+        selectedPDF = file;
         parentDirectory = parentDir;
         $('body').css('background-color', '#404040');
-        if(role == "tutor")
-            $('.pdf-controllers-container').css('display', 'block');
+        $('.pdf-controllers-container').css('display', 'block');
         clearCanvas();
         setupPDFRendering(file, function(){
-            pdfPageCount[DEFAULT_URL] = 0;
+            pdfPageCount[selectedPDF] = 0;
             renderPage(pageNum);
         });
     }
 });
 
-//write on pdf document
-
-socket.on('pdf:edit', function(artist){
-    if(artist != uid){
-        console.log('write on pdf');
-        clearCanvas();
-        writeOnPdfDocument();
-    }
-});
-
 socket.on('pdf:hide', function(json, pgNum, pgCount){
+    IsPDFOn = false;
+    enablePDFTool();
     currentPageNumber = pgNum;
     pageCount = pgCount;
     updateWhiteboardPageNumber();
@@ -1517,13 +1467,13 @@ socket.on('pdf:renderFromDB', function (artist, page, pdfPgCount, pdfContent) {
 });
 
 socket.on('pdf:setUpPDFnRenderFromDB', function (artist, page, pdfPgCount, pdfContent, parentDir, file) {
-    //alert('set up n render from db recieved');
     currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
-    DEFAULT_URL = file;
+    IsPDFOn = true;
+    disablePDFTool();
+    selectedPDF = file;
     parentDirectory = parentDir;
     $('body').css('background-color', '#404040');
-    if(role == "tutor")
-        $('.pdf-controllers-container').css('display', 'block');
+    $('.pdf-controllers-container').css('display', 'block');
     clearCanvas();
     pdfPageCount = pdfPgCount;
     setupPDFRendering(file, function(){
@@ -1554,6 +1504,9 @@ socket.on('pdf:presentationMode', function (artist) {
 });
 
 socket.on('pdf:to:whiteboard', function (json, pgNum, pgCount) {
+    IsPDFOn = false;
+    IsToggledToWhiteboardFromPDF = true;
+    enablePDFToWhiteboardMode();
     currentPageNumber = pgNum;
     pageCount = pgCount;
     updateWhiteboardPageNumber();
@@ -1564,6 +1517,9 @@ socket.on('pdf:to:whiteboard', function (json, pgNum, pgCount) {
 });
 
 socket.on('whiteboard:to:pdf', function (json) {
+    IsPDFOn = true;
+    IsToggledToWhiteboardFromPDF = false;
+    disablePDFTool();
     currentPageNumber = 0; // make it zero, so that content drawn on top of pdf will be saved to page-zero at backend
     $('body').css('background-color', '#404040');
     clear();
