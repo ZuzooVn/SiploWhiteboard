@@ -28,11 +28,13 @@ var pdfDoc,
 var selectedPDF = ''; // path to selected pdf file from root directory of js tree
 var parentDirectory = '';
 
+
+// initializing js tree with file directory assigned for classroom
 $(function() {
     $('#container').jstree({
         'core' : {
             'data' : {
-                "url" : location.protocol+"//"+location.host+"/tree?room=" + window.location.pathname.split("/")[2],  //send room with the request so that we can figure out the corresponding batch no: and module code
+                "url" : location.protocol+"//"+"localhost:5000"+"/tree?room=" + window.location.pathname.split("/")[2],  // send request to file server. change the url in production to correct sub-domain
                 "data" : function (node) {
                     return { "id" : node.id };
                 }
@@ -51,10 +53,10 @@ $(function(){
         if(data.instance.get_node(data.selected[0]).li_attr.isLeaf){
             openFileButton.prop('disabled', false);
             var filePath = data.instance.get_selected(true)[0].id;
-            var direcories = filePath.split("/");
-            console.log(direcories);
-            console.log(data.instance.get_path(data.node,'/'));
-            parentDirectory = "batch-12-Module-CS2036";
+            /*var direcories = filePath.split("/");
+            console.log(filePath);
+            console.log(data.instance.get_path(data.node,'/'));*/
+            parentDirectory = filePath.split("/")[0];
             selectedPDF = data.instance.get_path(data.node,'/');   // path to selected pdf file from root directory of js tree
             
         }
@@ -82,9 +84,9 @@ $(function(){
             if(!pdfPageCount.hasOwnProperty(selectedPDF)){  //  loading a new pdf
                 pdfPageCount[selectedPDF] = 0;
                 renderPage(pageNum);
-                socket.emit('pdf:load', room, uid, "batch-12-Module-CS2036", selectedPDF);
+                socket.emit('pdf:load', room, uid, parentDirectory, selectedPDF);
             } else{ // loading a previously opened pdf
-                socket.emit('pdf:setUpPDFnRenderFromDB', room, uid, pageNum, pdfPageCount, "batch-12-Module-CS2036", selectedPDF);
+                socket.emit('pdf:setUpPDFnRenderFromDB', room, uid, pageNum, pdfPageCount, parentDirectory, selectedPDF);
             }
         });
     }); 

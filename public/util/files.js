@@ -8,20 +8,19 @@ var fs = require('fs'),
 exports.processPath = function(req, res, batchCode, moduleCode){
 
     var pathToProcess;
-    console.log(__dirname);
-    console.log(req.query.id);
+    var classRoomRootDirectory;
     if(req.query.id == '#'){
-        var directory = "batch-"+batchCode+"-Module-"+moduleCode;
-        pathToProcess = path.resolve(__dirname, '..', '..', 'user_files', directory); //root directory of classroom can be identified using batch number n module-code
+        classRoomRootDirectory = "batch-"+batchCode+"-Module-"+moduleCode;  // root directory belongs to classroom
+        pathToProcess = path.resolve(__dirname, '..', '..', 'user_files', classRoomRootDirectory); //root directory of classroom can be identified using batch number n module-code
     }
     else {
-        pathToProcess = req.query.id;
+        classRoomRootDirectory = req.query.id;
+        pathToProcess = path.resolve(__dirname, '..', '..', 'user_files', req.query.id);
     }
-    //res.json('{}');
-    processRequest(pathToProcess, res);
+    processRequest(pathToProcess, classRoomRootDirectory, res);
 };
 
-function processRequest(pathToProcess, res) {
+function processRequest(pathToProcess, classRoomRootDirectory, res) {
     var resp = [];
     fs.readdir(pathToProcess, function(err, list) {
         if(err){
@@ -29,17 +28,17 @@ function processRequest(pathToProcess, res) {
         }
         else{
             for (var i = list.length - 1; i >= 0; i--) {
-                resp.push(processNode(pathToProcess, list[i]));
+                resp.push(processNode(pathToProcess, classRoomRootDirectory, list[i]));
             }
             res.json(resp);
         }
     });
 }
 
-function processNode(pathToProcess, text) {
+function processNode(pathToProcess, classRoomRootDirectory, text) {
     var s = fs.statSync(path.join(pathToProcess, text));
     return {
-        "id": path.join(pathToProcess, text),
+        "id": path.join(classRoomRootDirectory, text),
         "text": text,
         //"icon" : s.isDirectory() ? 'jstree-custom-folder' : 'jstree-custom-file',
         "state": {
@@ -48,7 +47,7 @@ function processNode(pathToProcess, text) {
             "selected": false
         },
         "li_attr": {
-            "base": path.join(pathToProcess, text),
+            "base": path.join(classRoomRootDirectory, text),
             "isLeaf": !s.isDirectory()
         },
         "children": s.isDirectory()
