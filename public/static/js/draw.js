@@ -86,7 +86,14 @@ $('input[name="toolbar-toggle-checkbox"]').on('switchChange.bootstrapSwitch', fu
             socket.emit('disable:toolbox', room, uid);
     }
 });
+//emit page scrolling event
+$('#canvasContainer').onscroll=function(){
+    alert("scroll");
+};
 
+function emitScrollEvent() {
+    alert("scroll event");
+}
 function removeStylingFromTools() {
     $('.tool-box .tool').css({
         border: "none"
