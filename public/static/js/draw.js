@@ -1612,7 +1612,7 @@ socket.on('disable:toolbox', function (artist) {
 socket.on('scroll', function (artist,yPosition) {
 
     if (artist != uid) {
-
+        previousYPosition = yPosition;
         $('#canvasContainer').scrollTop(yPosition);
     }
 });
