@@ -729,6 +729,7 @@ input[type=checkbox] {
 #canvasContainer {
     position: absolute;
     height: 100%;
+    margin-right: 225px;
     overflow-y: scroll;
     top: 0;
     left: 0;
