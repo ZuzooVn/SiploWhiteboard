@@ -82,7 +82,7 @@ body {
 }
 
 .tool-box .compound-box{
-    width: 65px;
+    width: 72px;
     min-width: 60px;
     left: -70%;
 }
@@ -331,8 +331,8 @@ body {
 }
 
 .buttonicon {
-    width: 24px;
-    height: 24px;
+    width: 34px;
+    height: 32px;
     background-image: url('../../static/img/etherpad_lite_icons.png');
     background-repeat: no-repeat;
     display: inline-block;
@@ -372,12 +372,13 @@ body {
 
 .buttonicon-page-tools {
     background-image: url('../../static/img/page-process-icon.png');
-    background-color: white;
+    background-color: transparent;
+    height: 34px;
 }
 
 .buttonicon-page-tools:active {
     background-image: url('../../static/img/page-process-icon.png');
-    background-color: white;
+    background-color: transparent;
 }
 
 .buttonicon-page-tools:active:focus {
@@ -385,7 +386,7 @@ body {
 }
 
 .buttonicon-new-page{
-    background-image: url('../../static/img/new-page-icon.png');
+    background-image: url('../../static/img/page_operations-new_page.png');
 }
 
 .buttonicon-previous-page{
@@ -416,11 +417,11 @@ body {
 }
 
 .buttonicon-load-pdf {
-    background-image: url('../../static/img/file-add-icon.png');
+    background-image: url('../../static/img/pdf_operations-import_pdf.png');
 }
 
 .buttonicon-remove-pdf {
-    background-image: url('../../static/img/file-remove-icon.png');
+    background-image: url('../../static/img/pdf_operations-remove_pdf.png');
 }
 
 .buttonicon-edit-pdf {
@@ -430,13 +431,13 @@ body {
 
 .buttonicon-basic-tools {
     background-image: url('../../static/img/brush-pencil-icon.png');
-    background-color: white;
-    height: 25px;
+    background-color: transparent;
+    height: 34px;
 }
 
 .buttonicon-basic-tools:active {
     background-image: url('../../static/img/brush-pencil-icon.png');
-    background-color: white;
+    background-color: transparent;
 }
 
 .buttonicon-basic-tools:active:focus {
@@ -445,12 +446,13 @@ body {
 
 .buttonicon-shapes {
     background-image: url('../../static/img/shapes.png');
-    background-color: white;
+    background-color: transparent;
+    height: 34px;
 }
 
 .buttonicon-shapes:active {
     background-image: url('../../static/img/shapes.png');
-    background-color: white;
+    background-color: transparent;
 }
 
 .buttonicon-shapes:active:focus {
@@ -459,12 +461,13 @@ body {
 
 .buttonicon-pdf-tools {
     background-image: url('../../static/img/pdf.png');
-    background-color: white;
+    background-color: transparent;
+    height: 34px;
 }
 
 .buttonicon-pdf-tools:active {
     background-image: url('../../static/img/pdf.png');
-    background-color: white;
+    background-color: transparent;
 }
 
 .buttonicon-pdf-tools:active:focus {
