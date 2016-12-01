@@ -87,12 +87,16 @@ $('input[name="toolbar-toggle-checkbox"]').on('switchChange.bootstrapSwitch', fu
     }
 });
 //emit page scrolling event
-$('#canvasContainer').onscroll=function(){
-    alert("scroll");
-};
 
+$('#canvasContainer').scroll(emitScrollEvent);
+var previousYPosition =0;
 function emitScrollEvent() {
-    alert("scroll event");
+    var yPosition = $('#canvasContainer').scrollTop();
+    if((yPosition-previousYPosition>50 )||(yPosition-previousYPosition<-50)) {
+        socket.emit('scroll', room, uid, yPosition);
+
+        previousYPosition =yPosition;
+    }
 }
 function removeStylingFromTools() {
     $('.tool-box .tool').css({
@@ -1604,7 +1608,14 @@ socket.on('disable:toolbox', function (artist) {
     }
 });
 
+//scroll event
+socket.on('scroll', function (artist,yPosition) {
 
+    if (artist != uid) {
+
+        $('#canvasContainer').scrollTop(yPosition);
+    }
+});
 function requestFullScreen(element) {
     // Supports most browsers and their versions.
     var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullscreen;
