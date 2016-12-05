@@ -286,6 +286,12 @@ io.sockets.on('connection', function (socket) {
     });
   });
 
+  // scroll page
+  socket.on('scroll', function(room,uid, yPosition) {
+
+      io.sockets.in(room).emit('scroll', uid,yPosition);
+
+  });
   // User clear
   socket.on('clear', function(room, uid, pageNum) {
     if (!projects.projects[room] || !projects.projects[room].project) {

@@ -31,6 +31,20 @@
          for the JavaScript code in this page.|
          */
     </script>
+    <style>
+
+        @media screen and (max-device-width: 425px) {
+            .tool-box > div.row {
+                display: none;
+            }
+        }
+
+        @media screen and (max-device-height: 425px) {
+            .tool-box > div.row {
+                display: none;
+            }
+        }
+    </style>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="shortcut icon" href="/wb_assets/static/img/favicon.ico">
@@ -83,11 +97,6 @@
             <div class="dropup">
                 <button class="btn dropdown-toggle buttonicon buttonicon-basic-tools" type="button" data-toggle="dropdown" title="Basic Tools"></button>
                 <ul class="dropdown-menu compound-box">
-                    <li id="drawTool">
-                        <a class="grouped-left" data-l10n-id="draw.toolbar.draw.title" title="Brush Tool">
-                            <span class="buttonicon buttonicon-draw"></span>
-                        </a>
-                    </li>
                     <li id="pencilTool" >
                         <a class="grouped-middle" data-l10n-id="draw.toolbar.pencil.title" title="Pencil Tool">
                             <span class="buttonicon buttonicon-pencil"></span>
@@ -98,6 +107,13 @@
                             <span class="buttonicon buttonicon-eraser"></span>
                         </a>
                     </li>
+                    <li id="drawTool">
+                        <a class="grouped-left" data-l10n-id="draw.toolbar.draw.title" title="Brush Tool">
+                            <span class="buttonicon buttonicon-draw"></span>
+                        </a>
+                    </li>
+
+
                     <li id="pointTool">
                         <a class="grouped-left" data-l10n-id="draw.toolbar.draw.title" title="Point Tool">
                             <span class="buttonicon buttonicon-point"></span>
@@ -242,9 +258,9 @@
         </div>
 
         <!--ToolBox Toggle-->
-        <div class="col-md-1 col-sm-1 col-xs-1 tool" style="top:-5px;">
-            <input id="toolBoxToggle" type="checkbox" name="toolbar-toggle-checkbox" checked data-on-color="success" data-off-color="danger">
-        </div>
+        <!--<div class="col-md-1 col-sm-1 col-xs-1 tool" style="top:-5px;">-->
+            <!--<input id="toolBoxToggle" type="checkbox" name="toolbar-toggle-checkbox" checked data-on-color="success" data-off-color="danger">-->
+        <!--</div>-->
     </div>
 </div>
 
