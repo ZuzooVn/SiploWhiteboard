@@ -120,7 +120,7 @@ function setupPDFRendering(file, callback){
 
     // If absolute URL from the remote server is provided, configure the CORS
     // header on that server.
-    var url = location.protocol+"//files."+location.host+"/api"+parentDirectory+"/"+file;
+    var url = location.protocol+"//files."+location.host+"/api/"+parentDirectory+"/"+file;
     // var url = location.protocol+"//localhost:5000/api/"+parentDirectory+"/"+file;
 
     pdfDoc = null;
