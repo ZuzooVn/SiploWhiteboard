@@ -35,7 +35,7 @@ $(function() {
         'core' : {
             'data' : {
                 // "url" : location.protocol+"//"+"localhost:5000"+"/tree?room=" + window.location.pathname.split("/")[2],  // send request to file server. change the url in production to correct sub-domain
-                "url" : location.protocol+"//files."+location.host+"/tree?room=" + window.location.pathname.split("/")[2],
+                "url" : location.protocol+"//"+location.host+"/tree?room=" + window.location.pathname.split("/")[2],
                 "data" : function (node) {
                     return { "id" : node.id };
                 }
