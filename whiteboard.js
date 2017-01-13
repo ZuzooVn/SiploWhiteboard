@@ -23,6 +23,17 @@ var settings = require('./public/util/Settings.js'),
     Canvas = require('canvas');
 
 
+/**
+ * Retrive setting from environment
+ *
+ */
+settings.dbType = process.env.DB_TYPE || settings.dbType;
+settings.dbSettings.user = process.env.DB_USER|| settings.dbSettings.user;
+settings.dbSettings.password = process.env.DB_PASSWORD|| settings.dbSettings.password;
+settings.dbSettings.host = process.env.DB_HOST|| settings.dbSettings.host;
+settings.dbSettings.database = process.env.DB_NAME|| settings.dbSettings.database;
+
+
 /** 
  * SSL Logic and Server bindings
  */ 
