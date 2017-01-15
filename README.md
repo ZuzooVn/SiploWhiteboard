@@ -33,3 +33,12 @@ Enabling Loging
 [Siplo.lk]: https://siplo.lk
 [SiploImage]: https://www.siplo.lk/bundles/siplouser/images/Logo03.png
 [etherdraw]: https://github.com/JohnMcLear/draw
+
+Environment Varialbles for Docker
+---------------------------------
+
+* DB_TYPE
+* DB_USER
+* DB_PASSWORD
+* DB_HOST
+* DB_NAME
