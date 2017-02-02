@@ -207,17 +207,19 @@ exports.setPDFContentAtToggleToWhiteboard = function(room, canvas,callback) {
         db.get(room + "PageCount", function (err, pageCount) {
             db.set(room + "PDFContentAtToggleToWhiteboard", {project: canvas});
             db.get(room + "StateAtPDFLoad", function (err, state) {
-                db.get(room + state.page, function (err, value) {
-                    if (value && project && project.activeLayer) {
-                        project.activeLayer.remove();
-                        project.importJSON(value.project);
-                        callback(value, state, pageCount.count);
-                    } else if(value == null || err){
-                        project.activeLayer.remove();
-                        project.importJSON(null);
-                        callback({project: null}, state, pageCount.count);
-                    }
-                });
+                if(state!==null) {//check whether thr object is null.. to slove whiteboard error
+                    db.get(room + state.page, function (err, value) {
+                        if (value && project && project.activeLayer) {
+                            project.activeLayer.remove();
+                            project.importJSON(value.project);
+                            callback(value, state, pageCount.count);
+                        } else if (value == null || err) {
+                            project.activeLayer.remove();
+                            project.importJSON(null);
+                            callback({project: null}, state, pageCount.count);
+                        }
+                    });
+                }
             });
         });
     }
