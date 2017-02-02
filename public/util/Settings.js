@@ -6,6 +6,7 @@
 var fs = require("fs");
 var os = require("os");
 var jsonminify = require('jsonminify');
+var env_settings = {};
 
 //defaults
 exports.defaults = {
@@ -37,7 +38,20 @@ exports.loadSettings = function() {
     console.error('There was an error processing your settings.json file: '+e.message);
     process.exit(1);
   }
-	
+
+  try {
+    env_settings['dbType'] = process.env.DB_TYPE;
+    var db_settings={};
+    db_settings.user = process.env.DB_USER;
+    db_settings.password = process.env.DB_PASSWORD;
+    db_settings.host = process.env.DB_HOST;
+    db_settings.database = process.env.DB_NAME;
+    env_settings.dbSettings= db_settings;
+  }
+  catch (e){
+    console.error('There was an error retrieving environment variables '+e.message)
+  }
+
   //copy over defaults
   for(var k in exports.defaults){
     exports[k] = exports.defaults[k]
@@ -49,6 +63,17 @@ exports.loadSettings = function() {
     if(k in exports.defaults){
       //overwrite it
       exports[k] = user_settings[k];
+    }else{
+      console.warn("'Unknown Setting: '" + k + "'. This setting doesn't exist or it was removed");
+    }
+  }
+
+  //go through each key in environmental settings and replace the user settings
+  //if a key is not in the defaults, warn the user and ignore it
+  for(var k in env_settings) {
+    if(k in exports.defaults){
+      //overwrite it
+      exports[k] = env_settings[k];
     }else{
       console.warn("'Unknown Setting: '" + k + "'. This setting doesn't exist or it was removed");
     }
