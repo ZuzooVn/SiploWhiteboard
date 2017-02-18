@@ -35,7 +35,7 @@ $(function() {
         'core' : {
             'data' : {
                 // "url" : location.protocol+"//"+"localhost:5000"+"/tree?room=" + window.location.pathname.split("/")[2],  // send request to file server. change the url in production to correct sub-domain
-                "url" : location.protocol+"//"+location.host+"/tree?room=" + window.location.pathname.split("/")[2],
+                "url" :"https://whiteboard.siplo.lk/tree?room=" + window.location.pathname.split("/")[2],
                 "data" : function (node) {
                     return { "id" : node.id };
                 }
@@ -120,7 +120,7 @@ function setupPDFRendering(file, callback){
 
     // If absolute URL from the remote server is provided, configure the CORS
     // header on that server.
-    var url = location.protocol+"//files."+location.host+"/api/"+parentDirectory+"/"+file;
+    var url = "https://siplo.lk//files."+location.host+"/api/"+parentDirectory+"/"+file;
     // var url = location.protocol+"//localhost:5000/api/"+parentDirectory+"/"+file;
 
     pdfDoc = null;
