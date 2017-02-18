@@ -120,7 +120,7 @@ function setupPDFRendering(file, callback){
 
     // If absolute URL from the remote server is provided, configure the CORS
     // header on that server.
-    var url = "https://files.siplo.lk/connectors/php/filemanager.php?mode=readfile&path=%2F"+file;
+    var url = "https://files.whiteboard.siplo.lk/connectors/php/filemanager.php?mode=readfile&path=%2F"+file;
     // var url = location.protocol+"//localhost:5000/api/"+parentDirectory+"/"+file;
 
     pdfDoc = null;
