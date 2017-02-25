@@ -153,7 +153,7 @@ app.get('/tree', function(req, res){
   console.log(req.query.room);
   var batchCode = '12';  // later get the batch n module-code from DB
   var moduleCode = 'CS2036';
-  res.header("Access-Control-Allow-Origin", "https://whiteboard.siplo.lk");
+  res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   files.processPath(req, res, batchCode, moduleCode);
 });
