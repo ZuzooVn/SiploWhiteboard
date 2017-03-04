@@ -34,8 +34,8 @@ $(function() {
     $('#container').jstree({
         'core' : {
             'data' : {
-                // "url" : location.protocol+"//"+"localhost:5000"+"/tree?room=" + window.location.pathname.split("/")[2],  // send request to file server. change the url in production to correct sub-domain
-                "url" :"https://whiteboard.siplo.lk/tree?room=" + window.location.pathname.split("/")[2],
+                "url" : location.protocol+"//"+location.host+"/tree?room=" + window.location.pathname.split("/")[2],  // send request to file server. change the url in production to correct sub-domain
+                // "url" :"https://whiteboard.siplo.lk/tree?room=" + window.location.pathname.split("/")[2],
                 "data" : function (node) {
                     return { "id" : node.id };
                 }
@@ -121,7 +121,8 @@ function setupPDFRendering(file, callback){
     // If absolute URL from the remote server is provided, configure the CORS
     // header on that server.
     // var url = "https://files.whiteboard.siplo.lk/connectors/php/filemanager.php?mode=readfile&path=%2F"+file;
-    var url = "https://whiteboard.siplo.lk/user_files/"+parentDirectory+"/"+file;
+    // var url = "https://whiteboard.siplo.lk/user_files/"+parentDirectory+"/"+file;
+    var url = location.protocol+"//"+location.host+"/user_files/"+parentDirectory+"/"+file;
 
     pdfDoc = null;
     pageNum = 1;
@@ -131,6 +132,7 @@ function setupPDFRendering(file, callback){
     canvas = document.getElementById('pdfCanvas');
     ctx = canvas.getContext('2d');
 
+    console.log("Setup rendering pdf");
     /**
      * Asynchronously downloads PDF.
      */
@@ -146,7 +148,7 @@ function setupPDFRendering(file, callback){
  * @param num Page number.
  */
 function renderPage(num) {
-        //console.log(pdfPageCount);
+    console.log("loading pdf using renderPage",pdfPageCount);
     pageRendering = true;
     // Using promise to fetch the page
     pdfDoc.getPage(num).then(function(page) {
@@ -165,6 +167,7 @@ function renderPage(num) {
         renderTask.promise.then(function () {
             $('#pdfRenderEventEmitter').trigger('click');
             pageRendering = false;
+            console.log("page rendered");
             if (pageNumPending !== null) {
                 // New page rendering is pending
                 renderPage(pageNumPending);
