@@ -1,6 +1,6 @@
 ![][SiploImage]
 
-Copyright © 2015-2016 [Siplo.lk].
+This project was originally forked from [Ether Draw](https://github.com/JohnMcLear/draw) and developed by Siplo Team. Use it, Make the worl a better place !
 
 Siplo Whiteboard
 ================
