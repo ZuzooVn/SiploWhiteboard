@@ -30,7 +30,8 @@
     "pug": "^0.1.0",
     "redis": "",
     "socket.io": "~1.0.0",
-    "ueberDB": "~0.2.1"
+    "ueberDB": "~0.2.1",
+    "sqlite3": "*"
   },
   "devDependencies": {
     "bower": "^1.4.1"

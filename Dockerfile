@@ -10,7 +10,7 @@ RUN npm install -g bower
 RUN npm install
 COPY . /usr/src/app
 RUN mv .git git
-RUN bower install --allow-root
+RUN bower install  --allow-root
 RUN mv git .git
 
 CMD [ "node", "whiteboard.js" ]
