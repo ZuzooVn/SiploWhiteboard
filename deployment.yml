@@ -18,7 +18,7 @@ spec:
         run: whiteboard
     spec:
       containers:
-      - image: registry.ng.bluemix.net/quan_thinklabs/whiteboard
+      - image: quan/whiteboard
         name: whiteboard
         ports:
         - containerPort: 9002
